@@ -1,0 +1,29 @@
+{
+  "name": "fyp",
+  "version": "0.0.1",
+  "description": "Final year project @portsoc",
+  "main": "bin/www.js",
+  "repository": "https://github.com/hjfitz/fyp",
+  "author": "Harry <up780461@myport.ac.uk>",
+  "license": "GPL-3.0",
+  "private": false,
+  "scripts": {
+    "start": "node bin/www"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "compression": "^1.7.3",
+    "date-fns": "^1.29.0",
+    "express": "^4.16.4",
+    "helmet": "^3.15.0",
+    "morgan": "^1.9.1",
+    "winston": "^3.1.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.9.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-react": "^7.11.1"
+  }
+}
