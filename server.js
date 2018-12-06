@@ -7,14 +7,20 @@ const parser = require('body-parser')
 const winston = require('./logger')
 
 const app = express()
+const pub = path.join(process.cwd(), 'public')
 
-app.use(
-	logger({ stream: winston.stream }),
-	compression(),
-	helmet(),
-	parser.json(),
-	parser.urlencoded({ extended: true }),
-	express.static(path.join(__dirname, 'public')),
-)
+// log and save to logfile with winston
+app.use(logger({ stream: winston.stream }))
+
+app.use(compression())
+app.use(helmet())
+
+// accept json and url params
+app.use(parser.json())
+app.use(parser.urlencoded({ extended: true }))
+
+// statically server public files
+app.use(express.static(pub))
+
 
 module.exports = app
