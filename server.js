@@ -9,6 +9,10 @@ const winston = require('./logger')
 const app = express()
 const pub = path.join(process.cwd(), 'public')
 
+// log an IP thanks to nginx forwarding
+logger.token('remote-addr', req => req.headers['x-forwarded-for'] || req.ip)
+
+
 // log and save to logfile with winston
 app.use(logger({ stream: winston.stream }))
 
