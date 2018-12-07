@@ -14,10 +14,9 @@ const logFormat = combine(
 	printf(info => `${info.timestamp} [${info.level}]: ${info.message} (in ${info.file}@${info.func})`),
 )
 
+// make sure we can save to the dir first
 const logLoc = path.join(process.cwd(), 'logs')
-if (!fs.existsSync(logLoc)) {
-	fs.mkdirSync(logLoc)
-}
+if (!fs.existsSync(logLoc)) fs.mkdirSync(logLoc)
 
 const logger = createLogger({
 	level,
