@@ -1,4 +1,5 @@
 const path = require('path')
+const webpack = require('webpack')
 
 module.exports = [
 	{
@@ -14,6 +15,7 @@ module.exports = [
 			// directories where to look for modules
 			extensions: ['.js', '.json', '.jsx', '.css'],
 		},
+		devtool: 'source-map',
 		module: {
 			rules: [
 				{
@@ -28,8 +30,22 @@ module.exports = [
 						},
 					},
 				},
+				{
+					test: /\.scss$/,
+					use: [
+						{loader: 'style-loader'},
+						{loader: 'css-loader'},
+						{loader: 'sass-loader'}],
+				},
 			],
 		},
+		plugins: [
+			new webpack.DefinePlugin({
+				'process.env': {
+					NODE_ENV: JSON.stringify('development'),
+				},
+			}),
+		],
 	},
 ]
 

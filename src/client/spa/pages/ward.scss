@@ -1,0 +1,16 @@
+.ward_patient {
+	width: 33%;
+    display: flex;
+	align-items: center;
+	transition: 0.3s ease;
+	padding: 8px;
+	cursor: pointer;
+
+	.ward_patient--info {
+		flex: 1;
+	}
+
+	&:hover {
+		background-color: rgba(0,0,0,0.2)
+	}
+}
