@@ -11,5 +11,13 @@ module.exports = {
 	  "no-tabs": 0,
 	  "no-param-reassign": 0,
 	  "object-curly-newline": 0,
+	  "object-curly-spacing": ["error", "never"],
+	  "react/jsx-indent": [2, 'tab'],
+	  "react/react-in-jsx-scope": 0,
+	},
+	"settings": {
+		"react": {
+			"pragma": "h"
+		}
 	}
   };
