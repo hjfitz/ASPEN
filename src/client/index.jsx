@@ -4,6 +4,8 @@ import {Router, route} from 'preact-router'
 import {Ward, Patient, WardList} from './spa/Pages'
 import {getJwtPayload} from './util'
 
+import './router.scss'
+
 // routes that we should check the JWT or redir, for UX
 const protectedRoutes = ['/ward']
 

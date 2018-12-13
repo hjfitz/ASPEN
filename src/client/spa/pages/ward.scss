@@ -7,10 +7,9 @@
 .ward_patient {
     display: flex;
 	align-items: center;
-	transition: 0.3s ease;
 	padding: 8px;
 	cursor: pointer;
-
+	transition: 0.3s ease;
 	.ward_patient--info {
 		flex: 1;
 	}
@@ -21,5 +20,31 @@
 
 	&.active {
 		background-color: rgba(0,0,0,0.2);
+	}
+}
+
+.patient {
+	flex: 1;
+	max-width: 40%;
+	
+	.patient_toggle {
+		list-style-type: none;
+		display: flex;
+		justify-content: space-between;
+		height: 36px;
+		
+		li {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 200px;
+			text-align: center;
+			padding: 8px;
+			cursor: pointer;
+			transition: 0.3s ease;
+			&:hover {
+				background-color: rgba(0,0,0,0.2);
+			}
+		}
 	}
 }
