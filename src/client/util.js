@@ -16,6 +16,7 @@ export function getJwtPayload() {
 	return JSON.parse(payload)
 }
 
+// shitty enums
 export const MINUTE = 1000 * 60
 export const HALF_HOUR = MINUTE * 30
 export const HOUR = MINUTE * 60

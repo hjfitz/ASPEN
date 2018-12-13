@@ -12,7 +12,6 @@ const pub = path.join(process.cwd(), 'public')
 // log an IP thanks to nginx forwarding
 logger.token('remote-addr', req => req.headers['x-forwarded-for'] || req.ip)
 
-
 // log and save to logfile with winston
 app.use(logger({stream: winston.stream}))
 
@@ -26,7 +25,7 @@ app.use(parser.urlencoded({extended: true}))
 // statically server public files
 app.use(express.static(pub))
 
-app.get('*', (_, res) => res.sendFile(path.join(pub, 'index.html')))
+app.get('*', (req, res) => res.sendFile(path.join(pub, 'index.html')))
 
 
 module.exports = app

@@ -1,5 +1,10 @@
+.ward {
+	display: flex;
+	.ward-menu {
+		flex-basis: 40%;
+	}
+}
 .ward_patient {
-	width: 33%;
     display: flex;
 	align-items: center;
 	transition: 0.3s ease;
@@ -11,6 +16,10 @@
 	}
 
 	&:hover {
-		background-color: rgba(0,0,0,0.2)
+		background-color: rgba(0,0,0,0.2);
+	}
+
+	&.active {
+		background-color: rgba(0,0,0,0.2);
 	}
 }
