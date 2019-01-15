@@ -4,7 +4,8 @@ const compression = require('compression') // compresses responses
 const helmet = require('helmet') // sets secure headers
 const path = require('path')
 const parser = require('body-parser')
-const winston = require('./logger')
+const {stream} = require('./logger')
+const fhirApi = require('./src/server')
 
 const app = express()
 const pub = path.join(process.cwd(), 'public')
@@ -13,7 +14,8 @@ const pub = path.join(process.cwd(), 'public')
 logger.token('remote-addr', req => req.headers['x-forwarded-for'] || req.ip)
 
 // log and save to logfile with winston
-app.use(logger({stream: winston.stream}))
+// todo: clean this up
+app.use(logger({stream}))
 
 app.use(compression())
 app.use(helmet())
@@ -24,6 +26,8 @@ app.use(parser.urlencoded({extended: true}))
 
 // statically server public files
 app.use(express.static(pub))
+
+app.use(fhirApi)
 
 app.get('*', (req, res) => res.sendFile(path.join(pub, 'index.html')))
 

@@ -1,0 +1,23 @@
+CREATE TYPE patient_gender AS ENUM ('male', 'female', 'other');
+
+CREATE TABLE contact (
+	contact_id serial PRIMARY KEY,
+	prefix text NOT NULL,
+	fullname text NOT NULL,
+	given text NOT NULL,
+	family text,
+	phone text NOT NULL,
+)
+
+CREATE TABLE patient (
+	patient_id serial PRIMARY KEY,
+	active boolean NOT NULL,
+	fullname text NOT NULL,
+	given text NOT NULL,
+	family text,
+	prefix text NOT NULL,
+	gender patient_gender NOT NULL,
+	photo_url text,
+	last_updated TIMESTAMP,
+	contact_id serial REFERENCES contact(contact_id)
+);
