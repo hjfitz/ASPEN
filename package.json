@@ -26,6 +26,7 @@
     "preact-router": "^2.6.1",
     "sass-loader": "^7.1.0",
     "source-map": "^0.7.3",
+    "split": "^1.0.1",
     "webpack": "^4.27.1",
     "winston": "^3.1.0"
   },

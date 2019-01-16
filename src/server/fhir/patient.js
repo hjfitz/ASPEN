@@ -2,10 +2,26 @@
 const express = require('express')
 const multer = require('multer')
 const pg = require('pg')
+const logger = require('../../../logger')
 
 const upload = multer({storage: 'patient/'})
 const patientRouter = express.Router()
-const isConnected = false
+let isConnected = false
+
+const client = new pg.Client(process.env.DATABASE_URL)
+const log = (level, message, func) => logger.log(level, message, {file: 'logger.js', func})
+
+async function connect() {
+	if (isConnected) return
+	await client.connect()
+	log('debug', 'successfully connected to database', 'connect()')
+	isConnected = true
+}
+
+connect()
+
+
+log('info', `attempting to connect to postgres on ${process.env.DATABASE_URL}`, 'main')
 
 /**
 patient schema:
@@ -49,9 +65,30 @@ patient schema:
 }
 */
 
-// read
-patientRouter.get('/:id', (req, res) => {
+// ensure that database connection is active
+patientRouter.use(async (req, res, next) => {
+	await connect()
+	next()
+})
 
+// debug
+patientRouter.get('/all', async (req, res) => {
+	log('info', 'attempting to retrieve all patient data', 'GET /all')
+	const resp = await client.query('SELECT * FROM patient')
+	res.json(resp.rows)
+})
+
+// read
+patientRouter.get('/:id', async (req, res, next) => {
+	const {id} = req.params
+	const query = {
+		text: 'SELECT * FROM patient WHERE patient_id = $1',
+		values: [id],
+	}
+	log('debug', `retrieving patient with id ${id}`, 'GET /:id')
+	const {rows: [resp]} = await client.query(query)
+	if (!resp) next({code: 404, issue: `Patient with "${id}" not found`})
+	res.json(resp)
 })
 
 // create

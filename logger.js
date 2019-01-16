@@ -2,9 +2,10 @@ const {createLogger, format, transports} = require('winston')
 const dFormat = require('date-fns/format')
 const fs = require('fs')
 const path = require('path')
+const split = require('split')
 
 const {combine, timestamp, printf, colorize} = format
-const level = process.env.LOG_LEVEL || 'info'
+const level = 'silly'
 const getFileTimestamp = () => dFormat(new Date(), 'DD-MMM-YYYY')
 
 
@@ -28,9 +29,9 @@ const logger = createLogger({
 	],
 })
 
-logger.stream = {
-	write: message => logger.log('info', message, {file: 'server.js', func: 'request'}),
-}
+// logger.stream = {
+// 	write: message => logger.log('info', message, {file: 'server.js', func: 'request'}),
+// }
 
 
 logger.log('info', `Creating logfile with name ${getFileTimestamp()}`, {
@@ -39,3 +40,4 @@ logger.log('info', `Creating logfile with name ${getFileTimestamp()}`, {
 })
 
 module.exports = logger
+module.exports.stream = split().on('data', message => logger.log('info', message, {file: 'server.js', func: 'request'}))

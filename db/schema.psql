@@ -6,8 +6,8 @@ CREATE TABLE contact (
 	fullname text NOT NULL,
 	given text NOT NULL,
 	family text,
-	phone text NOT NULL,
-)
+	phone text NOT NULL
+);
 
 CREATE TABLE patient (
 	patient_id serial PRIMARY KEY,

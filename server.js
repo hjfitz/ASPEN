@@ -15,7 +15,7 @@ logger.token('remote-addr', req => req.headers['x-forwarded-for'] || req.ip)
 
 // log and save to logfile with winston
 // todo: clean this up
-app.use(logger({stream}))
+app.use(logger('dev', {stream}))
 
 app.use(compression())
 app.use(helmet())
