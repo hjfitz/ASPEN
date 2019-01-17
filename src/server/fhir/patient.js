@@ -91,13 +91,35 @@ patientRouter.get('/:id', async (req, res, next) => {
 	res.json(resp)
 })
 
+function validatePayload(body, toValidate, keys) {
+	const payload = body[toValidate]
+	const missingKeys = keys.filter(key => key in payload)
+	return missingKeys.length ? missingKeys : payload
+}
+
+
 // create
 patientRouter.post('/', upload.single('profile'), (req, res, next) => {
-	const {file, body} = req
-	const {gender, name, contact} = body
-	const {full, family, given, prefix} = name
-	// validate user input
-	// validateNewPatient(file, name,)
+	const patient = validatePayload(req.body, 'patient', ['active', 'fullname', 'given', 'prefix', 'gender'])
+	const contact = validatePayload(req.body, 'contact', ['prefix', 'fullname', 'given', 'phone'])
+
+	// validate everything
+	if (Array.isArray(patient)) {
+		return next({code: 404, issue: `patient missing following data: ${patient.join(';')}`})
+	}
+	if (Array.isArray(contact)) {
+		return next({code: 404, issue: `contact missing following data: ${contact.join(';')}`})
+	}
+	// we're valid: add to database
+
+
+	return res.json({
+		resourceType: 'OperationOutcome',
+		issue: [{
+			severity: 'information',
+		}],
+		expression: [req.originalUrl],
+	})
 })
 
 // update

@@ -40,7 +40,7 @@ router.use('/Patient', patientRouter)
 
 
 // error handler - leave at base of fhir router
-router.use((err, req, res, next) => {
+router.use((err, req, res) => {
 	const {code, issue} = err
 	createErr(req, res, code, issue)
 })
