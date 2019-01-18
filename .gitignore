@@ -7,6 +7,7 @@ yarn-error.log*
 
 client.bundle.js
 client.bundle.js.map
+patient/*.png
 
 # Runtime data
 pids
@@ -62,3 +63,4 @@ typings/
 
 # next.js build output
 .next
+

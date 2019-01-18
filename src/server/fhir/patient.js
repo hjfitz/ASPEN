@@ -1,6 +1,5 @@
 // https://www.hl7.org/fhir/patient.html
 const express = require('express')
-const multer = require('multer')
 const pg = require('pg')
 const path = require('path')
 const fileUpload = require('express-fileupload')
@@ -11,7 +10,6 @@ const fs = require('fs')
 const logger = require('../../../logger')
 const {createOutcome} = require('./util')
 
-const upload = multer({storage: 'patient/'})
 const patientRouter = express.Router()
 let isConnected = false
 
@@ -104,7 +102,7 @@ patientRouter.get('/:id', async (req, res, next) => {
 		values: [patient.contact_id],
 	})
 
-	res.json({
+	return res.json({
 		identifier: [{
 			use: 'usual',
 			system: 'urn:ietf:rfc:3986',
@@ -228,9 +226,13 @@ patientRouter.post('/', async (req, res) => {
 
 // })
 
-// // delete
-// patientRouter.delete('/:id', (req, res) => {
-
-// })
+// delete
+patientRouter.delete('/:id', async (req, res) => {
+	await client.query({
+		text: 'DELETE FROM patient where patient_id = $1',
+		values: [req.params.id],
+	})
+	createOutcome(req, res, 200, `deleted ${req.params.id}`)
+})
 
 module.exports = patientRouter
