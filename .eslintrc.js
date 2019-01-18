@@ -11,6 +11,7 @@ module.exports = {
 
 		"no-tabs": 0,
 		"no-param-reassign": 0,
+		"no-return-assign": 0,
 
 		"object-curly-newline": 0,
 		"object-curly-spacing": ["error", "never"],

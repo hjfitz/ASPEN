@@ -1,7 +1,7 @@
 import {h, render, Component} from 'preact'
 import {Router, route} from 'preact-router'
 
-import {Ward, Patient, WardList} from './spa/Pages'
+import {Ward, Patient, WardList, SubmitPatient} from './spa/Pages'
 import {getJwtPayload} from './util'
 
 import './router.scss'
@@ -37,9 +37,10 @@ class App extends Component {
 	render() {
 		return (
 			<Router onChange={checkAuth}>
-				<WardList path="/" />
+				<SubmitPatient path="/" />
+				{/* <WardList path="/" />
 				<Ward path="/ward/:wardName" />
-				<Patient path="/patient/:patientName" />
+				<Patient path="/patient/:patientName" /> */}
 			</Router>
 		)
 	}
