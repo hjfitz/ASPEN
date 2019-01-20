@@ -8,7 +8,8 @@
   "license": "GPL-3.0",
   "private": false,
   "scripts": {
-    "start": "node bin/www"
+    "start": "node bin/www",
+    "dev": "nodemon bin/www"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
@@ -44,6 +45,7 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.2",
     "eslint-plugin-react": "^7.11.1",
+    "nodemon": "^1.18.9",
     "style-loader": "^0.23.1",
     "webpack-cli": "^3.1.2"
   }

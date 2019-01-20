@@ -32,48 +32,6 @@ connect()
 
 log('info', `attempting to connect to postgres on ${process.env.DATABASE_URL}`, 'main')
 
-/**
-patient schema:
-{
-	identifier: [{
-		use: "usual",
-		system: "urn:ietf:rfc:3986",
-		value: "database id",
-		assigner: "SoN"
-	}]
-	resourceType: "Patient",
-	active: true/false,
-	name: [{
-		use: "usual",
-		text: "Harry James Fitzgerald",
-		family: "Fitzgerald",
-		given: "Harry",
-		prefix: ["Mr"]
-	}],
-	gender: male/female/other,
-	birthDate: "YYYY-MM-DD",
-	photo: [{
-		contentType: (mimetype of image),
-		url: (url of image),
-		hash: (b64 hash of image),
-	}],
-	contact: [{
-		name: {
-			use: "usual",
-			text: "George Keith Brian Fitzgerald",
-			family: "Fitzgerald",
-			given: "George",
-			prefix: ["Dr"]
-			telecom: [{
-				system: phone, // hardcode
-				value: 07555000212, // custom
-				use: home/work/other //hardcode
-			}]
-		}
-	}]
-}
-*/
-
 // ensure that database connection is active
 patientRouter.use(async (req, res, next) => {
 	await connect()
@@ -222,9 +180,18 @@ patientRouter.post('/', async (req, res) => {
 })
 
 // // update
-// patientRouter.put('/:id', (req, res) => {
-
-// })
+patientRouter.put('/:id', (req, res) => {
+	const patientKeys = ['active', 'fullname', 'given', 'family', 'prefix', 'gender', 'photo_url']
+	const patient = Object.keys(req.body).reduce((acc, key) => {
+		const newKey = key.replace('patient-', '')
+		if (key.indexOf('patient-') === 0 && patientKeys.includes(newKey)) {
+			acc[newKey] = req.body[key]
+		}
+		return acc
+	}, {})
+	console.log(patient)
+	res.send(200)
+})
 
 // delete
 patientRouter.delete('/:id', async (req, res) => {
