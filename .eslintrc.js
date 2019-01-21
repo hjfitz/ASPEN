@@ -8,6 +8,7 @@ module.exports = {
 	"rules": {
 		"indent": ["error", "tab"],
 		"semi": ["error", "never"],
+		"camelcase": 0,
 
 		"no-tabs": 0,
 		"no-param-reassign": 0,

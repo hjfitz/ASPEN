@@ -1,7 +1,6 @@
 // https://www.hl7.org/fhir/patient.html
 const express = require('express')
 const path = require('path')
-const fileUpload = require('express-fileupload')
 const shortid = require('shortid')
 const mimeTypes = require('mime-types')
 const sha1 = require('crypto-js/sha1')
@@ -15,11 +14,8 @@ const patientRouter = express.Router()
 
 const log = (level, message, func) => logger.log(level, message, {file: 'logger.js', func})
 
-patientRouter.use(fileUpload({limits: {fileSize: 50 * 1024 * 1024}}))
-
 
 // ensure that database connection is active
-patientRouter.use(async (req, res, next) => connect().then(next))
 
 // debug
 patientRouter.get('/all', async (req, res) => {
@@ -42,7 +38,6 @@ patientRouter.get('/:id', async (req, res, next) => {
 		text: 'SELECT * FROM contact WHERE contact_id = $1',
 		values: [patient.contact_id],
 	})
-	console.log(req.headers)
 
 	return res.json({
 		identifier: [{
