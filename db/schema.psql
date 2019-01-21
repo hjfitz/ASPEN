@@ -1,23 +1,43 @@
 CREATE TYPE patient_gender AS ENUM ('male', 'female', 'other');
 
 CREATE TABLE contact (
-	contact_id serial PRIMARY KEY,
-	prefix text NOT NULL,
-	fullname text NOT NULL,
-	given text NOT NULL,
-	family text,
-	phone text NOT NULL
+	contact_id 	serial 	PRIMARY KEY,
+	prefix 		text 	NOT NULL,
+	fullname 	text 	NOT NULL,
+	given 		text 	NOT NULL,
+	phone 		text 	NOT NULL,
+	family 		text
 );
 
 CREATE TABLE patient (
-	patient_id serial PRIMARY KEY,
-	active boolean NOT NULL,
-	fullname text NOT NULL,
-	given text NOT NULL,
-	family text,
-	prefix text NOT NULL,
-	gender patient_gender NOT NULL,
-	photo_url text,
-	last_updated TIMESTAMP,
-	contact_id serial REFERENCES contact(contact_id)
+	patient_id		serial 			PRIMARY KEY,
+	active 			boolean 		NOT NULL,
+	fullname 		text 			NOT NULL,
+	given 			text 			NOT NULL,
+	prefix 			text 			NOT NULL,
+	gender 			patient_gender	NOT NULL,
+	last_updated 	timestamptz		NOT NULL,
+	photo_url 		text,
+	family 			text,
+	contact_id 		serial REFERENCES contact(contact_id)
+);
+
+CREATE TABLE observation (
+	observation_id 	serial 		PRIMARY KEY,
+	last_updated 	timestamptz NOT NULL,
+	name 			text 	 	NOT NULL,
+	value 			text 	 	NOT NULL
+);
+
+CREATE TABLE diagnostic_report (
+	report_id 				serial 		PRIMARY KEY,
+	last_updated 			timestamptz NOT NULL,
+	patient_id 				serial 		REFERENCES patient(patient_id),
+	respiratory_rate 		serial 		REFERENCES observation(observation_id),
+	oxygen_saturation 		serial 		REFERENCES observation(observation_id),
+	supplemental_oxygen 	serial 		REFERENCES observation(observation_id),
+	body_temperature 		serial	 	REFERENCES observation(observation_id),
+	systolic_bp 			serial 		REFERENCES observation(observation_id),
+	heart_rate 				serial 		REFERENCES observation(observation_id),
+	level_of_consciousness 	serial 		REFERENCES observation(observation_id)
 );

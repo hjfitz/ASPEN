@@ -1,42 +1,25 @@
 // https://www.hl7.org/fhir/patient.html
 const express = require('express')
-const pg = require('pg')
 const path = require('path')
 const fileUpload = require('express-fileupload')
 const shortid = require('shortid')
 const mimeTypes = require('mime-types')
 const sha1 = require('crypto-js/sha1')
 const fs = require('fs')
-const logger = require('../../../logger')
+
 const {createOutcome} = require('./util')
+const {client, connect} = require('../db')
+const logger = require('../../../logger')
 
 const patientRouter = express.Router()
-let isConnected = false
 
-const client = new pg.Client(process.env.DATABASE_URL)
 const log = (level, message, func) => logger.log(level, message, {file: 'logger.js', func})
 
-async function connect() {
-	if (isConnected) return
-	await client.connect()
-	log('debug', 'successfully connected to database', 'connect()')
-	isConnected = true
-}
+patientRouter.use(fileUpload({limits: {fileSize: 50 * 1024 * 1024}}))
 
-patientRouter.use(fileUpload({
-	limits: {fileSize: 50 * 1024 * 1024},
-}))
-
-connect()
-
-
-log('info', `attempting to connect to postgres on ${process.env.DATABASE_URL}`, 'main')
 
 // ensure that database connection is active
-patientRouter.use(async (req, res, next) => {
-	await connect()
-	next()
-})
+patientRouter.use(async (req, res, next) => connect().then(next))
 
 // debug
 patientRouter.get('/all', async (req, res) => {
@@ -151,8 +134,8 @@ patientRouter.post('/', async (req, res) => {
 	let row
 	try {
 		logger.debug(`Attempting to run contact query: ${JSON.stringify(cQuery)}`, {file: 'fhir/patient.js', func: 'POST /'})
-		const {rows} = await client.query(cQuery)
-		row = rows[0]
+		const {rows} = await client.query(cQuery);
+		[row] = rows
 	} catch (err) {
 		logger.warn(`Error with contact query: ${err}`, {file: 'fhir/patient.js', func: 'POST /'})
 		return createOutcome(req, res, 400, err, contact)
@@ -180,8 +163,8 @@ patientRouter.post('/', async (req, res) => {
 	let pResult
 	try {
 		logger.debug(`Attempting to run query patient: ${JSON.stringify(pQuery)}`, {file: 'fhir/patient.js', func: 'POST /'})
-		const {rows} = await client.query(pQuery)
-		pResult = rows[0]
+		const {rows} = await client.query(pQuery);
+		[pResult] = rows
 	} catch (err) {
 		logger.warn(`Error with patient query: ${err}`, {file: 'fhir/patient.js', func: 'POST /'})
 		return createOutcome(req, res, 400, err, JSON.stringify(pQuery))
