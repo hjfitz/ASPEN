@@ -59,6 +59,7 @@ patientRouter.get('/:id', async (req, res, next) => {
 		text: 'SELECT * FROM contact WHERE contact_id = $1',
 		values: [patient.contact_id],
 	})
+	console.log(req.headers)
 
 	return res.json({
 		identifier: [{

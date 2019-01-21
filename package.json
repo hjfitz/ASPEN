@@ -11,6 +11,11 @@
     "start": "node bin/www",
     "dev": "nodemon bin/www"
   },
+  "engines": {
+    "node": ">=11.0.0",
+    "yarn": ">=1.12.3"
+  },
+  "engineStrict": true,
   "dependencies": {
     "body-parser": "^1.18.3",
     "compression": "^1.7.3",
@@ -31,6 +36,7 @@
     "shortid": "^2.2.14",
     "source-map": "^0.7.3",
     "split": "^1.0.1",
+    "swagger-ui-express": "^4.0.2",
     "webpack": "^4.27.1",
     "winston": "^3.1.0"
   },
