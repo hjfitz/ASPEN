@@ -142,11 +142,21 @@ patientRouter.post('/', async (req, res) => {
 	const cQueryJoin = ') VALUES ('
 	const cQueryEnd = `${Object.keys(contact).map((_, idx) => `$${idx + 1}`).join(', ')})`
 	const cQuery = {
+		name: 'create-contact',
 		text: `${cQueryBegin + cQueryCols + cQueryJoin + cQueryEnd} RETURNING contact_id`,
 		values: Object.values(contact),
 	}
 
-	const {rows: [row]} = await client.query(cQuery)
+	let row
+	try {
+		logger.debug(`Attempting to run contact query: ${JSON.stringify(cQuery)}`, {file: 'fhir/patient.js', func: 'POST /'})
+		const {rows} = await client.query(cQuery)
+		row = rows[0]
+	} catch (err) {
+		logger.warn(`Error with contact query: ${err}`, {file: 'fhir/patient.js', func: 'POST /'})
+		return createOutcome(req, res, 400, err, contact)
+	}
+
 
 	Object.assign(patient, {active: true, contact_id: row.contact_id, last_updated: new Date()})
 
@@ -158,16 +168,23 @@ patientRouter.post('/', async (req, res) => {
 	const pQueryBegin = 'INSERT INTO patient ('
 	const pQueryCols = Object.keys(patient).join(', ')
 	const pQueryJoin = ') VALUES ('
-	const pQueryEnd = `${Object.keys(patient).map((_, idx) => `$${idx + 1}`).join(', ')})`
+	const pQueryEnd = `${Object.keys(patient).map((_, idx) => `$${idx + 1}`).join(', ')}) RETURNING patient_id`
 
 	const pQuery = {
+		name: 'create patient',
 		text: pQueryBegin + pQueryCols + pQueryJoin + pQueryEnd,
 		values: Object.values(patient),
 	}
 
-	console.log(pQuery)
-
-	const {rows: [pResult]} = await client.query(pQuery)
+	let pResult
+	try {
+		logger.debug(`Attempting to run query patient: ${JSON.stringify(pQuery)}`, {file: 'fhir/patient.js', func: 'POST /'})
+		const {rows} = await client.query(pQuery)
+		pResult = rows[0]
+	} catch (err) {
+		logger.warn(`Error with patient query: ${err}`, {file: 'fhir/patient.js', func: 'POST /'})
+		return createOutcome(req, res, 400, err, JSON.stringify(pQuery))
+	}
 
 	return res.json({
 		resourceType: 'OperationOutcome',
@@ -180,8 +197,10 @@ patientRouter.post('/', async (req, res) => {
 })
 
 // // update
-patientRouter.put('/:id', (req, res) => {
+patientRouter.put('/:id', async (req, res) => {
+	logger.info(`Updating patient ${req.params.id}`, {file: 'fhir/patient.js', func: 'PUT /:id'})
 	const patientKeys = ['active', 'fullname', 'given', 'family', 'prefix', 'gender', 'photo_url']
+	// create an object to enable us to create an update query
 	const patient = Object.keys(req.body).reduce((acc, key) => {
 		const newKey = key.replace('patient-', '')
 		if (key.indexOf('patient-') === 0 && patientKeys.includes(newKey)) {
@@ -189,13 +208,25 @@ patientRouter.put('/:id', (req, res) => {
 		}
 		return acc
 	}, {})
-	console.log(patient)
-	res.send(200)
+
+	// create a query with only the expected fields
+	const query = {
+		name: 'update-patient',
+		text: `UPDATE patient SET (${
+			Object.keys(patient).join(', ') // rows
+		}) = (${
+			Object.keys(patient).map((_, idx) => `$${idx + 1}`).join(', ') // make it a prepared statement
+		}) WHERE patient_id = $${Object.keys(patient).length + 1}`,
+		values: [...Object.values(patient), req.params.id],
+	}
+	await client.query(query)
+	createOutcome(req, res, 200, 'Updated patient', {}, 'success')
 })
 
 // delete
 patientRouter.delete('/:id', async (req, res) => {
 	await client.query({
+		name: 'delete-patient',
 		text: 'DELETE FROM patient where patient_id = $1',
 		values: [req.params.id],
 	})
