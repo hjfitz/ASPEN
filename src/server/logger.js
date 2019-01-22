@@ -29,11 +29,6 @@ const logger = createLogger({
 	],
 })
 
-// logger.stream = {
-// 	write: message => logger.log('info', message, {file: 'server.js', func: 'request'}),
-// }
-
-
 logger.log('info', `Creating logfile with name ${getFileTimestamp()}`, {
 	file: 'logger.js',
 	func: 'create',

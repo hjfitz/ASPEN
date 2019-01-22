@@ -23,7 +23,7 @@ if (fs.existsSync(envLoc)) {
 }
 
 
-const log = require('../logger')
+const log = require('../src/server/logger')
 
 toLog.map(stream => log.log(...stream))
 const express = require('../server')

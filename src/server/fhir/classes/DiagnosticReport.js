@@ -1,4 +1,4 @@
-const log = require('../../../../logger')
+const log = require('../../logger')
 const Observation = require('./Observation')
 const {client} = require('../../db')
 

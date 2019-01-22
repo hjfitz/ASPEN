@@ -7,8 +7,8 @@ const sha1 = require('crypto-js/sha1')
 const fs = require('fs')
 
 const {createOutcome} = require('./util')
-const {client, connect} = require('../db')
-const logger = require('../../../logger')
+const {client} = require('../db')
+const logger = require('../logger')
 
 const patientRouter = express.Router()
 
