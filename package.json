@@ -9,7 +9,11 @@
   "private": false,
   "scripts": {
     "start": "node bin/www",
-    "dev": "nodemon bin/www"
+    "dev": "nodemon bin/www",
+    "build:dev": "webpack --mode=development",
+    "build:watch": "webpack --mode=development --watch",
+    "build:prod": "webpack --mode=production",
+    "lint": "eslint src/**/*.js{x,}"
   },
   "engines": {
     "node": ">=11.0.0",
