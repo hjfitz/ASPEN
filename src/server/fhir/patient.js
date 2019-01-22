@@ -14,9 +14,6 @@ const patientRouter = express.Router()
 
 const log = (level, message, func) => logger.log(level, message, {file: 'logger.js', func})
 
-
-// ensure that database connection is active
-
 // debug
 patientRouter.get('/all', async (req, res) => {
 	log('info', 'attempting to retrieve all patient data', 'GET /all')
@@ -88,7 +85,6 @@ function validatePayload(body, toValidate, keys, optional = []) {
 	})
 	return missingKeys.length ? missingKeys : payload
 }
-
 
 // create
 patientRouter.post('/', async (req, res) => {

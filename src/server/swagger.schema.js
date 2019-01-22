@@ -9,7 +9,7 @@ module.exports = {
 			url: 'https://opensource.org/licenses/GPL-3.0',
 		},
 	},
-	host: 'fyp.hjf.io',
+	host: 'localhost:5000',
 	basePath: '/fhir',
 	tags: [
 		{
@@ -19,6 +19,10 @@ module.exports = {
 		{
 			name: 'Observation',
 			description: 'Patient observation',
+		},
+		{
+			name: 'DiagnosticReport',
+			description: 'Vital sign observations',
 		},
 	],
 	accepts: ['application/fhir+json'],
@@ -185,8 +189,146 @@ module.exports = {
 				},
 			},
 		},
+		'/Diagnostics/all': {
+
+		},
+		'/Diagnostics/{diagnostic_id}': {
+			parameters: [{
+				name: 'diagnostic_id',
+				in: 'path',
+				required: true,
+				description: 'ID diagnostics to view ',
+				type: 'string',
+			}],
+			get: {
+				tags: ['DiagnosticReport'],
+				summary: 'View a diagnostic report by ID',
+				responses: {
+					200: {
+						description: 'A persons vital signs',
+						schema: '#/definitions/DiagnosticReport',
+					},
+				},
+			},
+			delete: {
+				tags: ['DiagnosticReport'],
+				summary: 'View a diagnostic report by ID',
+				responses: {
+					200: {
+						description: 'A persons vital signs has been deleted',
+						schema: '#/definitions/OperationOutcome',
+					},
+				},
+			},
+			post: {
+				tags: ['DiagnosticReport'],
+				summary: 'View a diagnostic report by ID',
+				responses: {
+					200: {
+						description: 'A persons vital signs has been updated',
+						schema: '#/definitions/OperationOutcome',
+					},
+				},
+			},
+		},
+		'/Diagnostics/{diagnostic_id}/linked': {
+			parameters: [{
+				name: 'diagnostic_id',
+				in: 'path',
+				required: true,
+				description: 'ID diagnostics to view ',
+				type: 'string',
+			}],
+			get: {
+				tags: ['DiagnosticReport'],
+				summary: 'View a diagnostic report by ID',
+				responses: {
+					200: {
+						description: 'A persons vital signs',
+						schema: '#/definitions/DiagnosticReportLinked',
+					},
+				},
+			},
+		},
+		'/Observation/{observation_id}': {
+			parameters: [{
+				name: 'observation_id',
+				in: 'path',
+				required: true,
+				description: 'ID of a given observation',
+				type: 'integer',
+			}],
+			get: {
+				tags: ['Observation'],
+				summary: 'Get an observation by ID',
+				responses: {
+					200: {
+						description: 'Observation has been found',
+						schema: {$ref: '#/definitions/Observation'},
+					},
+				},
+			},
+		},
 	},
 	definitions: {
+		DiagnosticReportLinked: {
+			properties: {
+				resourceType: {type: 'string'},
+				id: {type: 'integer'},
+				meta: {$ref: '#/definitions/Meta'},
+				subject: {type: 'string'},
+				status: {type: 'string'},
+				result: {
+					type: 'array',
+					items: {
+						$ref: '#/definitions/Observation',
+					},
+				},
+			},
+		},
+		DiagnosticReport: {
+			properties: {
+				resourceType: {type: 'string'},
+				id: {type: 'integer'},
+				meta: {$ref: '#/definitions/Meta'},
+				subject: {type: 'string'},
+				status: {type: 'string'},
+				result: {
+					type: 'array',
+					items: 'string',
+				},
+			},
+		},
+		Meta: {
+			properties: {
+				lastUpdated: {type: 'string'},
+			},
+		},
+		ObservationList: {
+			type: 'array',
+			$ref: '#/definitions/Observation',
+		},
+		Observation: {
+			properties: {
+				resourceType: {type: 'string'},
+				id: {type: 'integer'},
+				status: {type: 'string'},
+				subject: {$ref: '#/definitions/Subject'},
+				valueQuantity: {$ref: '#/definitions/ValueQuantity'},
+			},
+		},
+		Subject: {
+			properties: {
+				reference: {type: 'string'},
+			},
+		},
+		ValueQuantity: {
+			properties: {
+				value: {type: 'string'},
+				system: {type: 'string'},
+				unitCode: {type: 'string'},
+			},
+		},
 		PatientResponse: {
 			properties: {
 				identifier: {
@@ -271,7 +413,12 @@ module.exports = {
 					type: 'array',
 					$ref: '#/definitions/OperationIssue',
 				},
-				expression: {type: 'array'},
+				expression: {
+					type: 'array',
+					items: {
+						type: 'string',
+					},
+				},
 			},
 		},
 		OperationIssue: {

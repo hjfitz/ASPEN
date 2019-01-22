@@ -11,6 +11,7 @@ module.exports = class DiagnosticReport {
 	}
 
 	fhir() {
+		log.debug('Creating fhir data', {file: 'fhir/DiagnosticReport.js', func: 'DiagnosticReport#fhir()'})
 		const links = [
 			'respiratory_rate',
 			'oxygen_saturation',
@@ -34,6 +35,7 @@ module.exports = class DiagnosticReport {
 	}
 
 	async fhirLinked() {
+		log.debug('Attempting to grab linked data from database', {file: 'fhir/DiagnosticReport.js', func: 'DiagnosticReport#fhirLinked()'})
 		const observations = await Promise.all(['respiratory_rate',
 			'oxygen_saturation',
 			'supplemental_oxygen',
@@ -45,6 +47,7 @@ module.exports = class DiagnosticReport {
 			text: 'SELECT * FROM observation WHERE observation_id = $1',
 			values: [this[attr]]})))
 
+		log.debug('Attempting to link back to report', {file: 'fhir/DiagnosticReport.js', func: 'DiagnosticReport#fhirLinked()'})
 		const values = await Promise.all(observations
 			.map(val => val.rows[0])
 			.filter(Boolean)

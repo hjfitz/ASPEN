@@ -5,6 +5,7 @@ const express = require('express')
 
 const {client} = require('../db')
 const {createOutcome} = require('./util')
+const log = require('../logger')
 const DiagnosticReport = require('./classes/DiagnosticReport')
 const Observation = require('./classes/Observation')
 
@@ -34,6 +35,17 @@ diagnosticRouter.get('/:id/linked', async (req, res) => {
 	const obs = new DiagnosticReport(row)
 	const resp = await obs.fhirLinked()
 	res.json(resp)
+})
+
+diagnosticRouter.delete('/:id', async (req, res) => {
+	const {id} = req.params
+	log.debug(`attempting to delete ${id} from diagnostic_report`, {file: 'fhir/diagnostic-report.js', func: 'DELETE /:id'})
+	await client.query({
+		name: 'delete-diagnostic-report',
+		text: 'DELETE FROM diagnostic_report WHERE report_id = $1',
+		values: [id],
+	})
+	createOutcome(req, res, 200, 'Successfully deleted', {}, 'success')
 })
 
 diagnosticRouter.post('/', async (req, res) => {

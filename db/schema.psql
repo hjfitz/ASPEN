@@ -33,11 +33,11 @@ CREATE TABLE diagnostic_report (
 	report_id 				serial 		PRIMARY KEY,
 	last_updated 			timestamptz NOT NULL,
 	patient_id 				serial 		REFERENCES patient(patient_id),
-	respiratory_rate 		serial 		REFERENCES observation(observation_id),
-	oxygen_saturation 		serial 		REFERENCES observation(observation_id),
-	supplemental_oxygen 	serial 		REFERENCES observation(observation_id),
-	body_temperature 		serial	 	REFERENCES observation(observation_id),
-	systolic_bp 			serial 		REFERENCES observation(observation_id),
-	heart_rate 				serial 		REFERENCES observation(observation_id),
-	level_of_consciousness 	serial 		REFERENCES observation(observation_id)
+	respiratory_rate 		serial 		REFERENCES observation(observation_id)	ON DELETE CASCADE,
+	oxygen_saturation 		serial 		REFERENCES observation(observation_id)	ON DELETE CASCADE,
+	supplemental_oxygen 	serial 		REFERENCES observation(observation_id)	ON DELETE CASCADE,
+	body_temperature 		serial	 	REFERENCES observation(observation_id)	ON DELETE CASCADE,
+	systolic_bp 			serial 		REFERENCES observation(observation_id)	ON DELETE CASCADE,
+	heart_rate 				serial 		REFERENCES observation(observation_id)	ON DELETE CASCADE,
+	level_of_consciousness 	serial 		REFERENCES observation(observation_id)	ON DELETE CASCADE
 );

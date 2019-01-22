@@ -1,5 +1,5 @@
 const log = require('../../logger')
-const client = require('../../db')
+const {client} = require('../../db')
 
 module.exports = class Observation {
 	constructor(name, value, id, updated = new Date()) {
@@ -51,8 +51,8 @@ module.exports = class Observation {
 		const {name, id, value, unitCode, updated} = this
 		log.info(`Creating fhir data for ${id}:${name}:${value}`, {file: 'fhir/classes/Observation.js', func: 'Observation#fhir()'})
 		const valueQuantity = Object.assign({value, system: 'http://unitsofmeasure.org'}, unitCode)
+		log.debug(`querying database for ${name} = ${id}`, {file: 'fhir/classes/Observation.js', func: 'Observation#fhir()'})
 		// DIRTY FIX ME PLEAAAASE
-		log.debug(`querying database for ${name} = ${id}`)
 		const {rows: [row]} = await client.query(`SELECT * FROM diagnostic_report WHERE ${name} = ${id}`)
 		return {
 			resourceType: 'Observation',
