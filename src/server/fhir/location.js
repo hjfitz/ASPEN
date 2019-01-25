@@ -1,11 +1,10 @@
 // primarily used for ward management
-const express = require('express')
+const locRouter = require('express').Router()
 const Location = require('./classes/Location')
+const OperationOutcome = require('./classes/OperationOutcome')
 const logger = require('../logger')
 const {createOutcome} = require('./util')
 const {client} = require('../db')
-
-const locRouter = express.Router()
 
 locRouter.post('/', async (req, res) => {
 	// metadata for easy logging
@@ -24,10 +23,12 @@ locRouter.post('/', async (req, res) => {
 	try {
 		const {rows: [row]} = await client.query(query)
 		logger.debug('data added to database successfully', meta)
-		return createOutcome(req, res, 200, 'success!', {id: row.location_id})
+		const outcome = new OperationOutcome('success', 200, req.originalUrl, 'Successfully created location', {id: row.location_id})
+		return outcome.makeResponse(res)
 	} catch (err) {
 		logger.error(`Error when inserting new location: ${err}`, meta)
-		return createOutcome(req, res, 500, err, {}, 'error')
+		const outcome = new OperationOutcome('error', 500, req.originalUrl, 'Error creating location', {err})
+		return outcome.makeResponse(res)
 	}
 })
 
@@ -42,6 +43,25 @@ locRouter.get('/:id', async (req, res) => {
 	// create a location with the database data, format it correctly
 	const location = new Location(row)
 	res.json(location.getFhir())
+})
+
+locRouter.delete('/:id', async (req, res) => {
+	const meta = {file: 'fhir/location.js', func: 'DELETE /:id'}
+	try {
+		logger.debug(`Attempting to delete location with ID ${req.params.id}`, meta)
+		await client.query({
+			name: 'delete-location',
+			text: 'DELETE FROM location WHERE location_id = $1;',
+			values: [req.params.id],
+		})
+		const outcome = new OperationOutcome('information', 200, req.originalUrl, 'successfully deleted')
+		outcome.makeResponse(res)
+	} catch (err) {
+		logger.error(`Unable to delete by ID ${req.params.id}`, meta)
+		logger.error(`Error: ${err}`, meta)
+		const outcome = new OperationOutcome('error', 500, req.originalUrl, 'Error deleting location!', {err})
+		outcome.makeResponse(res)
+	}
 })
 
 module.exports = locRouter

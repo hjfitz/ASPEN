@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Global - Documentation</title>
+    <title>server/fhir/classes/OperationOutcome.js - Documentation</title>
 
     <script src="scripts/hljs/highlight.min.js"></script>
     <!--[if lt IE 9]>
@@ -26,205 +26,65 @@
 
 <div id="main">
     
-    <h1 class="page-title">Global</h1>
+    <h1 class="page-title">server/fhir/classes/OperationOutcome.js</h1>
     
 
     
 
 
 
-
-<section>
-
-<header>
     
-        <h2>
-        
-        </h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-        
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-    
-    
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    <h4 class="name" id="getJwtPayload"><span class="type-signature"></span>getJwtPayload<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_util.js.html">client/util.js</a>, <a href="client_util.js.html#line9">line 9</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    get and parse payload from localstorage
-useful for checking exp and user information
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    JWT
-</div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">object</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-        
-    
-
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>class OperationOutcome {
+	/**
+	 * Object form of https://www.hl7.org/fhir/operationoutcome.html
+	 * @param {string} sev Severity of the issue (fatal/error/warning/information)
+	 * @param {number} code HTTP status code to set
+	 * @param {string} path fhir path
+	 * @param {string} infoText Information text to display in an error
+	 * @param {string} diagnostics Diagnostics information
+	 */
+	constructor(sev, code, path, infoText, diagnostics = {}) {
+		this.sev = sev
+		this.code = code
+		this.infoText = infoText
+		this.diagnostics = diagnostics
+		this.fhirPath = path
+	}
+
+	/**
+	 * Create a fhir OperationOutcome object literal
+	 * @returns {object} fhir object literal
+	 */
+	get outcome() {
+		return {
+			resourceType: 'OperationOutcome',
+			issue: [{
+				severity: this.sev,
+				code: this.code,
+				details: {
+					text: this.infoText,
+				},
+				diagnostics: this.diagnostics,
+				expression: this.fhirPath,
+			}],
+		}
+	}
+
+	/**
+	 * Make a HTTP response
+	 * @returns {void}
+	 */
+	makeResponse(res) {
+		res.setStatus(this.code).json(this.outcome)
+	}
+}
+
+module.exports = OperationOutcome
+</code></pre>
+        </article>
+    </section>
 
 
 

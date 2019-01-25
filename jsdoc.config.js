@@ -14,8 +14,4 @@ module.exports = {
 		template: 'node_modules/contentful-sdk-jsdoc/jsdoc-template',
 		destination: './docs',
 	},
-	templates: {
-		name: '780461 PJE40',
-		footerText: '780461 - 2019',
-	},
 }
