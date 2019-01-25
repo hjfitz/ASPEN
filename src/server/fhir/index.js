@@ -6,7 +6,11 @@ const patientRouter = require('./patient')
 const {connect} = require('../db')
 const diagnosticRouter = require('./diagnostic-report')
 const observationRouter = require('./observation')
+const locationRouter = require('./location')
 const {createOutcome} = require('./util')
+
+// ensure that forms can be read and files can be uploaded (patient ID)
+router.use(fileUpload({limits: {fileSize: 50 * 1024 * 1024}}))
 
 // https://www.hl7.org/fhir/http.html#mime-type
 router.use(async (req, res, next) => {
@@ -25,15 +29,12 @@ router.use(async (req, res, next) => {
 	return next()
 })
 
-router.use(fileUpload({limits: {fileSize: 50 * 1024 * 1024}}))
-
-
-router.use('/Diagnostics', diagnosticRouter)
 router.use('/Observation', observationRouter)
+router.use('/Diagnostics', diagnosticRouter)
+router.use('/Location', locationRouter)
 router.use('/Patient', patientRouter)
 
 // error handler - leave at base of fhir router
-// todo: fix me
 router.use((req, res, next, err) => {
 	const {code, issue} = err
 	createOutcome(req, res, code, issue)

@@ -23,19 +23,13 @@ diagnosticRouter.get('/:id', async (req, res) => {
 		values: [id],
 	})
 	const obs = new DiagnosticReport(row)
-	res.json(obs.fhir())
-})
-
-diagnosticRouter.get('/:id/linked', async (req, res) => {
-	const {id} = req.params
-	const {rows: [row]} = await client.query({
-		text: 'SELECT * FROM diagnostic_report WHERE report_id = $1',
-		values: [id],
-	})
-	const obs = new DiagnosticReport(row)
-	const resp = await obs.fhirLinked()
+	let resp = obs.fhir()
+	if (req.query.result) {
+		resp = await obs.fhirLinked()
+	}
 	res.json(resp)
 })
+
 
 diagnosticRouter.delete('/:id', async (req, res) => {
 	const {id} = req.params

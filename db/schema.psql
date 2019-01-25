@@ -41,3 +41,12 @@ CREATE TABLE diagnostic_report (
 	heart_rate 				serial 		REFERENCES observation(observation_id)	ON DELETE CASCADE,
 	level_of_consciousness 	serial 		REFERENCES observation(observation_id)	ON DELETE CASCADE
 );
+
+CREATE TABLE location (
+	location_id 	serial PRIMARY KEY,
+	last_updated 	timestamptz NOT NULL,
+	status		 	text 		NOT NULL,
+	name		 	text 		NOT NULL,
+	description 	text 		NOT NULL,
+	type		 	text 		NOT NULL
+);

@@ -50,7 +50,6 @@ module.exports = class DiagnosticReport {
 		log.debug('Attempting to link back to report', {file: 'fhir/DiagnosticReport.js', func: 'DiagnosticReport#fhirLinked()'})
 		const values = await Promise.all(observations
 			.map(val => val.rows[0])
-			.filter(Boolean)
 			.map(data => new Observation(data.name, data.value, data.observation_id, data.last_updated))
 			.map(obs => obs.fhir()))
 		return {
