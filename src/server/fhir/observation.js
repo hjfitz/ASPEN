@@ -1,8 +1,7 @@
-const express = require('express')
+const observationRouter = require('express').Router()
 const {client} = require('../db')
 const Observation = require('./classes/Observation')
 
-const observationRouter = express.Router()
 
 observationRouter.get('/all', async (req, res) => {
 	const {rows} = await client.query('SELECT * FROM observation')

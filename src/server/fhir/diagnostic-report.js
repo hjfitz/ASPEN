@@ -1,13 +1,11 @@
 // All patient observations go here
-const express = require('express')
+const diagnosticRouter = require('express').Router()
 
 const {client} = require('../db')
 const {createOutcome} = require('./util')
 const log = require('../logger')
 const DiagnosticReport = require('./classes/DiagnosticReport')
 const Observation = require('./classes/Observation')
-
-const diagnosticRouter = express.Router()
 
 diagnosticRouter.get('/all', async (req, res) => {
 	const {rows} = await client.query('SELECT * FROM diagnostic_report')

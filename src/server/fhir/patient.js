@@ -1,5 +1,5 @@
 // https://www.hl7.org/fhir/patient.html
-const express = require('express')
+const patientRouter = require('express').Router()
 const path = require('path')
 const shortid = require('shortid')
 const mimeTypes = require('mime-types')
@@ -9,8 +9,6 @@ const fs = require('fs')
 const {createOutcome} = require('./util')
 const {client} = require('../db')
 const logger = require('../logger')
-
-const patientRouter = express.Router()
 
 const log = (level, message, func) => logger.log(level, message, {file: 'logger.js', func})
 

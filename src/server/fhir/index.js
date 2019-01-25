@@ -1,7 +1,6 @@
-const express = require('express')
+const router = require('express').Router()
 const fileUpload = require('express-fileupload')
 
-const router = express.Router()
 const patientRouter = require('./patient')
 const {connect} = require('../db')
 const diagnosticRouter = require('./diagnostic-report')
