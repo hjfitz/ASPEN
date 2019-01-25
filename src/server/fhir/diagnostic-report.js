@@ -1,6 +1,4 @@
-/**
- * All patient observations go here
- */
+// All patient observations go here
 const express = require('express')
 
 const {client} = require('../db')

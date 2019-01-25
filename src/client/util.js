@@ -8,9 +8,7 @@ import Utf8 from 'crypto-js/enc-utf8'
  */
 export function getJwtPayload() {
 	const token = localStorage.getItem('token')
-	if (!token) {
-		return false
-	}
+	if (!token) return false
 	const payloadB64 = token.split('.')
 	const payload = Utf8.stringify(Base64.parse(payloadB64))
 	return JSON.parse(payload)

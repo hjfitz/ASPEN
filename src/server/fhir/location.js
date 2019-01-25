@@ -32,11 +32,14 @@ locRouter.post('/', async (req, res) => {
 })
 
 locRouter.get('/:id', async (req, res) => {
+	// prepare and make a query to get data
 	const {rows: [row]} = await client.query({
 		name: 'get-location',
 		text: 'SELECT * FROM location WHERE location_id = $1;',
 		values: [req.params.id],
 	})
+
+	// create a location with the database data, format it correctly
 	const location = new Location(row)
 	res.json(location.getFhir())
 })

@@ -13,7 +13,9 @@
     "build:dev": "webpack --mode=development",
     "build:watch": "webpack --mode=development --watch",
     "build:prod": "webpack --mode=production",
-    "lint": "eslint src/**/*.js{x,}"
+    "lint": "eslint src/**/*.js{x,}",
+    "build:docs": "jsdoc -c jsdoc.config.js",
+    "build:docs:all": "yarn build:docs ./server.js ./bin/www.js ./src/**/**/*.js"
   },
   "engines": {
     "node": ">=11.0.0",
@@ -49,14 +51,17 @@
     "@babel/plugin-transform-react-jsx": "^7.2.0",
     "@babel/preset-env": "^7.2.0",
     "babel-loader": "^8.0.4",
+    "contentful-sdk-jsdoc": "^2.2.0",
     "css-loader": "^2.0.0",
     "eslint": "^5.9.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.2",
     "eslint-plugin-react": "^7.11.1",
+    "jsdoc": "^3.5.5",
     "nodemon": "^1.18.9",
     "style-loader": "^0.23.1",
+    "tui-jsdoc-template": "^1.2.2",
     "webpack-cli": "^3.1.2"
   }
 }
