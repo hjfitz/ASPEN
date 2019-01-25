@@ -1,14 +1,19 @@
 // https://www.hl7.org/fhir/patient.html
-const patientRouter = require('express').Router()
+const express = require('express')
 const path = require('path')
 const shortid = require('shortid')
 const mimeTypes = require('mime-types')
 const sha1 = require('crypto-js/sha1')
 const fs = require('fs')
+const Patient = require('./classes/Patient')
+const Contact = require('./classes/Contact')
+const OperationOutcome = require('./classes/OperationOutcome')
 
 const {createOutcome} = require('./util')
 const {client} = require('../db')
 const logger = require('../logger')
+
+const patientRouter = express.Router()
 
 const log = (level, message, func) => logger.log(level, message, {file: 'logger.js', func})
 
@@ -22,67 +27,61 @@ patientRouter.get('/all', async (req, res) => {
 // read
 patientRouter.get('/:id', async (req, res, next) => {
 	const {id} = req.params
-	const query = {
-		text: 'SELECT * FROM patient WHERE patient_id = $1',
-		values: [id],
-	}
-	log('debug', `retrieving patient with id ${id}`, 'GET /:id')
-	const {rows: [patient]} = await client.query(query)
-	if (!patient) return next({code: 404, issue: `Patient with "${id}" not found`})
-	const {rows: [contact]} = await client.query({
-		text: 'SELECT * FROM contact WHERE contact_id = $1',
-		values: [patient.contact_id],
-	})
+	const patient = new Patient({id})
+	await patient.populate()
 
-	return res.json({
-		identifier: [{
-			use: 'usual',
-			system: 'urn:ietf:rfc:3986',
-			value: 'database id',
-			assigner: 'SoN',
-		}],
-		resourceType: 'Patient',
-		active: patient.active,
-		name: [{
-			use: 'usual',
-			text: patient.fullname,
-			family: patient.family,
-			given: patient.given,
-			prefix: patient.prefix.split(' '),
-		}],
-		gender: patient.gender,
-		birthDate: 'to-implement',
-		photo: [{
-			contentType: mimeTypes.lookup(patient.photo_url),
-			url: patient.photo_url,
-			hash: sha1(fs.readFileSync(patient.photo_url)).toString(),
-		}],
-		contact: [{
-			name: {
-				use: 'usual',
-				text: contact.fullname,
-				family: contact.family,
-				given: contact.given,
-				prefix: contact.prefix.split(' '),
-				telecom: [{
-					system: 'phone',
-					value: contact.phone,
-					use: 'home',
-				}],
-			},
-		}],
-	})
+	res.send(200)
+	// const query = {
+	// 	text: 'SELECT * FROM patient WHERE patient_id = $1',
+	// 	values: [id],
+	// }
+	// log('debug', `retrieving patient with id ${id}`, 'GET /:id')
+	// const {rows: [patient]} = await client.query(query)
+	// if (!patient) return next({code: 404, issue: `Patient with "${id}" not found`})
+	// const {rows: [contact]} = await client.query({
+	// 	text: 'SELECT * FROM contact WHERE contact_id = $1',
+	// 	values: [patient.contact_id],
+	// })
+
+	// return res.json({
+	// 	identifier: [{
+	// 		use: 'usual',
+	// 		system: 'urn:ietf:rfc:3986',
+	// 		value: 'database id',
+	// 		assigner: 'SoN',
+	// 	}],
+	// 	resourceType: 'Patient',
+	// 	active: patient.active,
+	// 	name: [{
+	// 		use: 'usual',
+	// 		text: patient.fullname,
+	// 		family: patient.family,
+	// 		given: patient.given,
+	// 		prefix: patient.prefix.split(' '),
+	// 	}],
+	// 	gender: patient.gender,
+	// 	birthDate: 'to-implement',
+	// 	photo: [{
+	// 		contentType: mimeTypes.lookup(patient.photo_url),
+	// 		url: patient.photo_url,
+	// 		hash: sha1(fs.readFileSync(patient.photo_url)).toString(),
+	// 	}],
+	// 	contact: [{
+	// 		name: {
+	// 			use: 'usual',
+	// 			text: contact.fullname,
+	// 			family: contact.family,
+	// 			given: contact.given,
+	// 			prefix: contact.prefix.split(' '),
+	// 			telecom: [{
+	// 				system: 'phone',
+	// 				value: contact.phone,
+	// 				use: 'home',
+	// 			}],
+	// 		},
+	// 	}],
+	// })
 })
-
-function validatePayload(body, toValidate, keys, optional = []) {
-	const payload = body
-	if (!payload) return []
-	const missingKeys = keys.filter(key => !(key in payload))
-	Object.keys(payload).forEach((key) => {
-		if (![...keys, ...optional].includes(key)) delete payload[key]
-	})
-	return missingKeys.length ? missingKeys : payload
-}
 
 // create
 patientRouter.post('/', async (req, res) => {
@@ -92,81 +91,21 @@ patientRouter.post('/', async (req, res) => {
 		if (key.indexOf('contact') === 0) rawContact[key.replace('contact-', '')] = req.body[key]
 		if (key.indexOf('patient') === 0) rawPatient[key.replace('patient-', '')] = req.body[key]
 	})
-
-	const patientKeys = ['fullname', 'given', 'prefix', 'gender']
-	const contactKeys = ['prefix', 'fullname', 'given', 'phone']
-	const patient = validatePayload(rawPatient, 'patient', patientKeys, ['family'])
-	const contact = validatePayload(rawContact, 'contact', contactKeys, ['family'])
-
-	// validate everything
-	logger.debug('Validating patient', {file: 'src/server/fhir/patient.js', func: 'POST /'})
-	if (Array.isArray(patient)) {
-		logger.debug(`patient invalid: ${patient}`, {file: 'src/server/fhir/patient.js', func: 'POST /'})
-		return createOutcome(req, res, 404, `patient missing following data: ${patient.join(';')}`, {missing: patient})
+	const patient = new Patient(rawPatient)
+	const contact = new Contact(rawContact)
+	const cResp = await contact.insert()
+	if (!cResp) {
+		const outcome = new OperationOutcome('error', 406, req.originalUrl, 'Unable to insert contact')
+		return outcome.makeResponse(res)
 	}
-	logger.debug('Validating contact', {file: 'src/server/fhir/patient.js', func: 'POST /'})
-	if (Array.isArray(contact)) {
-		logger.debug(`contact invalid: ${contact}`, {file: 'src/server/fhir/patient.js', func: 'POST /'})
-		return createOutcome(req, res, 404, `contact missing following data: ${contact.join(';')}`, {missing: contact})
+	patient.contact_id = cResp.contact_id
+	const pResp = await patient.insert()
+	if (!pResp) {
+		const outcome = new OperationOutcome('error', 406, req.originalUrl, 'Unable to insert patient')
+		return outcome.makeResponse(res)
 	}
-	// we're valid: add to database
-	const cQueryBegin = 'INSERT INTO contact ('
-	const cQueryCols = Object.keys(contact).join(', ')
-	const cQueryJoin = ') VALUES ('
-	const cQueryEnd = `${Object.keys(contact).map((_, idx) => `$${idx + 1}`).join(', ')})`
-	const cQuery = {
-		name: 'create-contact',
-		text: `${cQueryBegin + cQueryCols + cQueryJoin + cQueryEnd} RETURNING contact_id`,
-		values: Object.values(contact),
-	}
-
-	let row
-	try {
-		logger.debug(`Attempting to run contact query: ${JSON.stringify(cQuery)}`, {file: 'fhir/patient.js', func: 'POST /'})
-		const {rows} = await client.query(cQuery);
-		[row] = rows
-	} catch (err) {
-		logger.warn(`Error with contact query: ${err}`, {file: 'fhir/patient.js', func: 'POST /'})
-		return createOutcome(req, res, 400, err, contact)
-	}
-
-
-	Object.assign(patient, {active: true, contact_id: row.contact_id, last_updated: new Date()})
-
-	const file = req.files.profile
-	const newPath = path.join(process.cwd(), 'patient', `${patient.given}-${shortid.generate()}-${file.name}`)
-	file.mv(newPath)
-	patient.photo_url = newPath
-
-	const pQueryBegin = 'INSERT INTO patient ('
-	const pQueryCols = Object.keys(patient).join(', ')
-	const pQueryJoin = ') VALUES ('
-	const pQueryEnd = `${Object.keys(patient).map((_, idx) => `$${idx + 1}`).join(', ')}) RETURNING patient_id`
-
-	const pQuery = {
-		name: 'create patient',
-		text: pQueryBegin + pQueryCols + pQueryJoin + pQueryEnd,
-		values: Object.values(patient),
-	}
-
-	let pResult
-	try {
-		logger.debug(`Attempting to run query patient: ${JSON.stringify(pQuery)}`, {file: 'fhir/patient.js', func: 'POST /'})
-		const {rows} = await client.query(pQuery);
-		[pResult] = rows
-	} catch (err) {
-		logger.warn(`Error with patient query: ${err}`, {file: 'fhir/patient.js', func: 'POST /'})
-		return createOutcome(req, res, 400, err, JSON.stringify(pQuery))
-	}
-
-	return res.json({
-		resourceType: 'OperationOutcome',
-		issue: [{
-			severity: 'success',
-			diagnostics: `Patient saved with ID "${pResult.patient_id}"`,
-		}],
-		expression: [req.originalUrl],
-	})
+	const outcome = new OperationOutcome('success', 200, req.originalUrl, 'success')
+	return outcome.makeResponse(res)
 })
 
 // // update

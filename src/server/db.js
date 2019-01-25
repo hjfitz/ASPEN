@@ -1,4 +1,8 @@
 const pg = require('pg')
+const knex = require('knex')({
+	client: 'pg',
+	connection: process.env.DATABASE_URL,
+})
 const logger = require('./logger')
 
 let isConnected = false
@@ -15,4 +19,4 @@ async function connect() {
 	isConnected = true
 }
 
-module.exports = {client, connect}
+module.exports = {client, connect, knex}

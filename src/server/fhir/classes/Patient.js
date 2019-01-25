@@ -1,31 +1,22 @@
-const Contact = require('./Contact')
 const logger = require('../../logger')
-const {client} = require('../../db')
+const {client, knex} = require('../../db')
 
 class Patient {
 	constructor(params) {
+		const {active, id, fullname, given, prefix, gender, last_updated, photo_url, family} = params
+		this.active = active === undefined ? true : active
 		this.loaded = false
-		this.id = params.id
-		this.active = params.active
-		this.fullname = params.fullname
-		this.given = params.given
-		this.prefix = params.prefix
-		this.gender = params.gender
-		this.last_updated = params.last_updated
-		this.photo_url = params.photo_url
-		this.family = params.family
-		this.contact_id = params.contact_id
-		this.contact = new Contact(params.contact)
-		this.required = [
-			'active',
-			'fullname',
-			'given',
-			'prefix',
-			'gender',
-			'last_updated',
-			'contact_id',
-		]
-		this.values = [...this.required, 'photo_url', 'family']
+		this.id = id
+		this.fullname = fullname
+		this.given = given
+		this.prefix = prefix
+		this.gender = gender
+		this.last_updated = last_updated
+		this.photo_url = photo_url
+		this.family = family
+		this.meta = {file: 'fhir/classes/Patient.js'}
+		this.required = ['active', 'fullname', 'given', 'prefix', 'gender', 'contact_id']
+		this.values = [...this.required, 'photo_url', 'family', 'last_updated']
 	}
 
 	async fetch() {
@@ -48,37 +39,40 @@ class Patient {
 		this.loaded = true
 	}
 
-	get valid() {
-
-	}
-
-	get query() {
-		return {
-			insert: () => {
-				const valid = this.required.filter(Boolean).length
-				if (!valid) return false
-				const keys = this.values.filter(Boolean)
-				const values = keys.map(key => this[key])
-				const cols = keys.join(', ')
-				const dolla = keys.map((_, idx) => idx).join(', ')
-				return {
-					values,
-					name: 'add-patient',
-					text: `INSERT INTO PATIENT (${cols}) VALUES ${dolla} RETURNING patient_id;`,
-				}
-			},
-			delete: () => {
-
-			},
-			update: {
-
-			},
+	async populate() {
+		const {meta, id} = this
+		console.log(id)
+		if (id) {
+			const [resp] = await knex('patient').select().where({patient_id: id})
+			this.loaded = true
+			Object.keys(resp).forEach(key => this[key] = resp[key])
+			console.log(this)
 		}
+		logger.warn('Attempted to populate with invalid ID', meta)
+		return false
 	}
 
-	toFhir() {
-
+	async insert() {
+		const isValid = !this.required.filter(key => !(this[key])).length
+		if (!isValid) {
+			logger.warn('unable to create', this.meta)
+			return false
+		}
+		// create object
+		this.last_updated = new Date()
+		const obj = this.values
+			.reduce((acc, cur) => {
+				acc[cur] = this[cur]
+				return acc
+			}, {})
+		// make query
+		const [resp] = await knex('patient').insert(obj).returning(['patient_id', ...this.values])
+		return resp
 	}
+
+	delete() {}
+
+	update() {}
 }
 
 module.exports = Patient
