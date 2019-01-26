@@ -26,6 +26,7 @@ app.use(parser.urlencoded({extended: true}))
 
 // statically server public files
 app.use(express.static(pub))
+app.use('/docs', express.static(path.join(process.cwd(), 'docs')))
 
 app.use(fhirApi)
 

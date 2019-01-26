@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>server/fhir/classes/Encounter.js - Documentation</title>
+
+    <script src="scripts/hljs/highlight.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/hljs.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Encounter.html">Encounter</a><ul class='methods'><li data-type='method'><a href="Encounter.html#delete">delete</a></li><li data-type='method'><a href="Encounter.html#fhir">fhir</a></li><li data-type='method'><a href="Encounter.html#insert">insert</a></li><li data-type='method'><a href="Encounter.html#populate">populate</a></li><li data-type='method'><a href="Encounter.html#update">update</a></li></ul></li><li><a href="Location.html">Location</a><ul class='methods'><li data-type='method'><a href="Location.html#.lookup">lookup</a></li><li data-type='method'><a href="Location.html#getFhir">getFhir</a></li></ul></li><li><a href="OperationOutcome.html">OperationOutcome</a><ul class='methods'><li data-type='method'><a href="OperationOutcome.html#makeResponse">makeResponse</a></li></ul></li><li><a href="Patient.html">Patient</a><ul class='methods'><li data-type='method'><a href="Patient.html#delete">delete</a></li><li data-type='method'><a href="Patient.html#fhir">fhir</a></li><li data-type='method'><a href="Patient.html#insert">insert</a></li><li data-type='method'><a href="Patient.html#populate">populate</a></li><li data-type='method'><a href="Patient.html#update">update</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#getJwtPayload">getJwtPayload</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">server/fhir/classes/Encounter.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const {knex} = require('../../db')
+const logger = require('../../logger')
+
+class Encounter {
+	/**
+	 * Wrapper for all fhir encounters
+	 * @param {Object} params params used to create Enounter
+	 * @param {number} params.encounter_id ID this encounter corresponds to in DB
+	 * @param {Date} params.last_updated when this was updated last
+	 * @param {string} params.class the type of encounter (generally admission)
+	 * @param {number} params.patient_id patient that this encounter corresponds to
+	 * @param {number} params.location_id location that this encounter took place in
+	 */
+	constructor(params = {}) {
+		this.encounter_id = params.encounter_id
+		this.last_updated = params.last_updated
+		this.class = params.class
+		this.status = params.status
+		this.patient_id = params.patient_id
+		this.location_id = params.location_id
+		this.meta = {file: 'fhir/classes/Encounter'}
+		this.required = [
+			'class',
+			'status',
+			'patient_id',
+			'location_id',
+			'last_updated',
+		]
+	}
+
+	/**
+	 * Populate the object by ID
+	 * @return {Promise&lt;boolean>} Able to populate or not
+	 */
+	async populate() {
+		const {encounter_id} = this
+		// use a try-catch so that if there is nothing by ID
+		// err is thrown and we can catch/return false
+		try {
+			const [resp] = await knex('encounter').select().where('encounter_id', encounter_id)
+			Object.keys(resp).forEach(key => this[key] = resp[key])
+			return true
+		} catch (err) {
+			logger.error('Unable to populate enconter', {...this.meta, func: 'populate()'})
+			logger.error(err, {...this.meta, func: 'populate()'})
+			return false
+		}
+	}
+
+	/**
+	 * Adds object params to database
+	 * @returns {Promise&lt;boolean>} Added to database or not
+	 */
+	async insert() {
+		this.last_updated = new Date()
+		const missingKeys = this.required.filter(key => !this[key])
+		if (missingKeys.length) return false
+		const insertObj = this.required.reduce((acc, key) => {
+			acc[key] = this[key]
+			return acc
+		}, {})
+		try {
+			await knex('encounter').insert(insertObj)
+			return true
+		} catch (err) {
+			logger.error('Unable to insert enconter', {...this.meta, func: 'insert()'})
+			logger.error(err, {...this.meta, func: 'insert()'})
+			return false
+		}
+	}
+
+	/**
+	 * Update database based on object params
+	 * @returns {Promise&lt;boolean>} updated or not
+	 */
+	async update() {
+		const exists = this.required.filter(key => this[key])
+		const cannotUpdate = exists.length === this.required.length
+		if (cannotUpdate) return false
+		const obj = this.required.reduce((acc, cur) => {
+			if (this[cur]) acc[cur] = this[cur]
+			return acc
+		}, {})
+		obj.last_updated = new Date()
+		this.last_updated = obj.last_updated
+		try {
+			await knex('encounter').update(obj)
+			return true
+		} catch (err) {
+			logger.error('Unable to update enconter', {...this.meta, func: 'update()'})
+			logger.error(err, {...this.meta, func: 'update()'})
+			return false
+		}
+	}
+
+	/**
+	 * delete based on this.encounter_id
+	 * @return {Promise&lt;boolean>} deleted or not
+	 */
+	async delete() {
+		try {
+			await knex('encounter').delete().where('encounter_id', this.encounter_id)
+			return true
+		} catch (err) {
+			logger.error('Unable to delete enconter', {...this.meta, func: 'delete()'})
+			logger.error(err, {...this.meta, func: 'delete()'})
+			return false
+		}
+	}
+
+	/**
+	 * format to fhir spec
+	 * @return {object} fhir formatted object
+	 */
+	fhir() {
+		return {
+			resourceType: 'Encounter',
+			meta: {
+				lastUpdated: new Date(this.last_updated),
+			},
+			status: this.status,
+			class: {
+				data: this.class,
+			},
+			subject: {
+				reference: `Patient/${this.patient_id}`,
+			},
+			location: [{
+				reference: `Location/${this.location_id}`,
+			}],
+		}
+	}
+}
+
+module.exports = Encounter
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat Jan 26 2019 16:01:34 GMT+0000 (Greenwich Mean Time) using the <a href="https://github.com/contentful/contentful-sdk-jsdoc">contentful-sdk-jsdoc</a> theme.
+</footer>
+
+<script>hljs.initHighlightingOnLoad();</script>
+</body>
+</html>
