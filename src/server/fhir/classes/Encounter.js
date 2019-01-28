@@ -8,6 +8,8 @@ class Encounter {
 	 * @param {number} params.encounter_id ID this encounter corresponds to in DB
 	 * @param {Date} params.last_updated when this was updated last
 	 * @param {string} params.class the type of encounter (generally admission)
+	 * @param {string} params.status the status of the encounter
+	 * 								(also usually finished as the patient has been admitted)
 	 * @param {number} params.patient_id patient that this encounter corresponds to
 	 * @param {number} params.location_id location that this encounter took place in
 	 */

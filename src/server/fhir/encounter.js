@@ -38,7 +38,7 @@ encounterRouter.put('/:encounter_id', async (req, res) => {
 	outcome.makeResponse(res)
 })
 
-encounterRouter.delete('/:id', async (req, res) => {
+encounterRouter.delete('/:encounter_id', async (req, res) => {
 	const {encounter_id} = req.params
 	const enc = new Encounter({encounter_id})
 	const deleted = await enc.delete()

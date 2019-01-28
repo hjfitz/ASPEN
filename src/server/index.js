@@ -1,6 +1,6 @@
 const express = require('express')
 const swaggerUI = require('swagger-ui-express')
-const apiDocs = require('./swagger.schema.js')
+const apiDocs = require('./swagger')
 
 const router = express.Router()
 const fhir = require('./fhir')
