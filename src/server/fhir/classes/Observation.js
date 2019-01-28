@@ -2,6 +2,13 @@ const log = require('../../logger')
 const {client} = require('../../db')
 
 module.exports = class Observation {
+	/**
+	 * FHIR wrapper for Observation data
+	 * @param {string} name Name of observation (blood pressure/respiratory rate etc)
+	 * @param {string} value Value (what was recorded)
+	 * @param {number} id DB ID of the Observation
+	 * @param {boolean} updated Then the resource was last updated
+	 */
 	constructor(name, value, id, updated = new Date()) {
 		this.name = name
 		this.value = value
@@ -39,6 +46,11 @@ module.exports = class Observation {
 		}[name || 'heart_rate']
 	}
 
+	/**
+	 * Generates a query for inserting data in to database (uses node-pg structured queries for now)
+	 * TODO: Update this to knex
+	 * @returns {object} node-pg query
+	 */
 	get query() {
 		log.info(`Creating query for ${this.name}:${this.value}`, {file: 'fhir/classes/Observation.js', func: 'Observation#query()'})
 		return {
@@ -47,6 +59,10 @@ module.exports = class Observation {
 		}
 	}
 
+	/**
+	 * Format the observation data to fhir data
+	 * @returns {object} fhir formatted observation data
+	 */
 	async fhir() {
 		const {name, id, value, unitCode, updated} = this
 		log.info(`Creating fhir data for ${id}:${name}:${value}`, {file: 'fhir/classes/Observation.js', func: 'Observation#fhir()'})

@@ -2,7 +2,14 @@ const log = require('../../logger')
 const Observation = require('./Observation')
 const {client} = require('../../db')
 
-module.exports = class DiagnosticReport {
+class DiagnosticReport {
+	/**
+	 * Created by getting data from the database: This resource consists of a number of Observations
+	 * @param {object} row database row to format Diagnostic report
+	 * @param {number} row.report_id database ID
+	 * @param {Date} row.last_updated When the resource was last updated
+	 * @param {number} row.patient_id The patient for which this report pertains
+	 */
 	constructor(row) {
 		// merge keys with our own
 		Object.keys(row).forEach((key) => {
@@ -10,6 +17,10 @@ module.exports = class DiagnosticReport {
 		})
 	}
 
+	/**
+	 * Format the data to fhir spec
+	 * @returns {object} fhir formatted DiagnosticReport data
+	 */
 	fhir() {
 		log.debug('Creating fhir data', {file: 'fhir/DiagnosticReport.js', func: 'DiagnosticReport#fhir()'})
 		const links = [
@@ -34,6 +45,10 @@ module.exports = class DiagnosticReport {
 		}
 	}
 
+	/**
+	 * Format the data to fhir spec, but link the Observations
+	 * @returns {object} fhir formatted DiagnosticReport data with observations linked
+	 */
 	async fhirLinked() {
 		log.debug('Attempting to grab linked data from database', {file: 'fhir/DiagnosticReport.js', func: 'DiagnosticReport#fhirLinked()'})
 		const observations = await Promise.all(['respiratory_rate',
@@ -65,3 +80,5 @@ module.exports = class DiagnosticReport {
 		}
 	}
 }
+
+module.exports = DiagnosticReport
