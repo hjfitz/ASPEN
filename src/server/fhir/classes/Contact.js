@@ -2,6 +2,15 @@ const {knex} = require('../../db')
 const logger = require('../../logger')
 
 class Contact {
+	/**
+	 * Contact wrapper for fhir data
+	 * @param {object} params Params to create a contact
+	 * @param {number} params.contact_id Contact ID in database
+	 * @param {string} params.prefix prefix for our contact
+	 * @param {string} params.fullname contact's full name
+	 * @param {string} params.phone contact's phone number
+	 * @param {string} params.family contact's family name (if applicable)
+	 */
 	constructor(params) {
 		const {contact_id, prefix, fullname, given, phone, family} = params
 		this.contact_id = contact_id
@@ -14,8 +23,12 @@ class Contact {
 		this.values = [...this.required, 'family']
 	}
 
-	fhir() {}
+	// fhir() {}
 
+	/**
+	 * Populates the contact params based on the database response
+	 * @return {Promise<void>} void
+	 */
 	async populate() {
 		const {contact_id, meta} = this
 		if (!contact_id) return logger.warn('no id, cannot retrieve', {...meta, func: 'populate()'})
@@ -23,6 +36,10 @@ class Contact {
 		return Object.keys(resp).forEach(key => this[key] = resp[key])
 	}
 
+	/**
+	 * adds the contact to the database as long as this[required] is on the object
+	 * @return {Promise<object>} database response
+	 */
 	async insert() {
 		const isValid = !this.required.filter(key => !(this[key])).length
 		if (!isValid) return false
@@ -38,9 +55,9 @@ class Contact {
 		return resp
 	}
 
-	delete() {}
+	// delete() {}
 
-	update() {}
+	// update() {}
 }
 
 module.exports = Contact

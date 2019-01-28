@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>server/fhir/classes/DiagnosticReport.js - Documentation</title>
+    <title>server/fhir/classes/Contact.js - Documentation</title>
 
     <script src="scripts/hljs/highlight.min.js"></script>
     <!--[if lt IE 9]>
@@ -26,7 +26,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">server/fhir/classes/DiagnosticReport.js</h1>
+    <h1 class="page-title">server/fhir/classes/Contact.js</h1>
     
 
     
@@ -36,90 +36,69 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const log = require('../../logger')
-const Observation = require('./Observation')
-const {client} = require('../../db')
+            <pre class="prettyprint source linenums"><code>const {knex} = require('../../db')
+const logger = require('../../logger')
 
-class DiagnosticReport {
+class Contact {
 	/**
-	 * Created by getting data from the database: This resource consists of a number of Observations
-	 * @param {object} row database row to format Diagnostic report
-	 * @param {number} row.report_id database ID
-	 * @param {Date} row.last_updated When the resource was last updated
-	 * @param {number} row.patient_id The patient for which this report pertains
+	 * Contact wrapper for fhir data
+	 * @param {object} params Params to create a contact
+	 * @param {number} params.contact_id Contact ID in database
+	 * @param {string} params.prefix prefix for our contact
+	 * @param {string} params.fullname contact's full name
+	 * @param {string} params.phone contact's phone number
+	 * @param {string} params.family contact's family name (if applicable)
 	 */
-	constructor(row) {
-		// merge keys with our own
-		Object.keys(row).forEach((key) => {
-			this[key] = row[key]
-		})
+	constructor(params) {
+		const {contact_id, prefix, fullname, given, phone, family} = params
+		this.contact_id = contact_id
+		this.prefix = prefix
+		this.fullname = fullname
+		this.given = given
+		this.phone = phone
+		this.family = family
+		this.required = ['prefix', 'fullname', 'given', 'phone']
+		this.values = [...this.required, 'family']
+	}
+
+	// fhir() {}
+
+	/**
+	 * Populates the contact params based on the database response
+	 * @return {Promise&lt;void>} void
+	 */
+	async populate() {
+		const {contact_id, meta} = this
+		if (!contact_id) return logger.warn('no id, cannot retrieve', {...meta, func: 'populate()'})
+		const [resp] = await knex('contact').select().where({contact_id})
+		return Object.keys(resp).forEach(key => this[key] = resp[key])
 	}
 
 	/**
-	 * Format the data to fhir spec
-	 * @returns {object} fhir formatted DiagnosticReport data
+	 * adds the contact to the database as long as this[required] is on the object
+	 * @return {Promise&lt;object>} database response
 	 */
-	fhir() {
-		log.debug('Creating fhir data', {file: 'fhir/DiagnosticReport.js', func: 'DiagnosticReport#fhir()'})
-		const links = [
-			'respiratory_rate',
-			'oxygen_saturation',
-			'supplemental_oxygen',
-			'body_temperature',
-			'systolic_bp',
-			'heart_rate',
-			'level_of_consciousness',
-		].map(attr => `Observation/${this[attr]}`)
-		return {
-			resourceType: 'DiagnosticReport',
-			id: this.report_id,
-			meta: {
-				lastUpdated: this.last_updated,
-			},
-			subject: `Patient/${this.patient_id}`,
-			status: 'final',
-			result: links,
-
-		}
+	async insert() {
+		const isValid = !this.required.filter(key => !(this[key])).length
+		if (!isValid) return false
+		// create object
+		this.last_updated = new Date()
+		const obj = this.values
+			.reduce((acc, cur) => {
+				acc[cur] = this[cur]
+				return acc
+			}, {})
+		// make query
+		const [resp] = await knex('contact').insert(obj).returning(['contact_id', ...this.values])
+		return resp
 	}
 
-	/**
-	 * Format the data to fhir spec, but link the Observations
-	 * @returns {object} fhir formatted DiagnosticReport data with observations linked
-	 */
-	async fhirLinked() {
-		log.debug('Attempting to grab linked data from database', {file: 'fhir/DiagnosticReport.js', func: 'DiagnosticReport#fhirLinked()'})
-		const observations = await Promise.all(['respiratory_rate',
-			'oxygen_saturation',
-			'supplemental_oxygen',
-			'body_temperature',
-			'systolic_bp',
-			'heart_rate',
-			'level_of_consciousness',
-		].map(attr => client.query({
-			text: 'SELECT * FROM observation WHERE observation_id = $1',
-			values: [this[attr]]})))
+	// delete() {}
 
-		log.debug('Attempting to link back to report', {file: 'fhir/DiagnosticReport.js', func: 'DiagnosticReport#fhirLinked()'})
-		const values = await Promise.all(observations
-			.map(val => val.rows[0])
-			.map(data => new Observation(data.name, data.value, data.observation_id, data.last_updated))
-			.map(obs => obs.fhir()))
-		return {
-			resourceType: 'DiagnosticReport',
-			id: this.report_id,
-			meta: {
-				lastUpdated: this.last_updated,
-			},
-			subject: `Patient/${this.patient_id}`,
-			status: 'final',
-			result: values,
-
-		}
-	}
+	// update() {}
 }
 
-module.exports = DiagnosticReport
+module.exports = Contact
 </code></pre>
         </article>
     </section>
