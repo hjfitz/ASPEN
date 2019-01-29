@@ -6,6 +6,11 @@ import {fhirBase} from '../../util'
 import '../styles/create-location.scss'
 
 class CreateWard extends Component {
+	/**
+	 * Ensure elements have some content and change their class accordingly
+	 * @param {Array<VNode>} inputs Inputs to validate .value
+	 * @return {boolean} Whether the given inputs are valid
+	 */
 	static validateForms(inputs) {
 		// give empty fields a red box, remove valid classname too
 		const invalid = inputs.filter((control) => {
@@ -28,6 +33,10 @@ class CreateWard extends Component {
 		return !invalid.length
 	}
 
+	/**
+	 * Page component used to create locations by interacting with /fhir/Location API
+	 * @param {object} props Props given to the preact component
+	 */
 	constructor(props) {
 		super(props)
 		this.instances = []
@@ -38,6 +47,9 @@ class CreateWard extends Component {
 		}
 	}
 
+	/**
+	 * Initialise all materialize elements on page load
+	 */
 	componentDidMount() {
 		this.instances.push(
 			M.FormSelect.init(this.type),
@@ -47,6 +59,11 @@ class CreateWard extends Component {
 	}
 
 
+	/**
+	 * Validate the elements on the page and then POST their data to /fhir/Location
+	 * @param {Event} ev Click event
+	 * @returns {Promise<void>}
+	 */
 	async makeWard(ev) {
 		ev.preventDefault() // don't refresh the page - this is a SPA!
 		const inputs = [this.name, this.desc, this.type] // inputs to check
@@ -56,15 +73,15 @@ class CreateWard extends Component {
 		// populate a form and send it to the server
 		const locForm = new FormData()
 		inputs.forEach(control => locForm.set(control.id, control.value))
+
+		// attempt to post
 		try {
 			const resp = await fhirBase.post('/Location', locForm)
 			const {id} = resp.data.issue[0].diagnostics
-			const message = (
-				<div>
-					<h3>Success</h3>
-					<p>Successfully created {this.name.value} as a {this.type.value} with ID {id}</p>
-				</div>
-			)
+			const message = [
+				<h3>Success</h3>,
+				<p>Successfully created {this.name.value} as a {this.type.value} with ID {id}</p>,
+			]
 			this.setState({
 				message,
 				showPopup: true,
@@ -72,17 +89,18 @@ class CreateWard extends Component {
 		} catch (err) {
 			this.setState({
 				showPopup: true,
-				message: (
-					<div>
-						<h3>Error!</h3>
-						<p>There was an error creating the location:</p>
-						<p>{err}</p>
-					</div>
-				),
+				message: [
+					<h3>Error!</h3>,
+					<p>There was an error creating the location:</p>,
+					<p>{err}</p>,
+				],
 			})
 		}
 	}
 
+	/**
+	 * render the form!
+	 */
 	render() {
 		let popup = ''
 		if (this.state.showPopup) {

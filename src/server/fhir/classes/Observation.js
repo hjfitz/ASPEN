@@ -1,7 +1,7 @@
 const log = require('../../logger')
 const {client} = require('../../db')
 
-module.exports = class Observation {
+class Observation {
 	/**
 	 * FHIR wrapper for Observation data
 	 * @param {string} name Name of observation (blood pressure/respiratory rate etc)
@@ -80,3 +80,5 @@ module.exports = class Observation {
 		}
 	}
 }
+
+module.exports = Observation

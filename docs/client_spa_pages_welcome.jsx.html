@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>client/util.js - Documentation</title>
+    <title>client/spa/pages/welcome.jsx - Documentation</title>
 
     <script src="scripts/hljs/highlight.min.js"></script>
     <!--[if lt IE 9]>
@@ -26,7 +26,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">client/util.js</h1>
+    <h1 class="page-title">client/spa/pages/welcome.jsx</h1>
     
 
     
@@ -36,36 +36,27 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import Base64 from 'crypto-js/enc-base64'
-import Utf8 from 'crypto-js/enc-utf8'
-import axios from 'axios'
+            <pre class="prettyprint source linenums"><code>import {h} from 'preact'
+import {Link} from 'preact-router'
 
 /**
- * get and parse payload from localstorage
- * useful for checking exp and user information
- * @returns {object} JWT
+ * Welcome page
+ * @return {VNode} Welcome page
  */
-export function getJwtPayload() {
-	const token = localStorage.getItem('token')
-	if (!token) return false
-	const payloadB64 = token.split('.')
-	const payload = Utf8.stringify(Base64.parse(payloadB64))
-	return JSON.parse(payload)
-}
+const Welcome = () => (
+	&lt;div>
+		&lt;header>
+			&lt;h1>What would you like to do?&lt;/h1>
+		&lt;/header>
+		&lt;ul>
+			&lt;li>&lt;Link href="/create/ward">Create a ward&lt;/Link>&lt;/li>
+			&lt;li>&lt;Link href="/create/patient">Add a new patient&lt;/Link>&lt;/li>
+			&lt;li>&lt;Link href="/wards">View all possible wards&lt;/Link>&lt;/li>
+		&lt;/ul>
+	&lt;/div>
+)
 
-export const fhirBase = axios.create({
-	baseURL: '/fhir',
-	timeout: 1500,
-	headers: {
-		accept: 'application/fhir+json',
-		'content-type': 'application/fhir+json',
-	},
-})
-
-// shitty enums
-export const MINUTE = 1000 * 60
-export const HALF_HOUR = MINUTE * 30
-export const HOUR = MINUTE * 60
+export default Welcome
 </code></pre>
         </article>
     </section>

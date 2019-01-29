@@ -1,5 +1,5 @@
 import {h, render, Component} from 'preact'
-import {Router, route} from 'preact-router'
+import {Router} from 'preact-router'
 
 import {Welcome, CreateWard} from './spa/Pages'
 

@@ -21,7 +21,7 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Contact.html">Contact</a><ul class='methods'><li data-type='method'><a href="Contact.html#insert">insert</a></li><li data-type='method'><a href="Contact.html#populate">populate</a></li></ul></li><li><a href="DiagnosticReport.html">DiagnosticReport</a><ul class='methods'><li data-type='method'><a href="DiagnosticReport.html#fhir">fhir</a></li><li data-type='method'><a href="DiagnosticReport.html#fhirLinked">fhirLinked</a></li></ul></li><li><a href="Encounter.html">Encounter</a><ul class='methods'><li data-type='method'><a href="Encounter.html#delete">delete</a></li><li data-type='method'><a href="Encounter.html#fhir">fhir</a></li><li data-type='method'><a href="Encounter.html#insert">insert</a></li><li data-type='method'><a href="Encounter.html#populate">populate</a></li><li data-type='method'><a href="Encounter.html#update">update</a></li></ul></li><li><a href="Location.html">Location</a><ul class='methods'><li data-type='method'><a href="Location.html#.lookup">lookup</a></li><li data-type='method'><a href="Location.html#getFhir">getFhir</a></li></ul></li><li><a href="module.exports_module.exports.html">exports</a></li><li><a href="OperationOutcome.html">OperationOutcome</a><ul class='methods'><li data-type='method'><a href="OperationOutcome.html#makeResponse">makeResponse</a></li></ul></li><li><a href="Patient.html">Patient</a><ul class='methods'><li data-type='method'><a href="Patient.html#delete">delete</a></li><li data-type='method'><a href="Patient.html#fhir">fhir</a></li><li data-type='method'><a href="Patient.html#insert">insert</a></li><li data-type='method'><a href="Patient.html#populate">populate</a></li><li data-type='method'><a href="Patient.html#update">update</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#getJwtPayload">getJwtPayload</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Contact.html">Contact</a><ul class='methods'><li data-type='method'><a href="Contact.html#insert">insert</a></li><li data-type='method'><a href="Contact.html#populate">populate</a></li></ul></li><li><a href="CreateWard.html">CreateWard</a><ul class='methods'><li data-type='method'><a href="CreateWard.html#.validateForms">validateForms</a></li><li data-type='method'><a href="CreateWard.html#componentDidMount">componentDidMount</a></li><li data-type='method'><a href="CreateWard.html#makeWard">makeWard</a></li><li data-type='method'><a href="CreateWard.html#render">render</a></li></ul></li><li><a href="DiagnosticReport.html">DiagnosticReport</a><ul class='methods'><li data-type='method'><a href="DiagnosticReport.html#fhir">fhir</a></li><li data-type='method'><a href="DiagnosticReport.html#fhirLinked">fhirLinked</a></li></ul></li><li><a href="Encounter.html">Encounter</a><ul class='methods'><li data-type='method'><a href="Encounter.html#delete">delete</a></li><li data-type='method'><a href="Encounter.html#fhir">fhir</a></li><li data-type='method'><a href="Encounter.html#insert">insert</a></li><li data-type='method'><a href="Encounter.html#populate">populate</a></li><li data-type='method'><a href="Encounter.html#update">update</a></li></ul></li><li><a href="Location.html">Location</a><ul class='methods'><li data-type='method'><a href="Location.html#.lookup">lookup</a></li><li data-type='method'><a href="Location.html#getFhir">getFhir</a></li></ul></li><li><a href="Observation.html">Observation</a><ul class='methods'><li data-type='method'><a href="Observation.html#fhir">fhir</a></li></ul></li><li><a href="OperationOutcome.html">OperationOutcome</a><ul class='methods'><li data-type='method'><a href="OperationOutcome.html#makeResponse">makeResponse</a></li></ul></li><li><a href="Patient.html">Patient</a><ul class='methods'><li data-type='method'><a href="Patient.html#delete">delete</a></li><li data-type='method'><a href="Patient.html#fhir">fhir</a></li><li data-type='method'><a href="Patient.html#insert">insert</a></li><li data-type='method'><a href="Patient.html#populate">populate</a></li><li data-type='method'><a href="Patient.html#update">update</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#getJwtPayload">getJwtPayload</a></li><li><a href="global.html#Welcome">Welcome</a></li></ul>
 </nav>
 
 <div id="main">
@@ -39,7 +39,7 @@
             <pre class="prettyprint source linenums"><code>const log = require('../../logger')
 const {client} = require('../../db')
 
-module.exports = class Observation {
+class Observation {
 	/**
 	 * FHIR wrapper for Observation data
 	 * @param {string} name Name of observation (blood pressure/respiratory rate etc)
@@ -118,6 +118,8 @@ module.exports = class Observation {
 		}
 	}
 }
+
+module.exports = Observation
 </code></pre>
         </article>
     </section>
@@ -130,7 +132,7 @@ module.exports = class Observation {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Jan 28 2019 09:03:22 GMT+0000 (Greenwich Mean Time) using the <a href="https://github.com/contentful/contentful-sdk-jsdoc">contentful-sdk-jsdoc</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Jan 29 2019 10:17:51 GMT+0000 (Greenwich Mean Time) using the <a href="https://github.com/contentful/contentful-sdk-jsdoc">contentful-sdk-jsdoc</a> theme.
 </footer>
 
 <script>hljs.initHighlightingOnLoad();</script>

@@ -1,6 +1,10 @@
 import {h} from 'preact'
 import {Link} from 'preact-router'
 
+/**
+ * Welcome page
+ * @return {VNode} Welcome page
+ */
 const Welcome = () => (
 	<div>
 		<header>
