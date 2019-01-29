@@ -7,8 +7,7 @@ function createOutcome(req, res, code, text, diagnostics = {}, severity = 'error
 		}],
 		expression: [req.originalUrl],
 	}
-	res.status = code
-	res.json(Object.assign({}, err, {details: {text}, diagnostics}))
+	res.status(code).json(Object.assign({}, err, {details: {text}, diagnostics}))
 }
 
 module.exports = {

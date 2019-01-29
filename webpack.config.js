@@ -1,18 +1,18 @@
 const path = require('path')
 const webpack = require('webpack')
+const BuildNotifierPlugin = require('webpack-build-notifier')
 
 module.exports = [
 	{
-		entry: path.join(__dirname, 'src', 'client', 'index.jsx'),
+		entry: {
+			client: ['@babel/polyfill', path.join(__dirname, 'src', 'client', 'index.jsx')],
+		},
 		output: {
 			path: path.join(__dirname, 'public', 'js'),
 			filename: 'client.bundle.js',
 		},
 		resolve: {
-			modules: [
-				'node_modules',
-			],
-			// directories where to look for modules
+			modules: ['node_modules'],
 			extensions: ['.js', '.json', '.jsx', '.css'],
 		},
 		devtool: 'source-map',
@@ -45,13 +45,9 @@ module.exports = [
 					NODE_ENV: JSON.stringify('development'),
 				},
 			}),
+			new BuildNotifierPlugin({
+				title: 'fyp',
+			}),
 		],
 	},
 ]
-
-
-// {
-// 	"plugins": [
-// 	  ["@babel/plugin-transform-react-jsx", { "pragma":"h" }]
-// 	]
-//   }

@@ -1,47 +1,28 @@
 import {h, render, Component} from 'preact'
 import {Router, route} from 'preact-router'
 
-import {Ward, Patient, WardList, SubmitPatient} from './spa/Pages'
-import {getJwtPayload} from './util'
+import {Welcome, CreateWard} from './spa/Pages'
 
-import './router.scss'
-
-// routes that we should check the JWT or redir, for UX
-const protectedRoutes = ['/ward']
-
-// shallow check to ensure that there exists a valid token
-function isAuthed() {
-	const payload = getJwtPayload()
-	if (!payload) return false
-	const {exp} = JSON.parse(payload)
-	const expired = new Date(exp * 1000) < new Date()
-	return expired
-}
-
-
-function checkAuth({url}) {
-	console.log(`[CHECKAUTH] url: ${url}`)
-	const needsAuth = protectedRoutes.filter(prot => url.indexOf(prot) === 0)
-	console.log(`[CHECKAUTH] route: ${needsAuth}`)
-	// if (needsAuth.length && !isAuthed) {
-	// 	console.log('[CHECKAUTH] rediredirecting to auth')
-	// 	route('/login')
-	// }
-}
+import './spa/styles/router.scss'
+import 'materialize-css/sass/materialize.scss'
 
 class App extends Component {
 	componentDidMount() {
-		checkAuth({url: window.location.pathname})
+		// checkAuth({url: window.location.pathname})
 	}
 
 	render() {
 		return (
-			<Router onChange={checkAuth}>
-				<SubmitPatient path="/" />
-				{/* <WardList path="/" />
-				<Ward path="/ward/:wardName" />
-				<Patient path="/patient/:patientName" /> */}
-			</Router>
+			// <Router onChange={checkAuth}>
+			<div className="container">
+				<Router>
+					<Welcome path="/" />
+					<CreateWard path="/create/ward" />
+					{/* <Patient path="/patient/:patient_id" /> */}
+					{/* <Ward path="/ward/:ward_id" /> */}
+					{/* <Create path="/submit" /> */}
+				</Router>
+			</div>
 		)
 	}
 }

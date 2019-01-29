@@ -414,7 +414,7 @@ module.exports = {
 		'/Location': {
 			post: {
 				description: 'create a new location',
-				patameters: [
+				parameters: [
 					{
 						name: 'name',
 						in: 'body',
