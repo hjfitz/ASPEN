@@ -413,6 +413,7 @@ module.exports = {
 		},
 		'/Location': {
 			post: {
+				tags: ['Location'],
 				description: 'create a new location',
 				parameters: [
 					{
