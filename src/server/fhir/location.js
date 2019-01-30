@@ -38,7 +38,6 @@ locRouter.get('/', async (req, res) => {
 		const outcome = new OperationOutcome('warn', 404, req.originalUrl, 'Incorrect query param')
 		return outcome.makeResponse(res)
 	}
-	console.log(type)
 	const resp = await knex('location').select().where({type})
 	return res.json(resp)
 })
