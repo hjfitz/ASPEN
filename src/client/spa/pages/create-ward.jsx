@@ -58,6 +58,14 @@ class CreateWard extends Component {
 		)
 	}
 
+	componentDidUpdate() {
+		this.instances.push(
+			M.FormSelect.init(this.type),
+			M.CharacterCounter.init(this.name),
+			M.CharacterCounter.init(this.desc),
+		)
+	}
+
 
 	/**
 	 * Validate the elements on the page and then POST their data to /fhir/Location
@@ -78,10 +86,13 @@ class CreateWard extends Component {
 		try {
 			const resp = await fhirBase.post('/Location', locForm)
 			const {id} = resp.data.issue[0].diagnostics
-			const message = [
-				<h3>Success</h3>,
-				<p>Successfully created {this.name.value} as a {this.type.value} with ID {id}</p>,
-			]
+			const message = (
+				<div className="card-content">
+					<span className="card-title">Success</span>
+					<p>Successfully created {this.name.value} as a {this.type.value} with ID {id}</p>
+				</div>
+			)
+
 			this.setState({
 				message,
 				showPopup: true,
@@ -89,13 +100,19 @@ class CreateWard extends Component {
 		} catch (err) {
 			this.setState({
 				showPopup: true,
-				message: [
-					<h3>Error!</h3>,
-					<p>There was an error creating the location:</p>,
-					<p>{err}</p>,
-				],
+				message: (
+					<div className="card-content">
+						<span className="card-title">Error!</span>
+						<p>There was an error creating the location:</p>
+						<p>{err}</p>
+					</div>
+				),
 			})
 		}
+	}
+
+	closePopup() {
+		this.setState({message: '', showPopup: false})
 	}
 
 	/**
@@ -105,8 +122,11 @@ class CreateWard extends Component {
 		let popup = ''
 		if (this.state.showPopup) {
 			popup = (
-				<div className="">
-					{this.state.message}
+				<div className="col s12 m6">
+					<div className="card">
+						<span className="close" onClick={this.closePopup.bind(this)}><i className="material-icons">close</i></span>
+						{this.state.message}
+					</div>
 				</div>
 			)
 		}

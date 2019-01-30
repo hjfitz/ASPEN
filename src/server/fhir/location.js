@@ -4,7 +4,7 @@ const Location = require('./classes/Location')
 const OperationOutcome = require('./classes/OperationOutcome')
 const logger = require('../logger')
 const {createOutcome} = require('./util')
-const {client} = require('../db')
+const {client, knex} = require('../db')
 
 locRouter.post('/', async (req, res) => {
 	// metadata for easy logging
@@ -30,6 +30,17 @@ locRouter.post('/', async (req, res) => {
 		const outcome = new OperationOutcome('error', 500, req.originalUrl, 'Error creating location', {err})
 		return outcome.makeResponse(res)
 	}
+})
+
+locRouter.get('/', async (req, res) => {
+	const {type} = req.query
+	if (!type) {
+		const outcome = new OperationOutcome('warn', 404, req.originalUrl, 'Incorrect query param')
+		return outcome.makeResponse(res)
+	}
+	console.log(type)
+	const resp = await knex('location').select().where({type})
+	return res.json(resp)
 })
 
 locRouter.get('/:id', async (req, res) => {

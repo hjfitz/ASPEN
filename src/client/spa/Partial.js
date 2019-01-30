@@ -1,5 +1,3 @@
-import * as Ward from './partial/Ward'
-
-export default {
-	Ward,
-}
+export {default as Input} from './partial/input-text'
+export {default as Loader} from './partial/loader'
+export {default as Select} from './partial/select'

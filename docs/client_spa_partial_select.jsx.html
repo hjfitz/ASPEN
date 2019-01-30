@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Home - Documentation</title>
+    <title>client/spa/partial/select.jsx - Documentation</title>
 
     <script src="scripts/hljs/highlight.min.js"></script>
     <!--[if lt IE 9]>
@@ -26,44 +26,40 @@
 
 <div id="main">
     
+    <h1 class="page-title">client/spa/partial/select.jsx</h1>
+    
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {h} from 'preact'
 
+/**
+ * Materialize select element
+ * @param {object} props Element properties
+ * @param {Array&lt;object>} props.options Array of objects in form {val, text}
+ * @param {string} props.default default option
+ * @param {string} props.label input label
+ * @returns {VNode} Preact element
+ */
+const Select = props => (
+	&lt;div className="input-field col s12 m6">
+		&lt;select id={props.id || ''}>
+			&lt;option value="" disabled selected>{props.default}&lt;/option>
+			{props.options.map(opt => &lt;option value={opt.val}>{opt.text}&lt;/option>)}
+		&lt;/select>
+		&lt;label>{props.label}&lt;/label>
+	&lt;/div>
+)
 
-
-
-
-
-
-
-
-    
-
-
-    <section class="readme">
-        <article><h1>FYP</h1><blockquote>
-<p>FHIR server with UI to record patient vital signs</p>
-</blockquote>
-<h2>Prerequisites</h2><ul>
-<li>Node.js ^11.x.x</li>
-<li>yarn ^1.12.x</li>
-<li>postgres ^10.6</li>
-<li>Database setup according to <code>db/schema.psql</code></li>
-</ul>
-<h2>Setup</h2><ol>
-<li>Install dependencies: <code>yarn</code></li>
-<li>Setup environment: <code>mv .env-sample .env</code></li>
-<li>Setup the database: <code>yarn create:db</code></li>
-<li>Build the bundle: <code>yarn build:prod</code></li>
-<li>Run! <code>node bin/www</code></li>
-</ol></article>
+export default Select
+</code></pre>
+        </article>
     </section>
-
-
 
 
 

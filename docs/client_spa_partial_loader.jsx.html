@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Home - Documentation</title>
+    <title>client/spa/partial/loader.jsx - Documentation</title>
 
     <script src="scripts/hljs/highlight.min.js"></script>
     <!--[if lt IE 9]>
@@ -26,44 +26,45 @@
 
 <div id="main">
     
+    <h1 class="page-title">client/spa/partial/loader.jsx</h1>
+    
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {h} from 'preact'
+import '../styles/loader.scss'
 
+/**
+ * Materialize loading element, centered
+ * @returns {VNode} Loading element
+ */
+const Loader = () => (
+	&lt;div className="loader">
+		&lt;div className="preloader-wrapper big active">
+			&lt;div className="spinner-layer spinner-blue-only">
+				&lt;div className="circle-clipper left">
+					&lt;div className="circle" />
+				&lt;/div>
+				&lt;div className="gap-patch">
+					&lt;div className="circle" />
+				&lt;/div>
+				&lt;div className="circle-clipper right">
+					&lt;div className="circle" />
+				&lt;/div>
+			&lt;/div>
+		&lt;/div>
+	&lt;/div>
+)
 
-
-
-
-
-
-
-
-    
-
-
-    <section class="readme">
-        <article><h1>FYP</h1><blockquote>
-<p>FHIR server with UI to record patient vital signs</p>
-</blockquote>
-<h2>Prerequisites</h2><ul>
-<li>Node.js ^11.x.x</li>
-<li>yarn ^1.12.x</li>
-<li>postgres ^10.6</li>
-<li>Database setup according to <code>db/schema.psql</code></li>
-</ul>
-<h2>Setup</h2><ol>
-<li>Install dependencies: <code>yarn</code></li>
-<li>Setup environment: <code>mv .env-sample .env</code></li>
-<li>Setup the database: <code>yarn create:db</code></li>
-<li>Build the bundle: <code>yarn build:prod</code></li>
-<li>Run! <code>node bin/www</code></li>
-</ol></article>
+export default Loader
+</code></pre>
+        </article>
     </section>
-
-
 
 
 

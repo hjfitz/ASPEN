@@ -1,7 +1,7 @@
 import {h, render, Component} from 'preact'
 import {Router} from 'preact-router'
 
-import {Welcome, CreateWard} from './spa/Pages'
+import {Welcome, CreateWard, CreatePatient} from './spa/Pages'
 
 import './spa/styles/router.scss'
 import 'materialize-css/sass/materialize.scss'
@@ -18,6 +18,7 @@ class App extends Component {
 				<Router>
 					<Welcome path="/" />
 					<CreateWard path="/create/ward" />
+					<CreatePatient path="/create/patient" />
 					{/* <Patient path="/patient/:patient_id" /> */}
 					{/* <Ward path="/ward/:ward_id" /> */}
 					{/* <Create path="/submit" /> */}
