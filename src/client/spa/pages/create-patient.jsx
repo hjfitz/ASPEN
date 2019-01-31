@@ -5,9 +5,12 @@ import {Input, Loader, Select} from '../Partial'
 import {fhirBase} from '../../util'
 
 import '../styles/create-patient.scss'
-import {endOfTomorrow} from 'date-fns'
 
 class CreatePatient extends Component {
+	/**
+	 * Create Patient component
+	 * @param {object} props component props
+	 */
 	constructor(props) {
 		super(props)
 		this.state = {
@@ -16,6 +19,9 @@ class CreatePatient extends Component {
 		}
 	}
 
+	/**
+	 * Gets all locations from the API and populates state
+	 */
 	async componentDidMount() {
 		const resp = await fhirBase.get('/Location?type=Ward')
 		if (resp.data) {
@@ -32,11 +38,18 @@ class CreatePatient extends Component {
 		}
 	}
 
+	/**
+	 * force reinitialisation of select elements
+	 */
 	componentDidUpdate() {
 		const select = document.querySelectorAll('#location_id, #patient-gender')
 		M.FormSelect.init(select)
 	}
 
+	/**
+	 * Takes webcam piped to video and sticks on canvas
+	 * Saves this to B64, sets state and pauses the stream
+	 */
 	getPicture() {
 		// TODO: fix width
 		this.canvas.getContext('2d').drawImage(this.video, 0, 0, 300, 300, 0, 0, 300, 300)
@@ -44,10 +57,15 @@ class CreatePatient extends Component {
 		this.setState({img}, () => this.video.pause())
 	}
 
+	/**
+	 * yanks all data from form and posts to API
+	 * creates a patient and then an encounter
+	 */
 	async admit() {
 		const form = new FormData()
 		if (this.state.img) {
 			const img = await fetch(this.state.img).then(r => r.blob())
+			console.log('appended image')
 			form.append('patient-photo', img)
 		}
 		const labels = [
@@ -97,6 +115,10 @@ class CreatePatient extends Component {
 		}
 	}
 
+	/**
+	 * renders component
+	 * if no wards, render a loading icon
+	 */
 	render() {
 		if (!this.state.loaded) return <Loader />
 		return (
@@ -121,7 +143,6 @@ class CreatePatient extends Component {
 							options={this.state.wards}
 							label="Patient Ward"
 						/>
-						{/* todo: make this use getusermedia */}
 						<div className="col m6 s12">
 							<div className="card">
 								<div className="card-image">

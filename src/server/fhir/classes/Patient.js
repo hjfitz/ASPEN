@@ -34,7 +34,7 @@ class Patient {
 		this.prefix = prefix
 		this.gender = gender
 		this.last_updated = last_updated
-		this.photo = photo.photo
+		this.photo = photo
 		this.family = family
 		this.meta = {file: 'fhir/classes/Patient.js'}
 		this.required = ['active', 'fullname', 'given', 'prefix', 'gender', 'contact_id']
@@ -84,10 +84,13 @@ class Patient {
 			return acc
 		}, {})
 		if (this.photo) {
+			logger.info('handling image', {...this.meta, func: 'insert()'})
 			const ext = mime.extension(this.photo.mimetype)
-			const newPath = path.join(process.cwd(), 'patient', `${this.given}-${shortid.generate()}.${ext}`)
+			const photo_url = path.join('patient', `${this.given}-${shortid.generate()}.${ext}`)
+			const newPath = path.join(process.cwd(), photo_url)
+			logger.debug(`moved image to ${newPath}`, {...this.meta, func: 'insert()'})
 			this.photo.mv(newPath)
-			obj.photo_url = newPath
+			obj.photo_url = photo_url
 		}
 		// make query
 		const [resp] = await knex('patient').insert(obj).returning(['patient_id', ...this.values])
