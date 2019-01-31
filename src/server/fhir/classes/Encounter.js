@@ -1,3 +1,5 @@
+const Location = require('./Location')
+const Patient = require('./Patient')
 const {knex} = require('../../db')
 const logger = require('../../logger')
 
@@ -116,6 +118,28 @@ class Encounter {
 	 * @return {object} fhir formatted object
 	 */
 	fhir() {
+		return {
+			resourceType: 'Encounter',
+			meta: {
+				lastUpdated: new Date(this.last_updated),
+			},
+			status: this.status,
+			class: {
+				data: this.class,
+			},
+			subject: {
+				reference: `Patient/${this.patient_id}`,
+			},
+			location: [{
+				reference: `Location/${this.location_id}`,
+			}],
+		}
+	}
+
+	async fhirResolved() {
+		const patient = new Patient({id: this.patient_id})
+		const location = new Location({id: this.location_id})
+		await Promise.all([patient.populate()])// , location.populate()])
 		return {
 			resourceType: 'Encounter',
 			meta: {

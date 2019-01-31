@@ -1,4 +1,5 @@
 const logger = require('../../logger')
+const knex = require('../../db')
 
 class Location {
 	/**
@@ -40,6 +41,10 @@ class Location {
 		return ['id', 'status', 'name', 'description', 'type'].filter(prop => Boolean(this[prop])).length
 	}
 
+	async populate() {
+		const resp = await knex('location').select().where({location_id: this.location_id})
+	}
+
 	/**
 	 * Format database data in to expected fhir formatting
 	 * @returns {object} object data formatted to fhir standards
@@ -66,7 +71,7 @@ class Location {
 	 * @return {object} - correct formatting for location type
 	 */
 	static lookup(type) {
-		switch (type) {
+		switch (type.toLowerCase()) {
 		case 'wing': {
 			return {
 				system: 'https://www.hl7.org/fhir/codesystem-location-physical-type.html',

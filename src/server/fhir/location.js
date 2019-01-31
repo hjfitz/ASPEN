@@ -39,7 +39,8 @@ locRouter.get('/', async (req, res) => {
 		return outcome.makeResponse(res)
 	}
 	const resp = await knex('location').select().where({type})
-	return res.json(resp)
+	const payload = resp.map(entry => new Location({id: entry.location_id, ...entry}).getFhir())
+	return res.json(payload)
 })
 
 locRouter.get('/:id', async (req, res) => {

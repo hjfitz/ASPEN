@@ -17,6 +17,13 @@ encounterRouter.get('/all', async (req, res) => {
 	res.json(rows)
 })
 
+encounterRouter.get('/', async (req, res) => {
+	const rows = await knex('encounter').select().where(req.query)
+	const mapped = rows.map(row => new Encounter(row).fhir())
+	res.json(mapped)
+	// res.json(rows)
+})
+
 encounterRouter.get('/:encounter_id', async (req, res) => {
 	const {encounter_id} = req.params
 	const enc = new Encounter({encounter_id})

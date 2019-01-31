@@ -134,7 +134,7 @@ class CreateWard extends Component {
 			<div className="row">
 				{popup}
 				<div className="create-location-input col s12">
-					<header><h1>Create a Ward</h1></header>
+					<header><h1>Create a Location</h1></header>
 					<form ref={f => this.form = f} className="row">
 						<div className="input-field col m6 s12">
 							<input id="name" type="text" ref={i => this.name = i} data-length="24" />
