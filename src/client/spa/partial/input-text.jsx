@@ -9,7 +9,7 @@ import {h} from 'preact'
  */
 const Input = props => (
 	<div className="input-field col s6">
-		<input id={props.id} type="text" className="validate" />
+		<input id={props.id} type={props.type || 'text'} className="validate" />
 		<label htmlFor={props.id}>{props.label}</label>
 	</div>
 )

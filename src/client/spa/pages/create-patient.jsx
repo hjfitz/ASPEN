@@ -5,6 +5,7 @@ import {Input, Loader, Select} from '../Partial'
 import {fhirBase} from '../../util'
 
 import '../styles/create-patient.scss'
+import {endOfTomorrow} from 'date-fns'
 
 class CreatePatient extends Component {
 	constructor(props) {
@@ -37,13 +38,63 @@ class CreatePatient extends Component {
 	}
 
 	getPicture() {
+		// TODO: fix width
 		this.canvas.getContext('2d').drawImage(this.video, 0, 0, 300, 300, 0, 0, 300, 300)
 		const img = this.canvas.toDataURL('image/png')
 		this.setState({img}, () => this.video.pause())
 	}
 
-	admit() {
-
+	async admit() {
+		const form = new FormData()
+		if (this.state.img) {
+			const img = await fetch(this.state.img).then(r => r.blob())
+			form.append('patient-photo', img)
+		}
+		const labels = [
+			'patient-prefix',
+			'patient-given',
+			'patient-family',
+			'patient-fullname',
+			'patient-gender',
+			'location_id',
+			'contact-prefix',
+			'contact-given',
+			'contact-family',
+			'contact-fullname',
+			'contact-phone',
+		]
+		let invalid = false
+		const obj = labels.reduce((acc, label) => {
+			const elem = document.getElementById(label)
+			const {value} = elem
+			if (value) {
+				acc[label] = value
+				elem.classList.add('valid')
+				elem.classList.remove('invalid')
+			} else {
+				invalid = true
+				elem.classList.add('invalid')
+				elem.classList.remove('valid')
+			}
+			return acc
+		}, {})
+		if (invalid) return
+		Object.keys(obj).forEach(label => form.append(label, obj[label]))
+		const resp = await fhirBase.post('/Patient', form)
+		const {issue: [outcome]} = resp.data
+		if (outcome.code === 200) {
+			const encForm = new FormData()
+			encForm.append('class', 'admission')
+			encForm.append('status', 'finished')
+			encForm.append('patient_id', outcome.diagnostics.patient_id)
+			encForm.append('location_id', obj.location_id)
+			const encResp = await fhirBase.post('/Encounter', encForm)
+			if (encResp.data.issue[0].code !== 200) {
+				// show an error
+			}
+		} else {
+			// do something with an error
+		}
 	}
 
 	render() {
@@ -91,7 +142,7 @@ class CreatePatient extends Component {
 						<Input id="contact-given" label="First Name" />
 						<Input id="contact-family" label="Surname" />
 						<Input id="contact-fullname" label="Full Name" />
-						<Input id="contact-phone" label="Phone" />
+						<Input id="contact-phone" label="Phone" type="tel" />
 					</div>
 					<div className="row">
 						<a className="waves-effect waves-light btn" onClick={this.admit.bind(this)}>

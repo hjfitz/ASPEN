@@ -1,6 +1,10 @@
 const mimeTypes = require('mime-types')
 const sha1 = require('crypto-js/sha1')
 const fs = require('fs')
+const path = require('path')
+const shortid = require('shortid')
+const mime = require('mime-types')
+
 
 const logger = require('../../logger')
 const {knex} = require('../../db')
@@ -21,7 +25,7 @@ class Patient {
 	 * @param {string} params.family patient family name (surname)
 	 */
 	constructor(params) {
-		const {active, id, fullname, given, prefix, gender, last_updated, photo_url, family} = params
+		const {active, id, fullname, given, prefix, gender, last_updated, photo, family} = params
 		this.active = active
 		this.loaded = false
 		this.id = id
@@ -30,11 +34,11 @@ class Patient {
 		this.prefix = prefix
 		this.gender = gender
 		this.last_updated = last_updated
-		this.photo_url = photo_url
+		this.photo = photo.photo
 		this.family = family
 		this.meta = {file: 'fhir/classes/Patient.js'}
 		this.required = ['active', 'fullname', 'given', 'prefix', 'gender', 'contact_id']
-		this.values = [...this.required, 'photo_url', 'family', 'last_updated']
+		this.values = [...this.required, 'family', 'last_updated']
 	}
 
 	/**
@@ -66,9 +70,10 @@ class Patient {
 	 * @returns {boolean} inserted or not
 	 */
 	async insert() {
-		const isValid = !this.required.filter(key => !(this[key])).length
-		if (!isValid) {
-			logger.warn('unable to create', this.meta)
+		const isValid = this.required.filter(key => !(this[key]))
+		if (isValid.length) {
+			logger.warn('unable to create patient', {...this.meta, func: 'insert()'})
+			logger.silly(JSON.stringify(isValid), {...this.meta, func: 'insert()'})
 			return false
 		}
 		// create object
@@ -78,6 +83,12 @@ class Patient {
 			acc[cur] = this[cur]
 			return acc
 		}, {})
+		if (this.photo) {
+			const ext = mime.extension(this.photo.mimetype)
+			const newPath = path.join(process.cwd(), 'patient', `${this.given}-${shortid.generate()}.${ext}`)
+			this.photo.mv(newPath)
+			obj.photo_url = newPath
+		}
 		// make query
 		const [resp] = await knex('patient').insert(obj).returning(['patient_id', ...this.values])
 		return resp

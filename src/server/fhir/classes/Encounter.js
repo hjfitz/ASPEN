@@ -20,7 +20,7 @@ class Encounter {
 		this.status = params.status
 		this.patient_id = params.patient_id
 		this.location_id = params.location_id
-		this.meta = {file: 'fhir/classes/Encounter'}
+		this.meta = {file: 'fhir/classes/Encounter.js'}
 		this.required = [
 			'class',
 			'status',
@@ -62,6 +62,7 @@ class Encounter {
 			return acc
 		}, {})
 		try {
+			logger.silly(JSON.stringify(insertObj), {...this.meta, func: 'insert()'})
 			await knex('encounter').insert(insertObj)
 			return true
 		} catch (err) {
