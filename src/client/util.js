@@ -15,6 +15,8 @@ export function getJwtPayload() {
 	return JSON.parse(payload)
 }
 
+export function noop() {}
+
 export const fhirBase = axios.create({
 	baseURL: '/fhir',
 	timeout: 1500,

@@ -148,7 +148,7 @@ class Patient {
 		const {contact} = this
 		if (!contact) return false
 		const local = path.join(process.cwd(), this.photo_url || '')
-		const photo = this.photo_url
+		const photo = this.photo_url && fs.existsSync(local)
 			? [{
 				contentType: mimeTypes.lookup(local),
 				url: this.photo_url,

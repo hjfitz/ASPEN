@@ -5,6 +5,7 @@ import M from 'materialize-css'
 import {Fab} from './spa/Partial'
 
 import {
+	SearchPatient,
 	CreatePatient,
 	CreateWard,
 	WardList,
@@ -31,12 +32,12 @@ class App extends Component {
 			<div className="container">
 				<Router>
 					<Welcome path="/" />
+					<WardList path="/wards" />
+					<Ward path="/ward/:ward_id" />
 					<CreateWard path="/create/ward" />
 					<CreatePatient path="/create/patient" />
-					<WardList path="/wards" />
+					<SearchPatient path="/search/patient" />
 					{/* <Patient path="/patient/:patient_id" /> */}
-					<Ward path="/ward/:ward_id" />
-					{/* <Create path="/submit" /> */}
 				</Router>
 				<Fab />
 			</div>

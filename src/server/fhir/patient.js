@@ -4,7 +4,7 @@ const OperationOutcome = require('./classes/OperationOutcome')
 const Patient = require('./classes/Patient')
 const Contact = require('./classes/Contact')
 const logger = require('../logger')
-const {client} = require('../db')
+const {client, knex} = require('../db')
 
 const patientRouter = express.Router()
 
@@ -28,6 +28,18 @@ patientRouter.get('/:id', async (req, res) => {
 	}
 	const outcome = new OperationOutcome('error', 406, req.originalUrl, 'could not find patient')
 	return outcome.makeResponse(res)
+})
+
+patientRouter.get('/', async (req, res) => {
+	const {_query} = req.query
+	const rows = await knex('patient')
+		.where('fullname', 'ilike', _query)
+		.orWhere('given', 'ilike', _query)
+		.orWhere('family', 'ilike', _query)
+	const mapped = await Promise.all(
+		rows.map(row => new Patient({...row, id: row.patient_id}).fhir()),
+	)
+	res.json(mapped)
 })
 
 // create
