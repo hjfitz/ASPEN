@@ -86,7 +86,7 @@ class Patient {
 		if (this.photo) {
 			logger.info('handling image', {...this.meta, func: 'insert()'})
 			const ext = mime.extension(this.photo.mimetype)
-			const photo_url = path.join('patient', `${this.given}-${shortid.generate()}.${ext}`)
+			const photo_url = path.join('/patient', `${this.given}-${shortid.generate()}.${ext}`)
 			const newPath = path.join(process.cwd(), photo_url)
 			logger.debug(`moved image to ${newPath}`, {...this.meta, func: 'insert()'})
 			this.photo.mv(newPath)
@@ -147,11 +147,12 @@ class Patient {
 		await this.populate()
 		const {contact} = this
 		if (!contact) return false
+		const local = path.join(process.cwd(), this.photo_url || '')
 		const photo = this.photo_url
 			? [{
-				contentType: mimeTypes.lookup(this.photo_url),
+				contentType: mimeTypes.lookup(local),
 				url: this.photo_url,
-				hash: sha1(fs.readFileSync(this.photo_url)).toString(),
+				hash: sha1(fs.readFileSync(local)).toString(),
 			}]
 			: []
 		return {
@@ -162,6 +163,7 @@ class Patient {
 				assigner: 'SoN',
 			}],
 			resourceType: 'Patient',
+			id: this.id,
 			active: this.active,
 			name: [{
 				use: 'usual',

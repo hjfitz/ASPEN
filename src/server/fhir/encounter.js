@@ -18,8 +18,15 @@ encounterRouter.get('/all', async (req, res) => {
 })
 
 encounterRouter.get('/', async (req, res) => {
+	const include = req.query._include
+	delete req.query._include
+	const [head, ...tail] = include.split(':')
+	const toInclude = tail.join(':').split(';').reduce((acc, cur) => {
+		acc[cur] = true
+		return acc
+	}, {})
 	const rows = await knex('encounter').select().where(req.query)
-	const mapped = rows.map(row => new Encounter(row).fhir())
+	const mapped = await Promise.all(rows.map(row => new Encounter(row).fhir(toInclude)))
 	res.json(mapped)
 	// res.json(rows)
 })

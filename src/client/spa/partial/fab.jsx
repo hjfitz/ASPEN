@@ -4,7 +4,8 @@ import M from 'materialize-css'
 
 class Fab extends Component {
 	componentDidMount() {
-		M.AutoInit()
+		const tipped = document.querySelectorAll('.tooltipped')
+		this.instances = M.Tooltip.init(tipped)
 	}
 
 	render() {
