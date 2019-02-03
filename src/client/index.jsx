@@ -2,7 +2,7 @@ import {h, render, Component} from 'preact'
 import {Router} from 'preact-router'
 import M from 'materialize-css'
 
-import {Fab} from './spa/Partial'
+import {Fab, Breadcrumb} from './spa/Partial'
 
 import {
 	SearchPatient,
@@ -17,6 +17,14 @@ import 'materialize-css/sass/materialize.scss'
 import './spa/styles/router.scss'
 
 class App extends Component {
+	constructor(props) {
+		super(props)
+		this.state = {
+			location: window.location.pathname,
+		}
+		this.onChange = this.onChange.bind(this)
+	}
+
 	componentDidMount() {
 		// checkAuth({url: window.location.pathname})
 		M.AutoInit()
@@ -26,11 +34,16 @@ class App extends Component {
 		M.AutoInit()
 	}
 
+	onChange(ev) {
+		this.setState({location: ev.url})
+	}
+
 	render() {
 		return (
 			// <Router onChange={checkAuth}>
 			<div className="container">
-				<Router>
+				<Breadcrumb location={this.state.location} />
+				<Router onChange={this.onChange}>
 					<Welcome path="/" />
 					<WardList path="/wards" />
 					<Ward path="/ward/:ward_id" />

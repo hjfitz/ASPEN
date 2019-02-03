@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>server/fhir/classes/OperationOutcome.js - Documentation</title>
+    <title>client/spa/pages/search-patients.jsx - Documentation</title>
 
     <script src="scripts/hljs/highlight.min.js"></script>
     <!--[if lt IE 9]>
@@ -26,7 +26,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">server/fhir/classes/OperationOutcome.js</h1>
+    <h1 class="page-title">client/spa/pages/search-patients.jsx</h1>
     
 
     
@@ -36,53 +36,74 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>class OperationOutcome {
-	/**
-	 * Object form of https://www.hl7.org/fhir/operationoutcome.html
-	 * @param {string} sev Severity of the issue (fatal/error/warning/information)
-	 * @param {number} code HTTP status code to set
-	 * @param {string} path fhir path
-	 * @param {string} infoText Information text to display in an error
-	 * @param {string} diagnostics Diagnostics information
-	 */
-	constructor(sev, code, path, infoText, diagnostics = {}) {
-		this.sev = sev
-		this.code = code
-		this.infoText = infoText
-		this.diagnostics = diagnostics
-		this.fhirPath = path
-	}
+            <pre class="prettyprint source linenums"><code>import {h, Component} from 'preact'
+import {Link} from 'preact-router'
 
-	/**
-	 * Create a fhir OperationOutcome object literal
-	 * @returns {object} fhir object literal
-	 */
-	get outcome() {
-		return {
-			resourceType: 'OperationOutcome',
-			issue: [{
-				severity: this.sev,
-				code: this.code,
-				details: {
-					text: this.infoText,
-				},
-				diagnostics: this.diagnostics,
-				expression: this.fhirPath,
-			}],
+import {Input} from '../Partial'
+import {fhirBase} from '../../util'
+
+class SearchPatient extends Component {
+	constructor(props) {
+		super(props)
+		this.state = {
+			patients: [],
 		}
+		this.search = this.search.bind(this)
 	}
 
 	/**
-	 * Make a HTTP response
-	 * @returns {void}
+	 * clear searchbox
 	 */
-	makeResponse(res) {
-		res.status = this.code
-		return res.json(this.outcome)
+	componentWillUnmount() {
+		document.getElementById('search').value = ''
+	}
+
+
+	async search() {
+		const content = document.getElementById('search').value
+		const {data} = await fhirBase.get(`/Patient?_query=${content}`)
+		console.log(data)
+		this.setState({patients: data})
+	}
+
+	renderPatients() {
+		const mappedPatients = this.state.patients
+			.map((patient) => {
+				const {name: [name], photo, id} = patient
+				const displayName = `${name.prefix[0]}. ${name.text}`
+				const displayImage = photo.length ? photo[0].url : '/patient/anon.png'
+				return {
+					id,
+					name: displayName,
+					image: displayImage,
+				}
+			})
+			.map(patient => (
+				&lt;Link href={`/patient/${patient.id}`} className="collection-item avatar">
+					&lt;img src={patient.image} alt="" className="circle" />
+					&lt;span className="title">{patient.name}&lt;/span>
+				&lt;/Link>
+			))
+		return &lt;div className="collection">{mappedPatients}&lt;/div>
+	}
+
+
+	render() {
+		return (
+			&lt;div className="row">
+				&lt;header className="col s12">
+					&lt;h1>Search&lt;/h1>
+				&lt;/header>
+				&lt;Input className="s12" id="search" label="Search" onKeyUp={this.search} />
+				&lt;div className="col s12">
+					{this.renderPatients()}
+				&lt;/div>
+			&lt;/div>
+		)
 	}
 }
 
-module.exports = OperationOutcome
+export default SearchPatient
 </code></pre>
         </article>
     </section>

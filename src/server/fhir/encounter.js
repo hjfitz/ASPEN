@@ -20,7 +20,7 @@ encounterRouter.get('/all', async (req, res) => {
 encounterRouter.get('/', async (req, res) => {
 	const include = req.query._include
 	delete req.query._include
-	const [head, ...tail] = include.split(':')
+	const [, ...tail] = include.split(':')
 	const toInclude = tail.join(':').split(';').reduce((acc, cur) => {
 		acc[cur] = true
 		return acc

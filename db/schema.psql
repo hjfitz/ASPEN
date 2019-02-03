@@ -10,13 +10,13 @@ CREATE TABLE contact (
 );
 
 CREATE TABLE patient (
-	patient_id		serial 			PRIMARY KEY,
+	patient_id 		serial 			PRIMARY KEY,
 	active 			boolean 		NOT NULL,
 	fullname 		text 			NOT NULL,
 	given 			text 			NOT NULL,
 	prefix 			text 			NOT NULL,
-	gender 			patient_gender	NOT NULL,
-	last_updated 	timestamptz		NOT NULL,
+	gender 			patient_gender 	NOT NULL,
+	last_updated 	timestamptz 	NOT NULL,
 	photo_url 		text,
 	family 			text,
 	contact_id 		serial REFERENCES contact(contact_id)

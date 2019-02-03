@@ -1,0 +1,8 @@
+.breadcrumb, .breadcrumb::before {
+	color: #00897b!important;
+	text-transform: capitalize;
+}
+
+.breadcrumb:last-child {
+    color: #00796b!important;
+}
