@@ -24,10 +24,14 @@ class CreatePatient extends Component {
 	 */
 	async componentDidMount() {
 		const resp = await fhirBase.get('/Location?type=Ward')
+		console.log(resp.data)
 		if (resp.data) {
 			this.setState({
 				loaded: true,
-				wards: resp.data.map(ward => ({val: ward.location_id, text: ward.name})),
+				wards: resp.data.map((ward) => {
+					console.log(ward)
+					return ({val: ward.id, text: ward.name})
+				}),
 			}, () => {
 				// the form is showing, so populate with webcam
 				navigator.mediaDevices.getUserMedia({video: true}).then((stream) => {
@@ -84,6 +88,7 @@ class CreatePatient extends Component {
 		let invalid = false
 		const obj = labels.reduce((acc, label) => {
 			const elem = document.getElementById(label)
+			console.log(elem)
 			const {value} = elem
 			if (value) {
 				acc[label] = value
