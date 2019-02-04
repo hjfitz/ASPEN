@@ -157,7 +157,6 @@ class CreateWard extends Component {
 
 						<div className="col s12">
 							<a className="waves-effect waves-light btn" onClick={this.makeWard.bind(this)}>Submit</a>
-
 						</div>
 					</form>
 				</div>

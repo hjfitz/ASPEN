@@ -4,6 +4,14 @@ import {Link} from 'preact-router'
 import '../styles/breadcrumb.scss'
 
 
+function getCurrentUrl(index, places) {
+	let url = '/'
+	for (let i = 0; i < (index + 1); i += 1) {
+		url += `${places[i]}/`
+	}
+	return url
+}
+
 /**
  * Generate some breadcrumbs based on a location
  * Best used when updating with router
@@ -15,7 +23,9 @@ const Breadcrumbs = (props) => {
 	const places = props.location.split('/').filter(Boolean)
 	const crumbs = [
 		<Link href="/" className="breadcrumb">Home</Link>,
-		...places.map(loc => <Link href={`/${loc}`} className="breadcrumb">{loc}</Link>),
+		...places.map((loc, idx) => (
+			<Link href={getCurrentUrl(idx, places)} className="breadcrumb">{loc}</Link>
+		)),
 	]
 
 	return (

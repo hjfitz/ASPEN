@@ -12,8 +12,8 @@ const Welcome = () => (
 				<h1>What would you like to do?</h1>
 			</header>
 			<ul>
-				<li><Link href="/create/ward">Add a new location</Link></li>
-				<li><Link href="/create/patient">Admit a new patient</Link></li>
+				<li><Link href="/add/ward">Add a new location</Link></li>
+				<li><Link href="/add/patient">Admit a new patient</Link></li>
 				<li><Link href="/wards">View all wards</Link></li>
 				<li><Link href="/search/patient">Search for a patient</Link></li>
 			</ul>

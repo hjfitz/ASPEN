@@ -11,6 +11,7 @@ import {
 	WardList,
 	Welcome,
 	Ward,
+	Add,
 } from './spa/Pages'
 
 import 'materialize-css/sass/materialize.scss'
@@ -47,8 +48,9 @@ class App extends Component {
 					<Welcome path="/" />
 					<WardList path="/wards" />
 					<Ward path="/ward/:ward_id" />
-					<CreateWard path="/create/ward" />
-					<CreatePatient path="/create/patient" />
+					<Add path="/add" />
+					<CreateWard path="/add/ward" />
+					<CreatePatient path="/add/patient" />
 					<SearchPatient path="/search/patient" />
 					{/* <Patient path="/patient/:patient_id" /> */}
 				</Router>
