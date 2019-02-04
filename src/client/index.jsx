@@ -1,6 +1,5 @@
 import {h, render, Component} from 'preact'
 import {Router} from 'preact-router'
-import M from 'materialize-css'
 
 import {Fab, Breadcrumb} from './spa/Partial'
 
@@ -26,22 +25,12 @@ class App extends Component {
 		this.onChange = this.onChange.bind(this)
 	}
 
-	componentDidMount() {
-		// checkAuth({url: window.location.pathname})
-		M.AutoInit()
-	}
-
-	componentDidUpdate() {
-		M.AutoInit()
-	}
-
 	onChange(ev) {
 		this.setState({location: ev.url})
 	}
 
 	render() {
 		return (
-			// <Router onChange={checkAuth}>
 			<div className="container">
 				<Breadcrumb location={this.state.location} />
 				<Router onChange={this.onChange}>

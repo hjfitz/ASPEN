@@ -143,6 +143,8 @@ class CreatePatient extends Component {
 							options={this.state.wards}
 							label="Patient Ward"
 						/>
+						{/* do something here with the phone camera input
+						<input type="file" accept="image/*" capture="camera"> */}
 						<div className="col m6 s12">
 							<div className="card">
 								<div className="card-image">

@@ -46,7 +46,7 @@ class SearchPatient extends Component {
 					<span className="title">{patient.name}</span>
 				</Link>
 			))
-		return <div className="collection">{mappedPatients}</div>
+		return mappedPatients.length ? <div className="collection">{mappedPatients}</div> : ''
 	}
 
 

@@ -2,10 +2,16 @@ import {h, Component} from 'preact'
 import {Link} from 'preact-router'
 import M from 'materialize-css'
 
+function initFAB() {
+	const tipped = document.querySelectorAll('.tooltipped')
+	const fab = document.querySelectorAll('.fixed-action-btn')
+	M.FloatingActionButton.init(fab)
+	M.Tooltip.init(tipped)
+}
+
 class Fab extends Component {
 	componentDidMount() {
-		const tipped = document.querySelectorAll('.tooltipped')
-		this.instances = M.Tooltip.init(tipped)
+		initFAB()
 	}
 
 	render() {

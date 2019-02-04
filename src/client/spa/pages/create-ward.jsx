@@ -52,20 +52,10 @@ class CreateWard extends Component {
 	 */
 	componentDidMount() {
 		this.instances.push(
-			M.FormSelect.init(this.type),
 			M.CharacterCounter.init(this.name),
 			M.CharacterCounter.init(this.desc),
 		)
 	}
-
-	componentDidUpdate() {
-		this.instances.push(
-			M.FormSelect.init(this.type),
-			M.CharacterCounter.init(this.name),
-			M.CharacterCounter.init(this.desc),
-		)
-	}
-
 
 	/**
 	 * Validate the elements on the page and then POST their data to /fhir/Location
@@ -74,17 +64,20 @@ class CreateWard extends Component {
 	 */
 	async makeWard(ev) {
 		ev.preventDefault() // don't refresh the page - this is a SPA!
-		const inputs = [this.name, this.desc, this.type] // inputs to check
+		console.log('oioi')
+		const inputs = [this.name, this.desc] // inputs to check
 		const valid = CreateWard.validateForms(inputs)
 		if (!valid) return // not valid. let the classNames do the talking
 
 		// populate a form and send it to the server
 		const locForm = new FormData()
+		locForm.append('type', 'ward')
 		inputs.forEach(control => locForm.set(control.id, control.value))
 
 		// attempt to post
 		try {
 			const resp = await fhirBase.post('/Location', locForm)
+			console.log('post works')
 			const {id} = resp.data.issue[0].diagnostics
 			const message = (
 				<div className="card-content">
@@ -145,15 +138,15 @@ class CreateWard extends Component {
 							<textarea id="description" className="materialize-textarea" ref={t => this.desc = t} data-length="120" />
 							<label htmlFor="description" className="validate">Description</label>
 						</div>
-
-						<div className="col s12 m6">
+						{/*
+						<div className="input-field col s12 m6">
 							<label htmlFor="type">Type of location:</label>
 							<select id="type" ref={s => this.type = s} className="validate">
 								<option value="" disabled selected>--Please select an option---</option>
 								<option value="ward">Ward</option>
 								<option value="wing">Wing</option>
 							</select>
-						</div>
+						</div> */}
 
 						<div className="col s12">
 							<a className="waves-effect waves-light btn" onClick={this.makeWard.bind(this)}>Submit</a>

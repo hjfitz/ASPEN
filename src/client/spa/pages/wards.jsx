@@ -16,13 +16,11 @@ class WardList extends Component {
 
 	createWardList() {
 		const mappedWards = this.state.wardList.map(ward => (
-			// <li className="collection-item avatar">
 			<Link href={`/ward/${ward.id}`} className="collection-item avatar">
-				<img src="images/yuna.jpg" alt="" className="circle" />
+				<img src="img/ward.png" alt="Ward" className="circle" />
 				<span className="title">{ward.name}</span>
 				<p>{ward.description}</p>
 			</Link>
-			// </li>
 		))
 		return <div className="collection">{mappedWards}</div>
 	}
