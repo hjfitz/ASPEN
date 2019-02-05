@@ -1,0 +1,21 @@
+.tabs {
+	.tab {
+		
+		a {
+			color:#26a69a!important;
+
+			&:hover {
+				color:#26a69a!important;
+			}
+
+			&.active {
+				color:#00897b!important;
+			}
+		}
+	}
+
+	.indicator {
+		background-color:#26a69a!important;
+	}
+
+}

@@ -1,13 +1,14 @@
 import {h, render, Component} from 'preact'
 import {Router} from 'preact-router'
 
-import {Fab, Breadcrumb} from './spa/Partial'
+import {Fab, Breadcrumb, Redirect} from './spa/Partial'
 
 import {
 	SearchPatient,
 	CreatePatient,
 	CreateWard,
 	WardList,
+	Patient,
 	Welcome,
 	Ward,
 	Add,
@@ -41,7 +42,8 @@ class App extends Component {
 					<CreateWard path="/add/ward" />
 					<CreatePatient path="/add/patient" />
 					<SearchPatient path="/search/patient" />
-					{/* <Patient path="/patient/:patient_id" /> */}
+					<Redirect path="/patient" to="/search/patient" />
+					<Patient path="/patient/:patient_id" />
 				</Router>
 				<Fab />
 			</div>

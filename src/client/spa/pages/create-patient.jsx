@@ -1,10 +1,12 @@
 import {h, Component} from 'preact'
 import M from 'materialize-css'
+import isMobile from 'ismobilejs'
 
 import {Input, Loader, Select} from '../Partial'
 import {fhirBase} from '../../util'
 
 import '../styles/create-patient.scss'
+
 
 class CreatePatient extends Component {
 	/**
@@ -28,11 +30,16 @@ class CreatePatient extends Component {
 			this.setState({
 				loaded: true,
 				wards: resp.data.map(ward => ({val: ward.id, text: ward.name})),
-			}, () => {
-				// the form is showing, so populate with webcam
-				navigator.mediaDevices.getUserMedia({video: true}).then((stream) => {
-					this.video.srcObject = stream
-					this.video.onloadedmetadata = () => this.video.play()
+			}, async () => {
+				if (!this.video) return
+				// the form is showing and webcam is, so populate with webcam
+				const stream = await navigator.mediaDevices.getUserMedia({video: true})
+				this.video.srcObject = stream
+				this.video.onloadedmetadata = this.video.play
+				this.video.addEventListener('playing', () => {
+					const dimensions = this.video.getBoundingClientRect()
+					this.canvas.height = dimensions.height
+					this.canvas.width = dimensions.width
 				})
 			})
 		}
@@ -55,7 +62,19 @@ class CreatePatient extends Component {
 		const dimensions = this.video.getBoundingClientRect()
 		this.canvas.getContext('2d').drawImage(this.video, 0, 0, dimensions.width, dimensions.height)
 		const img = this.canvas.toDataURL('image/png')
-		this.setState({img}, () => this.video.pause())
+		this.img = img
+		this.video.pause()
+	}
+
+	setImg(ev) {
+		const {files: [file]} = ev.target
+		const reader = new FileReader()
+
+		reader.addEventListener('load', () => {
+			this.img = reader.result
+		}, false)
+
+		if (file) reader.readAsDataURL(file)
 	}
 
 	/**
@@ -64,8 +83,9 @@ class CreatePatient extends Component {
 	 */
 	async admit() {
 		const form = new FormData()
-		if (this.state.img) {
-			const img = await fetch(this.state.img).then(r => r.blob())
+		if (this.img) {
+			const img = await fetch(this.img).then(r => r.blob())
+			console.log(img)
 			form.append('patient-photo', img)
 		}
 		const labels = [
@@ -117,11 +137,13 @@ class CreatePatient extends Component {
 		}
 	}
 
+
 	/**
 	 * renders component
 	 * if no wards, render a loading icon
 	 */
 	render() {
+		console.log(isMobile.any)
 		if (!this.state.loaded) return <Loader />
 		return (
 			<div className="row">
@@ -154,17 +176,22 @@ class CreatePatient extends Component {
 						{/* do something here with the phone camera input
 						<input type="file" accept="image/*" capture="camera"> */}
 						<div className="col m6 s12">
-							<div className="card">
-								<div className="card-image">
-									<video ref={v => this.video = v} id="video" onClick={() => this.video.play()} />
-									<canvas ref={c => this.canvas = c} style={{display: 'none'}} width="300" height="300" />
-								</div>
-								<div className="card-action">
-									<a href="#" onClick={this.getPicture.bind(this)} className="teal-text text-lighten-1">
-										<i className="material-icons left">camera_alt</i>Take Picture
-									</a>
-								</div>
-							</div>
+							{!isMobile.any
+								? (
+									<div className="card">
+										<div className="card-image">
+											<video ref={v => this.video = v} id="video" onClick={() => this.video.play()} />
+											<canvas ref={c => this.canvas = c} style={{display: 'none'}} width="300" height="300" />
+										</div>
+										<div className="card-action">
+											<a onClick={this.getPicture.bind(this)} className="teal-text text-lighten-1">
+												<i className="material-icons left">camera_alt</i>Take Picture
+											</a>
+										</div>
+									</div>
+								)
+								: <input onChange={this.setImg.bind(this)} type="file" accept="image/*" capture="camera" />
+							}
 						</div>
 					</div>
 					<div className="row">

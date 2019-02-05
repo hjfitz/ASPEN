@@ -181,12 +181,12 @@ class Patient {
 					family: contact.family,
 					given: contact.given,
 					prefix: contact.prefix.split(' '),
-					telecom: [{
-						system: 'phone',
-						value: contact.phone,
-						use: 'home',
-					}],
 				},
+				telecom: [{
+					system: 'phone',
+					value: contact.phone,
+					use: 'home',
+				}],
 			}],
 		}
 	}

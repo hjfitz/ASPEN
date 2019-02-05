@@ -32,6 +32,7 @@
     "express-fileupload": "^1.1.1-alpha.1",
     "express-form-data": "^2.0.8",
     "helmet": "^3.15.0",
+    "ismobilejs": "^0.5.1",
     "jsonwebtoken": "^8.4.0",
     "knex": "^0.16.3",
     "materialize-css": "^1.0.0-rc.2",
