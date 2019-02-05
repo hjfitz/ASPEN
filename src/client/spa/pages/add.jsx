@@ -13,20 +13,20 @@ const Add = () => (
 					</div>
 					<div className="card-content">
 						<span className="card-title">Patient</span>
-					Admit a new patient and their accompanying contact to a given location
+						Admit a new patient and their accompanying contact to a given location
 					</div>
 				</div>
 			</Link>
 		</div>
 		<div className="col m6 s12">
-			<Link href="/add/location">
+			<Link href="/add/ward">
 				<div className="card hoverable linked-card z-depth-2">
 					<div className="card-image">
 						<img src="/img/pharmacy.png" alt="" />
 					</div>
 					<div className="card-content">
-						<span className="card-title">Location</span>
-					Create a new location to admit patients to!
+						<span className="card-title">Ward</span>
+						Create a new ward to admit patients to!
 					</div>
 				</div>
 			</Link>

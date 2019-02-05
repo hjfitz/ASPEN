@@ -24,14 +24,10 @@ class CreatePatient extends Component {
 	 */
 	async componentDidMount() {
 		const resp = await fhirBase.get('/Location?type=Ward')
-		console.log(resp.data)
 		if (resp.data) {
 			this.setState({
 				loaded: true,
-				wards: resp.data.map((ward) => {
-					console.log(ward)
-					return ({val: ward.id, text: ward.name})
-				}),
+				wards: resp.data.map(ward => ({val: ward.id, text: ward.name})),
 			}, () => {
 				// the form is showing, so populate with webcam
 				navigator.mediaDevices.getUserMedia({video: true}).then((stream) => {
@@ -56,7 +52,8 @@ class CreatePatient extends Component {
 	 */
 	getPicture() {
 		// TODO: fix width
-		this.canvas.getContext('2d').drawImage(this.video, 0, 0, 300, 300, 0, 0, 300, 300)
+		const dimensions = this.video.getBoundingClientRect()
+		this.canvas.getContext('2d').drawImage(this.video, 0, 0, dimensions.width, dimensions.height)
 		const img = this.canvas.toDataURL('image/png')
 		this.setState({img}, () => this.video.pause())
 	}
@@ -69,7 +66,6 @@ class CreatePatient extends Component {
 		const form = new FormData()
 		if (this.state.img) {
 			const img = await fetch(this.state.img).then(r => r.blob())
-			console.log('appended image')
 			form.append('patient-photo', img)
 		}
 		const labels = [
@@ -88,7 +84,6 @@ class CreatePatient extends Component {
 		let invalid = false
 		const obj = labels.reduce((acc, label) => {
 			const elem = document.getElementById(label)
-			console.log(elem)
 			const {value} = elem
 			if (value) {
 				acc[label] = value
@@ -115,6 +110,8 @@ class CreatePatient extends Component {
 			if (encResp.data.issue[0].code !== 200) {
 				// show an error
 			}
+			this.popup.innerHTML = JSON.stringify(encResp.data)
+			this.popInst.open()
 		} else {
 			// do something with an error
 		}
@@ -128,7 +125,13 @@ class CreatePatient extends Component {
 		if (!this.state.loaded) return <Loader />
 		return (
 			<div className="row">
-				<h1>Admit a new patient</h1>
+				<div className="col s12">
+					<div className="card materialboxed" ref={m => this.popup = m}>
+						<span className="card-title">Message</span>
+						<div className="card-content">response error</div>
+					</div>
+				</div>
+				<h1>Admit a New Patient</h1>
 				<form className="col s12">
 					<div className="row">
 						<h3>Patient Information</h3>

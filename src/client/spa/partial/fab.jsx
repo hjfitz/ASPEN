@@ -27,7 +27,7 @@ class Fab extends Component {
 						</Link>
 					</li>
 					<li>
-						<Link href="/create/patient" className="btn-floating green tooltipped" data-position="left" data-tooltip="Admit a patient">
+						<Link href="/add/patient" className="btn-floating green tooltipped" data-position="left" data-tooltip="Admit a patient">
 							<i className="material-icons">assignment_ind</i>
 						</Link>
 					</li>

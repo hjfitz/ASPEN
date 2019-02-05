@@ -26,7 +26,7 @@ class Ward extends Component {
 			.map((patient) => {
 				const {subject: {name: [name], photo, id}} = patient
 				const displayName = `${name.prefix[0]}. ${name.text}`
-				const displayImage = photo.length ? photo[0].url : '/patient/anon.png'
+				const displayImage = photo.length ? photo[0].url : '/patient/unknown.png'
 				return {
 					id,
 					name: displayName,

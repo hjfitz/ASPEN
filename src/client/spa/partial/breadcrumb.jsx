@@ -29,11 +29,13 @@ const Breadcrumbs = (props) => {
 	]
 
 	return (
-		<nav className="white z-depth-0">
-			<div className="row">
-				<div className="col s12">{places.length ? crumbs : []}</div>
-			</div>
-		</nav>
+		<div className="navbar-fixed">
+			<nav className="white z-depth-0">
+				<div className="row">
+					<div className="col s12">{places.length ? crumbs : []}</div>
+				</div>
+			</nav>
+		</div>
 	)
 }
 

@@ -11,12 +11,58 @@ const Welcome = () => (
 			<header>
 				<h1>What would you like to do?</h1>
 			</header>
-			<ul>
-				<li><Link href="/add/ward">Add a new location</Link></li>
-				<li><Link href="/add/patient">Admit a new patient</Link></li>
-				<li><Link href="/wards">View all wards</Link></li>
-				<li><Link href="/search/patient">Search for a patient</Link></li>
-			</ul>
+		</div>
+		<div className="col s12">
+			<div className="row">
+				<div className="col s6 l4">
+					<div className="hoverable card home-card">
+						<Link href="/wards">
+							<div className="card-content">
+								<span className="card-title">View your wards</span>
+								<p>I am a very simple card. I am good at containing small bits of information.
+					I am convenient because I require little markup to use effectively.
+								</p>
+							</div>
+						</Link>
+					</div>
+				</div>
+				<div className="col s6 l4">
+					<div className="hoverable card home-card">
+						<Link href="/search/patient">
+							<div className="card-content">
+								<span className="card-title">Search for a Patient's Vital signs</span>
+								<p>I am a very simple card. I am good at containing small bits of information.
+					I am convenient because I require little markup to use effectively.
+								</p>
+							</div>
+						</Link>
+					</div>
+				</div>
+				<div className="col s6 l4">
+					<div className="hoverable card home-card">
+						<Link href="/add/patient">
+							<div className="card-content">
+								<span className="card-title">Admit a Patient</span>
+								<p>I am a very simple card. I am good at containing small bits of information.
+					I am convenient because I require little markup to use effectively.
+								</p>
+							</div>
+						</Link>
+					</div>
+				</div>
+				<div className="col s6 l4">
+					<div className="hoverable card home-card">
+						<Link href="/add/ward">
+							<div className="card-content">
+								<span className="card-title">Create a ward</span>
+								<p>I am a very simple card. I am good at containing small bits of information.
+					I am convenient because I require little markup to use effectively.
+								</p>
+							</div>
+						</Link>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 )
