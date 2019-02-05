@@ -13,3 +13,8 @@ echo "local   all             all                                      md5"
 login to db as postgres and do:
 CREATE DATABASE fyp;
 ALTER USER fyp PASSWORD 'fyp';
+
+May have to perform the following:
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public to fyp;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public to fyp;
+GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public to fyp;
