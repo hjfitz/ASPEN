@@ -66,6 +66,10 @@ class CreatePatient extends Component {
 		this.video.pause()
 	}
 
+	/**
+	 * serialise the uploaded image and save it
+	 * @param {EventTarget} ev Event from input onChange event
+	 */
 	setImg(ev) {
 		const {files: [file]} = ev.target
 		const reader = new FileReader()
@@ -85,7 +89,6 @@ class CreatePatient extends Component {
 		const form = new FormData()
 		if (this.img) {
 			const img = await fetch(this.img).then(r => r.blob())
-			console.log(img)
 			form.append('patient-photo', img)
 		}
 		const labels = [
@@ -143,7 +146,6 @@ class CreatePatient extends Component {
 	 * if no wards, render a loading icon
 	 */
 	render() {
-		console.log(isMobile.any)
 		if (!this.state.loaded) return <Loader />
 		return (
 			<div className="row">
@@ -173,8 +175,6 @@ class CreatePatient extends Component {
 							options={this.state.wards}
 							label="Patient Ward"
 						/>
-						{/* do something here with the phone camera input
-						<input type="file" accept="image/*" capture="camera"> */}
 						<div className="col m6 s12">
 							{!isMobile.any
 								? (

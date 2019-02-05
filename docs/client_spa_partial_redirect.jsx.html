@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>client/spa/partial/loader.jsx - Documentation</title>
+    <title>client/spa/partial/redirect.jsx - Documentation</title>
 
     <script src="scripts/hljs/highlight.min.js"></script>
     <!--[if lt IE 9]>
@@ -26,7 +26,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">client/spa/partial/loader.jsx</h1>
+    <h1 class="page-title">client/spa/partial/redirect.jsx</h1>
     
 
     
@@ -36,67 +36,26 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import {h} from 'preact'
-import '../styles/loader.scss'
+            <pre class="prettyprint source linenums"><code>import {Component} from 'preact'
+import {route} from 'preact-router'
 
 /**
- * Materialize loading element, centered
- * @returns {VNode} Loading element
+ * Redirect the user elsewhere
  */
-const Loader = () => (
-	&lt;div className="loader">
-		&lt;div className="preloader-wrapper big active">
-			&lt;div className="spinner-layer spinner-blue">
-				&lt;div className="circle-clipper left">
-					&lt;div className="circle" />
-				&lt;/div>
-				&lt;div className="gap-patch">
-					&lt;div className="circle" />
-				&lt;/div>
-				&lt;div className="circle-clipper right">
-					&lt;div className="circle" />
-				&lt;/div>
-			&lt;/div>
+class Redirect extends Component {
+	/**
+	 * on mount, route elsewhere
+	 */
+	componentWillMount() {
+		route(this.props.to, true)
+	}
 
-			&lt;div className="spinner-layer spinner-red">
-				&lt;div className="circle-clipper left">
-					&lt;div className="circle" />
-				&lt;/div>
-				&lt;div className="gap-patch">
-					&lt;div className="circle" />
-				&lt;/div>
-				&lt;div className="circle-clipper right">
-					&lt;div className="circle" />
-				&lt;/div>
-			&lt;/div>
-			&lt;div className="spinner-layer spinner-yellow">
-				&lt;div className="circle-clipper left">
-					&lt;div className="circle" />
-				&lt;/div>
-				&lt;div className="gap-patch">
-					&lt;div className="circle" />
-				&lt;/div>
-				&lt;div className="circle-clipper right">
-					&lt;div className="circle" />
-				&lt;/div>
-			&lt;/div>
+	render() {
+		return null
+	}
+}
 
-			&lt;div className="spinner-layer spinner-green">
-				&lt;div className="circle-clipper left">
-					&lt;div className="circle" />
-				&lt;/div>
-				&lt;div className="gap-patch">
-					&lt;div className="circle" />
-				&lt;/div>
-				&lt;div className="circle-clipper right">
-					&lt;div className="circle" />
-				&lt;/div>
-			&lt;/div>
-		&lt;/div>
-	&lt;/div>
-)
-
-export default Loader
+export default Redirect
 </code></pre>
         </article>
     </section>

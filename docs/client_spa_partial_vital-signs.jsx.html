@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>client/spa/partial/loader.jsx - Documentation</title>
+    <title>client/spa/partial/vital-signs.jsx - Documentation</title>
 
     <script src="scripts/hljs/highlight.min.js"></script>
     <!--[if lt IE 9]>
@@ -26,7 +26,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">client/spa/partial/loader.jsx</h1>
+    <h1 class="page-title">client/spa/partial/vital-signs.jsx</h1>
     
 
     
@@ -36,67 +36,106 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import {h} from 'preact'
-import '../styles/loader.scss'
+            <pre class="prettyprint source linenums"><code>import {h, Component} from 'preact'
+import M from 'materialize-css'
 
-/**
- * Materialize loading element, centered
- * @returns {VNode} Loading element
- */
-const Loader = () => (
-	&lt;div className="loader">
-		&lt;div className="preloader-wrapper big active">
-			&lt;div className="spinner-layer spinner-blue">
-				&lt;div className="circle-clipper left">
-					&lt;div className="circle" />
+import '../styles/vital-signs.scss'
+
+class Vitals extends Component {
+	/**
+	 * Initialise materialize components on page load
+	 */
+	componentDidMount() {
+		const tabs = document.querySelectorAll('.tabs')
+		const select = document.querySelectorAll('select')
+		M.FormSelect.init(select)
+		M.Tabs.init(tabs, {swipeable: true})
+	}
+
+	/**
+	 * Render input form for vitals and output of prior vitals
+	 * @returns {VNode} patient info
+	 */
+	render() {
+		return (
+			&lt;div className="card">
+				&lt;div className="card-tabs">
+					&lt;ul className="tabs tabs-fixed-width">
+						&lt;li className="tab">&lt;a className="active" href="#record">Record Vital Signs&lt;/a>&lt;/li>
+						&lt;li className="tab">&lt;a href="#history">Previous Vital Signs&lt;/a>&lt;/li>
+					&lt;/ul>
 				&lt;/div>
-				&lt;div className="gap-patch">
-					&lt;div className="circle" />
-				&lt;/div>
-				&lt;div className="circle-clipper right">
-					&lt;div className="circle" />
+				&lt;div className="card-content">
+					&lt;div id="record">
+						&lt;div className="row">
+							&lt;form action="" className="col s12">
+
+								&lt;div className="row">
+									&lt;div className="input-field col s6">
+										&lt;input id="resp-rate" type="number" className="validate" />
+										&lt;label htmlFor="resp-rate">Respiratory Rate&lt;/label>
+									&lt;/div>
+									&lt;div className="input-field col s6">
+										&lt;input id="oxy-sat" type="number" className="validate" />
+										&lt;label htmlFor="oxy-sat">Oxygen Saturation&lt;/label>
+									&lt;/div>
+								&lt;/div>
+
+								&lt;div className="row">
+									&lt;div className="input-field col s6">
+										&lt;input id="heart-rate" type="number" className="validate" />
+										&lt;label htmlFor="heart-rate">Heart Rate&lt;/label>
+									&lt;/div>
+									&lt;div className="input-field col s6">
+										&lt;input id="body-temp" type="number" className="validate" />
+										&lt;label htmlFor="body-temp">Body Temperature&lt;/label>
+									&lt;/div>
+								&lt;/div>
+
+								&lt;div className="row">
+									&lt;div className="input-field col s6">
+										&lt;input id="syst-bp" type="number" className="validate" />
+										&lt;label htmlFor="syst-bp">Systolic Blood Pressure&lt;/label>
+									&lt;/div>
+									&lt;div className="input-field col s6">
+										&lt;select>
+											&lt;option value="" disabled selected>Choose your option&lt;/option>
+											&lt;option value="A">Aware&lt;/option>
+											&lt;option value="D">Drowzy&lt;/option>
+											&lt;option value="U">Unconscious&lt;/option>
+										&lt;/select>
+										&lt;label>Level of Consciousness&lt;/label>
+									&lt;/div>
+
+								&lt;/div>
+
+								&lt;div className="row">
+									&lt;div className="col s6">
+										&lt;p>
+											&lt;label>
+												&lt;input name="supp-oxy" type="checkbox" />
+												&lt;span>Supplemental Oxygen&lt;/span>
+											&lt;/label>
+										&lt;/p>
+									&lt;/div>
+									&lt;div className="col s6">
+										&lt;a className="waves-effect waves-light btn">Submit&lt;/a>
+									&lt;/div>
+
+								&lt;/div>
+
+							&lt;/form>
+						&lt;/div>
+
+					&lt;/div>
+					&lt;div id="history">Test 3&lt;/div>
 				&lt;/div>
 			&lt;/div>
+		)
+	}
+}
 
-			&lt;div className="spinner-layer spinner-red">
-				&lt;div className="circle-clipper left">
-					&lt;div className="circle" />
-				&lt;/div>
-				&lt;div className="gap-patch">
-					&lt;div className="circle" />
-				&lt;/div>
-				&lt;div className="circle-clipper right">
-					&lt;div className="circle" />
-				&lt;/div>
-			&lt;/div>
-			&lt;div className="spinner-layer spinner-yellow">
-				&lt;div className="circle-clipper left">
-					&lt;div className="circle" />
-				&lt;/div>
-				&lt;div className="gap-patch">
-					&lt;div className="circle" />
-				&lt;/div>
-				&lt;div className="circle-clipper right">
-					&lt;div className="circle" />
-				&lt;/div>
-			&lt;/div>
-
-			&lt;div className="spinner-layer spinner-green">
-				&lt;div className="circle-clipper left">
-					&lt;div className="circle" />
-				&lt;/div>
-				&lt;div className="gap-patch">
-					&lt;div className="circle" />
-				&lt;/div>
-				&lt;div className="circle-clipper right">
-					&lt;div className="circle" />
-				&lt;/div>
-			&lt;/div>
-		&lt;/div>
-	&lt;/div>
-)
-
-export default Loader
+export default Vitals
 </code></pre>
         </article>
     </section>

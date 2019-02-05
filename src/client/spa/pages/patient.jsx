@@ -29,6 +29,10 @@ const normaliseFhirResponse = (fhirResponse) => {
 }
 
 class Patient extends Component {
+	/**
+	 * Patient information component
+	 * @param {object} props component props
+	 */
 	constructor(props) {
 		super(props)
 		this.state = {
@@ -37,12 +41,21 @@ class Patient extends Component {
 		}
 	}
 
+	/**
+	 * fetch patient data from /Encounter on form load
+	 */
 	async componentDidMount() {
 		const {data} = await fhirBase.get(`Encounter/?class=admission&patient_id=${this.props.patient_id}&_include=Encounter:patient`)
 		const patientInfo = normaliseFhirResponse(data[0].subject)
 		this.setState({patientInfo, loaded: true})
 	}
 
+	/**
+	 * Render our patient info
+	 * @param {object} _ props (unused)
+	 * @param {object} state component state
+	 * @returns {VNode} patient information or loading icon
+	 */
 	render(_, state) {
 		if (!state.loaded) return <Loader />
 		return (

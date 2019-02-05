@@ -4,6 +4,9 @@ import M from 'materialize-css'
 import '../styles/vital-signs.scss'
 
 class Vitals extends Component {
+	/**
+	 * Initialise materialize components on page load
+	 */
 	componentDidMount() {
 		const tabs = document.querySelectorAll('.tabs')
 		const select = document.querySelectorAll('select')
@@ -11,6 +14,10 @@ class Vitals extends Component {
 		M.Tabs.init(tabs, {swipeable: true})
 	}
 
+	/**
+	 * Render input form for vitals and output of prior vitals
+	 * @returns {VNode} patient info
+	 */
 	render() {
 		return (
 			<div className="card">

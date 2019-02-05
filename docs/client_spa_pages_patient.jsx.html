@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>client/spa/partial/loader.jsx - Documentation</title>
+    <title>client/spa/pages/patient.jsx - Documentation</title>
 
     <script src="scripts/hljs/highlight.min.js"></script>
     <!--[if lt IE 9]>
@@ -26,7 +26,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">client/spa/partial/loader.jsx</h1>
+    <h1 class="page-title">client/spa/pages/patient.jsx</h1>
     
 
     
@@ -36,67 +36,90 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import {h} from 'preact'
-import '../styles/loader.scss'
+            <pre class="prettyprint source linenums"><code>import {h, Component} from 'preact'
+import {Loader, Vitals} from '../Partial'
+import {fhirBase} from '../../util'
 
 /**
- * Materialize loading element, centered
- * @returns {VNode} Loading element
+ * Normalise api response for ease of manipulation in this component
+ * @param {object} fhirResponse API response
+ * @returns {object} normalised fhir response
  */
-const Loader = () => (
-	&lt;div className="loader">
-		&lt;div className="preloader-wrapper big active">
-			&lt;div className="spinner-layer spinner-blue">
-				&lt;div className="circle-clipper left">
-					&lt;div className="circle" />
-				&lt;/div>
-				&lt;div className="gap-patch">
-					&lt;div className="circle" />
-				&lt;/div>
-				&lt;div className="circle-clipper right">
-					&lt;div className="circle" />
-				&lt;/div>
-			&lt;/div>
+const normaliseFhirResponse = (fhirResponse) => {
+	const {
+		contact: [contact],
+		photo: [photo],
+		name: [name],
+		id,
+	} = fhirResponse
+	return ({
+		patient: {
+			displayName: `${name.prefix} ${name.text}`,
+			photo: photo.url,
+			id,
+		},
+		contact: {
+			displayName: `${contact.name.prefix} ${contact.text}`,
+			number: contact.telecom[0].value,
+		},
 
-			&lt;div className="spinner-layer spinner-red">
-				&lt;div className="circle-clipper left">
-					&lt;div className="circle" />
-				&lt;/div>
-				&lt;div className="gap-patch">
-					&lt;div className="circle" />
-				&lt;/div>
-				&lt;div className="circle-clipper right">
-					&lt;div className="circle" />
-				&lt;/div>
-			&lt;/div>
-			&lt;div className="spinner-layer spinner-yellow">
-				&lt;div className="circle-clipper left">
-					&lt;div className="circle" />
-				&lt;/div>
-				&lt;div className="gap-patch">
-					&lt;div className="circle" />
-				&lt;/div>
-				&lt;div className="circle-clipper right">
-					&lt;div className="circle" />
-				&lt;/div>
-			&lt;/div>
+	})
+}
 
-			&lt;div className="spinner-layer spinner-green">
-				&lt;div className="circle-clipper left">
-					&lt;div className="circle" />
+class Patient extends Component {
+	/**
+	 * Patient information component
+	 * @param {object} props component props
+	 */
+	constructor(props) {
+		super(props)
+		this.state = {
+			loaded: false,
+			patientInfo: null,
+		}
+	}
+
+	/**
+	 * fetch patient data from /Encounter on form load
+	 */
+	async componentDidMount() {
+		const {data} = await fhirBase.get(`Encounter/?class=admission&amp;patient_id=${this.props.patient_id}&amp;_include=Encounter:patient`)
+		const patientInfo = normaliseFhirResponse(data[0].subject)
+		this.setState({patientInfo, loaded: true})
+	}
+
+	/**
+	 * Render our patient info
+	 * @param {object} _ props (unused)
+	 * @param {object} state component state
+	 * @returns {VNode} patient information or loading icon
+	 */
+	render(_, state) {
+		if (!state.loaded) return &lt;Loader />
+		return (
+			&lt;div className="row">
+				&lt;div className="col s12">
+					&lt;div className="card horizontal">
+						&lt;div className="card-image">
+							&lt;img alt={state.patientInfo.patient.displayName} src={state.patientInfo.patient.photo} />
+						&lt;/div>
+						&lt;div className="card-stacked">
+							&lt;div className="card-content">
+								&lt;span className="card-title">{state.patientInfo.patient.displayName}&lt;/span>
+								&lt;p>I am a very simple card. I am good at containing small bits of information.&lt;/p>
+							&lt;/div>
+						&lt;/div>
+					&lt;/div>
 				&lt;/div>
-				&lt;div className="gap-patch">
-					&lt;div className="circle" />
-				&lt;/div>
-				&lt;div className="circle-clipper right">
-					&lt;div className="circle" />
+				&lt;div className="col s12">
+					&lt;Vitals />
 				&lt;/div>
 			&lt;/div>
-		&lt;/div>
-	&lt;/div>
-)
+		)
+	}
+}
 
-export default Loader
+export default Patient
 </code></pre>
         </article>
     </section>

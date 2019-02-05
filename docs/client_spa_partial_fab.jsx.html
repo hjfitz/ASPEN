@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>client/spa/partial/loader.jsx - Documentation</title>
+    <title>client/spa/partial/fab.jsx - Documentation</title>
 
     <script src="scripts/hljs/highlight.min.js"></script>
     <!--[if lt IE 9]>
@@ -26,7 +26,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">client/spa/partial/loader.jsx</h1>
+    <h1 class="page-title">client/spa/partial/fab.jsx</h1>
     
 
     
@@ -36,67 +36,59 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import {h} from 'preact'
-import '../styles/loader.scss'
+            <pre class="prettyprint source linenums"><code>import {h, Component} from 'preact'
+import {Link} from 'preact-router'
+import M from 'materialize-css'
 
-/**
- * Materialize loading element, centered
- * @returns {VNode} Loading element
- */
-const Loader = () => (
-	&lt;div className="loader">
-		&lt;div className="preloader-wrapper big active">
-			&lt;div className="spinner-layer spinner-blue">
-				&lt;div className="circle-clipper left">
-					&lt;div className="circle" />
-				&lt;/div>
-				&lt;div className="gap-patch">
-					&lt;div className="circle" />
-				&lt;/div>
-				&lt;div className="circle-clipper right">
-					&lt;div className="circle" />
-				&lt;/div>
-			&lt;/div>
 
-			&lt;div className="spinner-layer spinner-red">
-				&lt;div className="circle-clipper left">
-					&lt;div className="circle" />
-				&lt;/div>
-				&lt;div className="gap-patch">
-					&lt;div className="circle" />
-				&lt;/div>
-				&lt;div className="circle-clipper right">
-					&lt;div className="circle" />
-				&lt;/div>
-			&lt;/div>
-			&lt;div className="spinner-layer spinner-yellow">
-				&lt;div className="circle-clipper left">
-					&lt;div className="circle" />
-				&lt;/div>
-				&lt;div className="gap-patch">
-					&lt;div className="circle" />
-				&lt;/div>
-				&lt;div className="circle-clipper right">
-					&lt;div className="circle" />
-				&lt;/div>
-			&lt;/div>
+class Fab extends Component {
+	/**
+	 * initialise floating action buttons
+	 */
+	componentDidMount() {
+		const tipped = document.querySelectorAll('.tooltipped')
+		const fab = document.querySelectorAll('.fixed-action-btn')
+		M.FloatingActionButton.init(fab)
+		M.Tooltip.init(tipped)
+	}
 
-			&lt;div className="spinner-layer spinner-green">
-				&lt;div className="circle-clipper left">
-					&lt;div className="circle" />
-				&lt;/div>
-				&lt;div className="gap-patch">
-					&lt;div className="circle" />
-				&lt;/div>
-				&lt;div className="circle-clipper right">
-					&lt;div className="circle" />
-				&lt;/div>
+	/**
+	 * render a FAB
+	 * @returns {VNode}
+	 */
+	render() {
+		return (
+			&lt;div className="fixed-action-btn">
+				&lt;a className="btn-floating btn-large">
+					&lt;i className="large material-icons">menu&lt;/i>
+				&lt;/a>
+				&lt;ul>
+					&lt;li>
+						&lt;Link href="/wards" className="btn-floating blue tooltipped" data-position="left" data-tooltip="View wards">
+							&lt;i className="material-icons">local_hospital&lt;/i>
+						&lt;/Link>
+					&lt;/li>
+					&lt;li>
+						&lt;Link href="/add/patient" className="btn-floating green tooltipped" data-position="left" data-tooltip="Admit a patient">
+							&lt;i className="material-icons">assignment_ind&lt;/i>
+						&lt;/Link>
+					&lt;/li>
+					&lt;li>
+						&lt;Link href="/search/patient" className="btn-floating yellow darken-3 tooltipped" data-position="left" data-tooltip="Search for a patient">
+							&lt;i className="material-icons">insert_chart&lt;/i>
+						&lt;/Link>
+					&lt;/li>
+					&lt;li>
+						&lt;Link href="/" className="btn-floating red tooltipped" data-position="left" data-tooltip="Go home">
+							&lt;i className="material-icons">home&lt;/i>
+						&lt;/Link>
+					&lt;/li>
+				&lt;/ul>
 			&lt;/div>
-		&lt;/div>
-	&lt;/div>
-)
-
-export default Loader
+		)
+	}
+}
+export default Fab
 </code></pre>
         </article>
     </section>

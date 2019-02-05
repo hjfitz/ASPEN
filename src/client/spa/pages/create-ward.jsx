@@ -64,7 +64,6 @@ class CreateWard extends Component {
 	 */
 	async makeWard(ev) {
 		ev.preventDefault() // don't refresh the page - this is a SPA!
-		console.log('oioi')
 		const inputs = [this.name, this.desc] // inputs to check
 		const valid = CreateWard.validateForms(inputs)
 		if (!valid) return // not valid. let the classNames do the talking
@@ -77,7 +76,6 @@ class CreateWard extends Component {
 		// attempt to post
 		try {
 			const resp = await fhirBase.post('/Location', locForm)
-			console.log('post works')
 			const {id} = resp.data.issue[0].diagnostics
 			const message = (
 				<div className="card-content">
@@ -104,6 +102,9 @@ class CreateWard extends Component {
 		}
 	}
 
+	/**
+	 * hide a popup
+	 */
 	closePopup() {
 		this.setState({message: '', showPopup: false})
 	}
