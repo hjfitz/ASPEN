@@ -37,7 +37,7 @@ class App extends Component {
 				<Router onChange={this.onChange}>
 					<Welcome path="/" />
 					<WardList path="/wards" />
-					<Ward path="/ward/:ward_id" />
+					<Ward path="/wards/:ward_id" />
 					<Add path="/add" />
 					<CreateWard path="/add/ward" />
 					<CreatePatient path="/add/patient" />

@@ -127,7 +127,6 @@ class CreatePatient extends Component {
 			}
 			return acc
 		}, {})
-		console.log(invalid)
 		if (invalid.length) {
 			const err = labels
 				.map(la => la.replace(/-/g, ' '))
