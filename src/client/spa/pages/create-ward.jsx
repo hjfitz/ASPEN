@@ -5,6 +5,16 @@ import {fhirBase} from '../../util'
 
 import '../styles/create-location.scss'
 
+function doModal(header, body) {
+	const modal = document.querySelector('.modal')
+	const instance = M.Modal.getInstance(modal) || M.Modal.init(modal)
+	const content = document.querySelector('.modal-content')
+	content.innerHTML = `
+			<h4>${header}</h4>
+			<p>${body}</p>`
+	instance.open()
+}
+
 class CreateWard extends Component {
 	/**
 	 * Ensure elements have some content and change their class accordingly
@@ -40,11 +50,6 @@ class CreateWard extends Component {
 	constructor(props) {
 		super(props)
 		this.instances = []
-		// used display a popup if there's a server-side error
-		this.state = {
-			showPopup: false,
-			message: '',
-		}
 	}
 
 	/**
@@ -77,56 +82,19 @@ class CreateWard extends Component {
 		try {
 			const resp = await fhirBase.post('/Location', locForm)
 			const {id} = resp.data.issue[0].diagnostics
-			const message = (
-				<div className="card-content">
-					<span className="card-title">Success</span>
-					<p>Successfully created {this.name.value} as a {this.type.value} with ID {id}</p>
-				</div>
-			)
-
-			this.setState({
-				message,
-				showPopup: true,
-			})
+			doModal('Success', `Successfully created "${this.name.value}" with ID ${id}`)
+			inputs.forEach(input => input.value = '')
 		} catch (err) {
-			this.setState({
-				showPopup: true,
-				message: (
-					<div className="card-content">
-						<span className="card-title">Error!</span>
-						<p>There was an error creating the location:</p>
-						<p>{err}</p>
-					</div>
-				),
-			})
+			doModal('Error!', `There was an error whilst creating the ward: ${err}`)
 		}
-	}
-
-	/**
-	 * hide a popup
-	 */
-	closePopup() {
-		this.setState({message: '', showPopup: false})
 	}
 
 	/**
 	 * render the form!
 	 */
 	render() {
-		let popup = ''
-		if (this.state.showPopup) {
-			popup = (
-				<div className="col s12 m6">
-					<div className="card">
-						<span className="close" onClick={this.closePopup.bind(this)}><i className="material-icons">close</i></span>
-						{this.state.message}
-					</div>
-				</div>
-			)
-		}
 		return (
 			<div className="row">
-				{popup}
 				<div className="create-location-input col s12">
 					<header><h1>Create a Location</h1></header>
 					<form ref={f => this.form = f} className="row">
@@ -139,16 +107,6 @@ class CreateWard extends Component {
 							<textarea id="description" className="materialize-textarea" ref={t => this.desc = t} data-length="120" />
 							<label htmlFor="description" className="validate">Description</label>
 						</div>
-						{/*
-						<div className="input-field col s12 m6">
-							<label htmlFor="type">Type of location:</label>
-							<select id="type" ref={s => this.type = s} className="validate">
-								<option value="" disabled selected>--Please select an option---</option>
-								<option value="ward">Ward</option>
-								<option value="wing">Wing</option>
-							</select>
-						</div> */}
-
 						<div className="col s12">
 							<a className="waves-effect waves-light btn" onClick={this.makeWard.bind(this)}>Submit</a>
 						</div>

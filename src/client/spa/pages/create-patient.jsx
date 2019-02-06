@@ -129,21 +129,26 @@ class CreatePatient extends Component {
 		}, {})
 		if (invalid) return
 		Object.keys(obj).forEach(label => form.append(label, obj[label]))
-		const resp = await fhirBase.post('/Patient', form)
-		const {issue: [outcome]} = resp.data
-		if (outcome.code === 200) {
-			const encForm = new FormData()
-			encForm.append('class', 'admission')
-			encForm.append('status', 'finished')
-			encForm.append('patient_id', outcome.diagnostics.patient_id)
-			encForm.append('location_id', obj.location_id)
-			const encResp = await fhirBase.post('/Encounter', encForm)
-			if (encResp.data.issue[0].code !== 200) {
-				// show an error
+		try {
+			const resp = await fhirBase.post('/Patient', form)
+			const {issue: [outcome]} = resp.data
+			if (outcome.code === 200) {
+				const encForm = new FormData()
+				encForm.append('class', 'admission')
+				encForm.append('status', 'finished')
+				encForm.append('patient_id', outcome.diagnostics.patient_id)
+				encForm.append('location_id', obj.location_id)
+				const encResp = await fhirBase.post('/Encounter', encForm)
+				if (encResp.data.issue[0].code !== 200) {
+					doModal('Error', encResp.data.issue[0].details.text)
+				} else {
+					doModal('Success', encResp.data.issue[0].details.text)
+				}
+			} else {
+				doModal('Error', outcome.data.issue[0].details.text)
 			}
-			doModal('Success', encResp.data.issue[0].details.text)
-		} else {
-			// do something with an error
+		} catch (err) {
+			doModal('Error', `There is an error with patient creation: ${err}`)
 		}
 	}
 
@@ -157,17 +162,6 @@ class CreatePatient extends Component {
 		if (!this.state.loaded) return <Loader />
 		return (
 			<div className="row">
-				<div className="col s12">
-					<div id="modal1" className="modal">
-						<div className="modal-content">
-							<h4>Modal Header</h4>
-							<p>A bunch of text</p>
-						</div>
-						<div className="modal-footer">
-							<a className="modal-close waves-effect waves-green btn-flat">Okay</a>
-						</div>
-					</div>
-				</div>
 				<h1>Admit a New Patient</h1>
 				<form className="col s12">
 					<div className="row">

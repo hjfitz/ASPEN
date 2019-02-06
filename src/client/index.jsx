@@ -1,7 +1,7 @@
 import {h, render, Component} from 'preact'
 import {Router} from 'preact-router'
 
-import {Fab, Breadcrumb, Redirect} from './spa/Partial'
+import {Fab, Breadcrumb, Redirect, Modal} from './spa/Partial'
 
 import {
 	SearchPatient,
@@ -46,6 +46,7 @@ class App extends Component {
 					<Patient path="/patient/:patient_id" />
 				</Router>
 				<Fab />
+				<Modal />
 			</div>
 		)
 	}
