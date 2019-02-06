@@ -83,7 +83,7 @@ class Patient {
 			acc[cur] = this[cur]
 			return acc
 		}, {})
-		if (this.photo) {
+		if (this.photo && this.photo.mv) {
 			logger.info('handling image', {...this.meta, func: 'insert()'})
 			const ext = mime.extension(this.photo.mimetype)
 			const photo_url = path.join('/patient', `${this.given}-${shortid.generate()}.${ext}`)
