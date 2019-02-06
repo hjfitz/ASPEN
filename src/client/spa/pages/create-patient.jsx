@@ -7,6 +7,16 @@ import {fhirBase} from '../../util'
 
 import '../styles/create-patient.scss'
 
+function doModal(header, body) {
+	const modal = document.querySelector('.modal')
+	const instance = M.Modal.getInstance(modal) || M.Modal.init(modal)
+	const content = document.querySelector('.modal-content')
+	content.innerHTML = `
+			<h4>${header}</h4>
+			<p>${body}</p>`
+	instance.open()
+}
+
 
 class CreatePatient extends Component {
 	/**
@@ -49,6 +59,7 @@ class CreatePatient extends Component {
 	 * force reinitialisation of select elements
 	 */
 	componentDidUpdate() {
+		console.log('[CREATE] reflowing component')
 		const select = document.querySelectorAll('#location_id, #patient-gender')
 		M.FormSelect.init(select)
 	}
@@ -58,11 +69,13 @@ class CreatePatient extends Component {
 	 * Saves this to B64, sets state and pauses the stream
 	 */
 	getPicture() {
+		console.log('[CREATE] Saving image')
 		// TODO: fix width
 		const dimensions = this.video.getBoundingClientRect()
 		this.canvas.getContext('2d').drawImage(this.video, 0, 0, dimensions.width, dimensions.height)
 		const img = this.canvas.toDataURL('image/png')
 		this.img = img
+		doModal('Success', 'Image saved')
 		this.video.pause()
 	}
 
@@ -74,9 +87,7 @@ class CreatePatient extends Component {
 		const {files: [file]} = ev.target
 		const reader = new FileReader()
 
-		reader.addEventListener('load', () => {
-			this.img = reader.result
-		}, false)
+		reader.addEventListener('load', () => this.img = reader.result, false)
 
 		if (file) reader.readAsDataURL(file)
 	}
@@ -88,6 +99,7 @@ class CreatePatient extends Component {
 	async admit() {
 		const form = new FormData()
 		if (this.img) {
+			console.log('[CREATE] Appending image')
 			const img = await fetch(this.img).then(r => r.blob())
 			form.append('patient-photo', img)
 		}
@@ -133,8 +145,7 @@ class CreatePatient extends Component {
 			if (encResp.data.issue[0].code !== 200) {
 				// show an error
 			}
-			this.popup.innerHTML = JSON.stringify(encResp.data)
-			this.popInst.open()
+			doModal('Success', encResp.data.issue[0].details.text)
 		} else {
 			// do something with an error
 		}
@@ -150,9 +161,14 @@ class CreatePatient extends Component {
 		return (
 			<div className="row">
 				<div className="col s12">
-					<div className="card materialboxed" ref={m => this.popup = m}>
-						<span className="card-title">Message</span>
-						<div className="card-content">response error</div>
+					<div id="modal1" className="modal">
+						<div className="modal-content">
+							<h4>Modal Header</h4>
+							<p>A bunch of text</p>
+						</div>
+						<div className="modal-footer">
+							<a className="modal-close waves-effect waves-green btn-flat">Okay</a>
+						</div>
 					</div>
 				</div>
 				<h1>Admit a New Patient</h1>
@@ -190,7 +206,23 @@ class CreatePatient extends Component {
 										</div>
 									</div>
 								)
-								: <input onChange={this.setImg.bind(this)} type="file" accept="image/*" capture="camera" />
+								: (
+									<div className="file-field input-field">
+										<div className="btn">
+											<span>Take Photo</span>
+											<input
+												onChange={this.setImg.bind(this)}
+												type="file"
+												accept="image/*"
+												capture="camera"
+												value="Take Photo"
+											/>
+										</div>
+										<div className="file-path-wrapper">
+											<input className="file-path validate" type="text" />
+										</div>
+									</div>
+								)
 							}
 						</div>
 					</div>
