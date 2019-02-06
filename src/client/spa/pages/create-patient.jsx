@@ -127,11 +127,12 @@ class CreatePatient extends Component {
 			return acc
 		}, {})
 		if (invalid.length) {
-			const err = labels
+			const err = invalid
 				.map(la => la.replace(/-/g, ' '))
 				.map(la => la.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '))
-				.join('; ')
-			doModal('Error with form!', `Please complete the following fields: ${err}`)
+				.map(la => `<li>${la}</li>`)
+				.join('\n')
+			doModal('Error with form!', `Please complete the following fields: <ul>${err}</ul>`)
 			return
 		}
 		Object.keys(obj).forEach(label => form.append(label, obj[label]))
