@@ -17,7 +17,7 @@ const normaliseFhirResponse = (fhirResponse) => {
 	return ({
 		patient: {
 			displayName: `${name.prefix} ${name.text}`,
-			photo: photo.url,
+			photo: photo ? photo.url : '',
 			id,
 		},
 		contact: {
