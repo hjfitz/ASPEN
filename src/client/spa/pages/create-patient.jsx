@@ -46,22 +46,17 @@ class CreatePatient extends Component {
 				const stream = await navigator.mediaDevices.getUserMedia({video: true})
 				this.video.srcObject = stream
 				this.video.onloadedmetadata = this.video.play
+				// when the video plays, the height and width of the container changes
+				// set the canvas here
 				this.video.addEventListener('playing', () => {
 					const dimensions = this.video.getBoundingClientRect()
 					this.canvas.height = dimensions.height
 					this.canvas.width = dimensions.width
 				})
+				const select = document.querySelectorAll('#location_id, #patient-gender')
+				M.FormSelect.init(select)
 			})
 		}
-	}
-
-	/**
-	 * force reinitialisation of select elements
-	 */
-	componentDidUpdate() {
-		console.log('[CREATE] reflowing component')
-		const select = document.querySelectorAll('#location_id, #patient-gender')
-		M.FormSelect.init(select)
 	}
 
 	/**
@@ -70,7 +65,6 @@ class CreatePatient extends Component {
 	 */
 	getPicture() {
 		console.log('[CREATE] Saving image')
-		// TODO: fix width
 		const dimensions = this.video.getBoundingClientRect()
 		this.canvas.getContext('2d').drawImage(this.video, 0, 0, dimensions.width, dimensions.height)
 		const img = this.canvas.toDataURL('image/png')
@@ -84,12 +78,14 @@ class CreatePatient extends Component {
 	 * @param {EventTarget} ev Event from input onChange event
 	 */
 	setImg(ev) {
-		const {files: [file]} = ev.target
-		const reader = new FileReader()
-
-		reader.addEventListener('load', () => this.img = reader.result, false)
-
-		if (file) reader.readAsDataURL(file)
+		try {
+			const {files: [file]} = ev.target
+			const reader = new FileReader()
+			reader.addEventListener('load', () => this.img = reader.result, false)
+			reader.readAsDataURL(file)
+		} catch (err) {
+			doModal('Error', `There was an error setting the image: ${err}`)
+		}
 	}
 
 	/**
@@ -155,6 +151,7 @@ class CreatePatient extends Component {
 	/**
 	 * renders component
 	 * if no wards, render a loading icon
+	 * @returns {VNode}
 	 */
 	render() {
 		if (!this.state.loaded) return <Loader />

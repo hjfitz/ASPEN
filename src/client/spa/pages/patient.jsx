@@ -58,17 +58,18 @@ class Patient extends Component {
 	 */
 	render(_, state) {
 		if (!state.loaded) return <Loader />
+		const {patient} = this.state.patientInfo
 		return (
 			<div className="row">
 				<div className="col s12">
 					<div className="card horizontal">
 						<div className="card-image">
-							<img alt={state.patientInfo.patient.displayName} src={state.patientInfo.patient.photo} />
+							<img alt={patient.displayName} src={patient.photo} />
 						</div>
 						<div className="card-stacked">
 							<div className="card-content">
-								<span className="card-title">{state.patientInfo.patient.displayName}</span>
-								<p>I am a very simple card. I am good at containing small bits of information.</p>
+								<span className="card-title">{patient.displayName}</span>
+								<p>EWS, Location and other information to go here</p>
 							</div>
 						</div>
 					</div>
