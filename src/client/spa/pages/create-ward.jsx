@@ -1,19 +1,9 @@
 import {h, Component} from 'preact'
 import M from 'materialize-css'
 
-import {fhirBase} from '../../util'
+import {fhirBase, doModal} from '../../util'
 
 import '../styles/create-location.scss'
-
-function doModal(header, body) {
-	const modal = document.querySelector('.modal')
-	const instance = M.Modal.getInstance(modal) || M.Modal.init(modal)
-	const content = document.querySelector('.modal-content')
-	content.innerHTML = `
-			<h4>${header}</h4>
-			<p>${body}</p>`
-	instance.open()
-}
 
 class CreateWard extends Component {
 	/**

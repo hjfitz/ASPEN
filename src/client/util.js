@@ -1,6 +1,7 @@
 import Base64 from 'crypto-js/enc-base64'
 import Utf8 from 'crypto-js/enc-utf8'
 import axios from 'axios'
+import {Modal} from 'materialize-css'
 
 /**
  * get and parse payload from localstorage
@@ -25,6 +26,16 @@ export const fhirBase = axios.create({
 		'content-type': 'application/fhir+json',
 	},
 })
+
+export function doModal(header, body) {
+	const modal = document.querySelector('.modal')
+	const instance = Modal.getInstance(modal) || Modal.init(modal)
+	const content = document.querySelector('.modal-content')
+	content.innerHTML = `
+			<h4>${header}</h4>
+			<p>${body}</p>`
+	instance.open()
+}
 
 // shitty enums
 export const MINUTE = 1000 * 60

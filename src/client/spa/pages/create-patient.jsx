@@ -3,20 +3,9 @@ import M from 'materialize-css'
 import isMobile from 'ismobilejs'
 
 import {Input, Loader, Select} from '../Partial'
-import {fhirBase} from '../../util'
+import {fhirBase, doModal} from '../../util'
 
 import '../styles/create-patient.scss'
-
-function doModal(header, body) {
-	const modal = document.querySelector('.modal')
-	const instance = M.Modal.getInstance(modal) || M.Modal.init(modal)
-	const content = document.querySelector('.modal-content')
-	content.innerHTML = `
-			<h4>${header}</h4>
-			<p>${body}</p>`
-	instance.open()
-}
-
 
 class CreatePatient extends Component {
 	/**
@@ -43,16 +32,26 @@ class CreatePatient extends Component {
 			}, async () => {
 				if (!this.video) return
 				// the form is showing and webcam is, so populate with webcam
-				const stream = await navigator.mediaDevices.getUserMedia({video: true})
-				this.video.srcObject = stream
-				this.video.onloadedmetadata = this.video.play
-				// when the video plays, the height and width of the container changes
-				// set the canvas here
-				this.video.addEventListener('playing', () => {
-					const dimensions = this.video.getBoundingClientRect()
-					this.canvas.height = dimensions.height
-					this.canvas.width = dimensions.width
-				})
+				try {
+					const stream = await navigator.mediaDevices.getUserMedia({video: true})
+					this.video.srcObject = stream
+					this.video.onloadedmetadata = this.video.play
+					// when the video plays, the height and width of the container changes
+					// set the canvas here
+					this.video.addEventListener('playing', () => {
+						const dimensions = this.video.getBoundingClientRect()
+						this.canvas.height = dimensions.height
+						this.canvas.width = dimensions.width
+					})
+				} catch (err) {
+					doModal(
+						'Warning',
+						`An error occured whilst trying to initialise the webcam</p>
+					<p><b>Error:</b> ${err}</p>
+					<p>You should stil be able to submit a patient, but you will not be able to submit their photo</p>
+					`,
+					)
+				}
 				const select = document.querySelectorAll('#location_id, #patient-gender')
 				M.FormSelect.init(select)
 			})
