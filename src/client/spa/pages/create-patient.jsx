@@ -112,7 +112,7 @@ class CreatePatient extends Component {
 			'contact-fullname',
 			'contact-phone',
 		]
-		let invalid = false
+		const invalid = []
 		const obj = labels.reduce((acc, label) => {
 			const elem = document.getElementById(label)
 			const {value} = elem
@@ -121,13 +121,21 @@ class CreatePatient extends Component {
 				elem.classList.add('valid')
 				elem.classList.remove('invalid')
 			} else {
-				invalid = true
+				invalid.push(label)
 				elem.classList.add('invalid')
 				elem.classList.remove('valid')
 			}
 			return acc
 		}, {})
-		if (invalid) return
+		console.log(invalid)
+		if (invalid.length) {
+			const err = labels
+				.map(la => la.replace(/-/g, ' '))
+				.map(la => la.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '))
+				.join('; ')
+			doModal('Error with form!', `Please complete the following fields: ${err}`)
+			return
+		}
 		Object.keys(obj).forEach(label => form.append(label, obj[label]))
 		try {
 			const resp = await fhirBase.post('/Patient', form)
