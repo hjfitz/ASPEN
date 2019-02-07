@@ -1,6 +1,8 @@
 import {h, Component} from 'preact'
 import M from 'materialize-css'
 
+import {doModal} from '../../util'
+
 import '../styles/vital-signs.scss'
 
 class Vitals extends Component {
@@ -15,24 +17,42 @@ class Vitals extends Component {
 	}
 
 	submitForm() {
-		const form = new FormData()
 		const requiredInputs = [
-			'resp-rate',
-			'oxy-sat',
-			'heart-rate',
-			'body-temp',
-			'syst-bp',
-			'lv-of-consciousness',
-			'supp-oxy',
+			'respiratory_rate',
+			'oxygen_saturation',
+			'heart_rate',
+			'body_temperature',
+			'systolic_bp',
+			'level_of_consciousness',
 		]
 
 		const invalid = requiredInputs
 			.map(el => document.getElementById(el))
-			.filter((input) => {
-				console.log(input)
+			.filter((inp) => {
+				if (!inp.value) return true
+				if (Number.isNaN(inp.value) && inp.id !== 'level_of_consciousness') return true
+				return false
 			})
+			.map(inp => inp.dataset.invalidName)
+		if (invalid.length) {
+			doModal(
+				'Error with form!',
+				`You've missed out, or entered some of the fields incorrectly:</p>
+				<ul class="browser-default"><li>${invalid.join('</li><li>')}</ul>`,
+			)
+			return
+		}
 
-		// this.props.cb(form)
+		// everything must be correct, send it back to the main component
+		const form = new FormData()
+		const diagnosticReport = [...requiredInputs, 'supplemental_oxygen']
+			.map(el => document.getElementById(el))
+			.forEach(field => form.append(field.id, field.value))
+			// .reduce((acc, cur) => {
+			// 	acc[cur.id] = cur.value
+			// 	return acc
+			// }, {})
+		this.props.cb(diagnosticReport)
 	}
 
 	/**
@@ -54,34 +74,34 @@ class Vitals extends Component {
 							<form action="" className="col s12">
 								<div className="row">
 									<div className="input-field col s6">
-										<input id="resp-rate" type="number" className="validate" />
-										<label htmlFor="resp-rate">Respiratory Rate</label>
+										<input id="respiratory_rate" type="number" className="validate" data-invalid-name="Respiratory Rate" />
+										<label htmlFor="respiratory_rate">Respiratory Rate</label>
 									</div>
 									<div className="input-field col s6">
-										<input id="oxy-sat" type="number" className="validate" />
-										<label htmlFor="oxy-sat">Oxygen Saturation</label>
-									</div>
-								</div>
-
-								<div className="row">
-									<div className="input-field col s6">
-										<input id="heart-rate" type="number" className="validate" />
-										<label htmlFor="heart-rate">Heart Rate</label>
-									</div>
-									<div className="input-field col s6">
-										<input id="body-temp" type="number" className="validate" />
-										<label htmlFor="body-temp">Body Temperature</label>
+										<input id="oxygen_saturation" type="number" className="validate" data-invalid-name="Oxygen Saturation" />
+										<label htmlFor="oxygen_saturation">Oxygen Saturation</label>
 									</div>
 								</div>
 
 								<div className="row">
 									<div className="input-field col s6">
-										<input id="syst-bp" type="number" className="validate" />
-										<label htmlFor="syst-bp">Systolic Blood Pressure</label>
+										<input id="heart_rate" type="number" className="validate" data-invalid-name="Heart Rate" />
+										<label htmlFor="heart_rate">Heart Rate</label>
 									</div>
 									<div className="input-field col s6">
-										<select id="lv-of-consciousness">
-											<option value="" disabled selected>Choose your option</option>
+										<input id="body_temperature" type="number" className="validate" data-invalid-name="Body Temperature" />
+										<label htmlFor="body_temperature">Body Temperature</label>
+									</div>
+								</div>
+
+								<div className="row">
+									<div className="input-field col s6">
+										<input id="systolic_bp" type="number" className="validate" data-invalid-name="Blood Pressure" />
+										<label htmlFor="systolic_bp">Systolic Blood Pressure</label>
+									</div>
+									<div className="input-field col s6">
+										<select id="level_of_consciousness" data-invalid-name="Level of Consciousness">
+											<option value="" disabled selected>Select level</option>
 											<option value="A">Aware</option>
 											<option value="D">Drowzy</option>
 											<option value="U">Unconscious</option>
@@ -95,7 +115,7 @@ class Vitals extends Component {
 									<div className="col s6">
 										<p>
 											<label>
-												<input name="supp-oxy" id="supp-oxy" type="checkbox" />
+												<input name="supplemental_oxygen" id="supplemental_oxygen" type="checkbox" />
 												<span>Supplemental Oxygen</span>
 											</label>
 										</p>

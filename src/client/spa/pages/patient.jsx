@@ -1,6 +1,6 @@
 import {h, Component} from 'preact'
 import {Loader, Vitals} from '../Partial'
-import {fhirBase} from '../../util'
+import {fhirBase, doModal} from '../../util'
 
 /**
  * Normalise api response for ease of manipulation in this component
@@ -39,6 +39,7 @@ class Patient extends Component {
 			loaded: false,
 			patientInfo: null,
 		}
+		this.submitVitals = this.submitVitals.bind(this)
 	}
 
 	/**
@@ -48,6 +49,10 @@ class Patient extends Component {
 		const {data} = await fhirBase.get(`Encounter/?class=admission&patient_id=${this.props.patient_id}&_include=Encounter:patient`)
 		const patientInfo = normaliseFhirResponse(data[0].subject)
 		this.setState({patientInfo, loaded: true})
+	}
+
+	async submitVitals(diagnosticReport) {
+		const {data} = await fhirBase.post('/DiagnosticReport', diagnosticReport)
 	}
 
 	/**
@@ -75,7 +80,7 @@ class Patient extends Component {
 					</div>
 				</div>
 				<div className="col s12">
-					<Vitals />
+					<Vitals cb={this.submitVitals} />
 				</div>
 			</div>
 		)
