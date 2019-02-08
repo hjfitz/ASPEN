@@ -13,10 +13,15 @@ class Vitals extends Component {
 		const tabs = document.querySelectorAll('.tabs')
 		const select = document.querySelectorAll('select')
 		M.FormSelect.init(select)
-		M.Tabs.init(tabs, {swipeable: true})
+		M.Tabs.init(tabs, {swipeable: false})
 	}
 
-	submitForm() {
+	componentDidUpdate() {
+		const select = document.querySelectorAll('select')
+		M.FormSelect.init(select)
+	}
+
+	async submitForm() {
 		const requiredInputs = [
 			'respiratory_rate',
 			'oxygen_saturation',
@@ -45,21 +50,31 @@ class Vitals extends Component {
 
 		// everything must be correct, send it back to the main component
 		const form = new FormData()
-		const diagnosticReport = [...requiredInputs, 'supplemental_oxygen']
-			.map(el => document.getElementById(el))
-			.forEach(field => form.append(field.id, field.value))
-			// .reduce((acc, cur) => {
-			// 	acc[cur.id] = cur.value
-			// 	return acc
-			// }, {})
-		this.props.cb(diagnosticReport)
+		const inputs = [...requiredInputs, 'supplemental_oxygen'].map(el => document.getElementById(el))
+
+		inputs.forEach(field => form.append(field.id, field.value))
+
+		await this.props.submit(form)
+
+		inputs.forEach(input => input.value = '')
+		M.updateTextFields()
 	}
 
 	/**
 	 * Render input form for vitals and output of prior vitals
+	 * @param {object} props component props
+	 * @param {DiagnosticReport[]} props.history patient obs history
 	 * @returns {VNode} patient info
 	 */
-	render() {
+	render(props) {
+		const formattedObs = props.history
+			.map(report => ({
+				...report.result.reduce((acc, cur) => {
+					acc[cur.code.text] = cur.valueQuantity.value
+					return acc
+				}, {}),
+				date: report.meta.lastUpdated}
+			))
 		return (
 			<div className="card">
 				<div className="card-tabs">
@@ -130,7 +145,36 @@ class Vitals extends Component {
 						</div>
 
 					</div>
-					<div id="history">Chart to go here</div>
+					<div id="history">
+						<table className="responsive-table striped highlght">
+							<thead>
+								<tr>
+									<th>Date</th>
+									<th>Respiratory rate</th>
+									<th>Oxygen Saturation</th>
+									<th>Heart Rate</th>
+									<th>Body Temperature</th>
+									<th>Blood Pressure</th>
+									<th>Level of Consciousness</th>
+									<th>Supplemental Oxygen</th>
+								</tr>
+							</thead>
+							<tbody>
+								{formattedObs.map(obs => (
+									<tr>
+										<td>{obs.date}</td>
+										<td>{obs.respiratory_rate}</td>
+										<td>{obs.oxygen_saturation}</td>
+										<td>{obs.heart_rate}</td>
+										<td>{obs.body_temperature}</td>
+										<td>{obs.systolic_bp}</td>
+										<td>{obs.level_of_consciousness}</td>
+										<td>{obs.supplemental_oxygen}</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
 				</div>
 			</div>
 		)

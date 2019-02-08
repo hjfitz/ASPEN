@@ -1,4 +1,5 @@
 import {h, Component} from 'preact'
+import {route} from 'preact-router'
 import M from 'materialize-css'
 import isMobile from 'ismobilejs'
 
@@ -30,8 +31,9 @@ class CreatePatient extends Component {
 				loaded: true,
 				wards: resp.data.map(ward => ({val: ward.id, text: ward.name})),
 			}, async () => {
-				if (!this.video) return
 				// the form is showing and webcam is, so populate with webcam
+				const select = document.querySelectorAll('#location_id, #patient-gender')
+				M.FormSelect.init(select)
 				try {
 					const stream = await navigator.mediaDevices.getUserMedia({video: true})
 					this.video.srcObject = stream
@@ -52,8 +54,6 @@ class CreatePatient extends Component {
 					`,
 					)
 				}
-				const select = document.querySelectorAll('#location_id, #patient-gender')
-				M.FormSelect.init(select)
 			})
 		}
 	}
@@ -150,6 +150,7 @@ class CreatePatient extends Component {
 					doModal('Error', encResp.data.issue[0].details.text)
 				} else {
 					doModal('Success', encResp.data.issue[0].details.text)
+					route('/')
 				}
 			} else {
 				doModal('Error', outcome.data.issue[0].details.text)

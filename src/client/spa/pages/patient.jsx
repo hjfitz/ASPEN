@@ -1,4 +1,5 @@
 import {h, Component} from 'preact'
+import M from 'materialize-css'
 import {Loader, Vitals} from '../Partial'
 import {fhirBase, doModal} from '../../util'
 
@@ -13,20 +14,37 @@ const normaliseFhirResponse = (fhirResponse) => {
 		photo: [photo],
 		name: [name],
 		id,
+		gender,
+		reference,
 	} = fhirResponse
 	return ({
 		patient: {
 			displayName: `${name.prefix} ${name.text}`,
 			photo: photo ? photo.url : '',
 			id,
+			gender,
+			location: reference,
 		},
 		contact: {
-			displayName: `${contact.name.prefix} ${contact.text}`,
+			displayName: `${contact.name.prefix} ${contact.name.text}`,
 			number: contact.telecom[0].value,
 		},
 
 	})
 }
+
+/**
+ * Hit /Diagnostics for list of 10 most recent patient reports
+ * @param {number} id patient ID
+ * @param {number} pageNo which page number to visit
+ * @returns {AxiosPromise<any>} request to API
+ */
+const getPatientReport = (id, pageNo = 0) => fhirBase.get(
+	`Diagnostics?patient=${id}`
+	+ '&result=true'
+	+ '&_count=10'
+	+ `&pageNo=${pageNo}`,
+)
 
 class Patient extends Component {
 	/**
@@ -38,6 +56,7 @@ class Patient extends Component {
 		this.state = {
 			loaded: false,
 			patientInfo: null,
+			pageNo: 0,
 		}
 		this.submitVitals = this.submitVitals.bind(this)
 	}
@@ -46,13 +65,36 @@ class Patient extends Component {
 	 * fetch patient data from /Encounter on form load
 	 */
 	async componentDidMount() {
-		const {data} = await fhirBase.get(`Encounter/?class=admission&patient_id=${this.props.patient_id}&_include=Encounter:patient`)
-		const patientInfo = normaliseFhirResponse(data[0].subject)
-		this.setState({patientInfo, loaded: true})
+		const {patient_id: id} = this.props
+		const [{data}, {data: patientReport}] = await Promise.all([
+			fhirBase.get(`Encounter?class=admission&patient_id=${id}&_include=Encounter:patient`),
+			getPatientReport(id, this.state.pageNo),
+		])
+		console.log(data[0])
+		const patientInfo = normaliseFhirResponse({...data[0].subject, ...data[0].location[0]})
+		this.setState({patientInfo, loaded: true, patientReport})
 	}
 
+
+	/**
+	 * Submit data to API and repopulate vital chart
+	 * @param {FormData} diagnosticReport fields in <vitals />
+	 */
 	async submitVitals(diagnosticReport) {
-		const {data} = await fhirBase.post('/DiagnosticReport', diagnosticReport)
+		diagnosticReport.append('patient_id', this.props.patient_id)
+		try {
+			const {data} = await fhirBase.post('/Diagnostics', diagnosticReport)
+			M.toast({html: data.details.text})
+			const {data: patientReport} = await getPatientReport(this.props.patient_id, this.state.pageNo)
+			this.setState({
+				loaded: true,
+				patientInfo: this.state.patientInfo,
+				patientReport,
+			})
+		} catch (err) {
+			console.error(err.response)
+			doModal('Error', `There was an error submitting this report:</p><p>${err}</p>`)
+		}
 	}
 
 	/**
@@ -61,9 +103,10 @@ class Patient extends Component {
 	 * @param {object} state component state
 	 * @returns {VNode} patient information or loading icon
 	 */
-	render(_, state) {
-		if (!state.loaded) return <Loader />
-		const {patient} = this.state.patientInfo
+	render() {
+		if (!this.state.loaded) return <Loader />
+		const {patient, contact} = this.state.patientInfo
+		console.log(patient)
 		return (
 			<div className="row">
 				<div className="col s12">
@@ -74,13 +117,19 @@ class Patient extends Component {
 						<div className="card-stacked">
 							<div className="card-content">
 								<span className="card-title">{patient.displayName}</span>
-								<p>EWS, Location and other information to go here</p>
+								<p><b>Gender: </b>{patient.gender}</p>
+								<p><b>Ward: </b>{patient.location}</p>
+								<p><b>NEWS: </b>Fucked</p>
+								<br />
+								<p><b>Contact Name: </b>{contact.displayName}</p>
+								<p><b>Contact Number: </b>{contact.number}</p>
+
 							</div>
 						</div>
 					</div>
 				</div>
 				<div className="col s12">
-					<Vitals cb={this.submitVitals} />
+					<Vitals submit={this.submitVitals} history={this.state.patientReport} />
 				</div>
 			</div>
 		)

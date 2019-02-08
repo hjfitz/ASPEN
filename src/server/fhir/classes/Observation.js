@@ -73,6 +73,9 @@ class Observation {
 		return {
 			resourceType: 'Observation',
 			id,
+			code: {
+				text: this.name,
+			},
 			meta: {lastUpdated: updated},
 			status: 'final',
 			subject: {reference: `Diagnostic/${row.report_id}`},

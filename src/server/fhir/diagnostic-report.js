@@ -1,11 +1,45 @@
 // All patient observations go here
 const diagnosticRouter = require('express').Router()
 
-const {client} = require('../db')
+const {client, knex} = require('../db')
 const {createOutcome} = require('./util')
 const log = require('../logger')
 const DiagnosticReport = require('./classes/DiagnosticReport')
 const Observation = require('./classes/Observation')
+
+
+// yet documented in swagger
+diagnosticRouter.get('/', async (req, res) => {
+	const {
+		patient: patient_id,	// patient ID
+		result,					// link results (bool)
+		_count,					// number of reports to send
+		page,					// which page of results
+	} = req.query
+	const offset = _count * page
+	const rows = await knex('diagnostic_report')
+		.select()
+		.where({patient_id})
+		.limit(_count)
+		.offset(offset)
+
+	const reports = await Promise.all(
+		rows
+			.map(row => new DiagnosticReport(row))
+			.sort((a, b) => {
+				const aDate = new Date(a.last_updated)
+				const bDate = new Date(b.last_updated)
+				if (aDate > bDate) return -1
+				if (aDate < bDate) return 1
+				return 0
+			})
+			.map((report) => {
+				if (result) return report.fhirLinked()
+				return Promise.resolve(report.fhir())
+			}),
+	)
+	res.json(reports)
+})
 
 diagnosticRouter.get('/all', async (req, res) => {
 	const {rows} = await client.query('SELECT * FROM diagnostic_report')
