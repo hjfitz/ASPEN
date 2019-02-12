@@ -104,11 +104,11 @@ class Patient {
 	async delete() {
 		try {
 			await knex('patient').delete('patient', this.id)
-			return true
+			return {deleted: true, msg: 'Successfully deleted patient'}
 		} catch (err) {
 			logger.error('Unable to delete patient', {...this.meta, func: 'delete()'})
 			logger.error(err, {...this.meta, func: 'delete()'})
-			return false
+			return {deleted: false, msg: err}
 		}
 	}
 

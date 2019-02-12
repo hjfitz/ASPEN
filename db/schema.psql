@@ -19,7 +19,7 @@ CREATE TABLE patient (
 	last_updated 	timestamptz 	NOT NULL,
 	photo_url 		text,
 	family 			text,
-	contact_id 		serial REFERENCES contact(contact_id)
+	contact_id 		serial REFERENCES contact(contact_id) ON DELETE CASCADE
 );
 
 CREATE TABLE observation (
@@ -32,7 +32,7 @@ CREATE TABLE observation (
 CREATE TABLE diagnostic_report (
 	report_id 				serial 		PRIMARY KEY,
 	last_updated 			timestamptz NOT NULL,
-	patient_id 				serial 		REFERENCES patient(patient_id),
+	patient_id 				serial 		REFERENCES patient(patient_id) 			ON DELETE CASCADE,
 	respiratory_rate 		serial 		REFERENCES observation(observation_id)	ON DELETE CASCADE,
 	oxygen_saturation 		serial 		REFERENCES observation(observation_id)	ON DELETE CASCADE,
 	supplemental_oxygen 	serial 		REFERENCES observation(observation_id)	ON DELETE CASCADE,
@@ -56,6 +56,6 @@ CREATE TABLE encounter (
 	last_updated 	timestamptz NOT NULL,
 	class 			text 		NOT NULL,
 	status 			text 		NOT NULL,
-	patient_id 		serial 		REFERENCES patient(patient_id),
+	patient_id 		serial 		REFERENCES patient(patient_id) ON DELETE CASCADE,
 	location_id 	serial 		REFERENCES location(location_id)
 );

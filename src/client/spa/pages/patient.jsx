@@ -1,14 +1,15 @@
 import {h, Component} from 'preact'
 import M from 'materialize-css'
 import {Loader, Vitals} from '../Partial'
-import {fhirBase, doModal} from '../../util'
+import {fhirBase, doModal, toTitle} from '../../util'
+import WarningScore from '../../WarningScore'
 
 /**
  * Normalise api response for ease of manipulation in this component
  * @param {object} fhirResponse API response
  * @returns {object} normalised fhir response
  */
-const normaliseFhirResponse = (fhirResponse) => {
+const normalisePatientInfo = (fhirResponse) => {
 	const {
 		contact: [contact],
 		photo: [photo],
@@ -32,6 +33,21 @@ const normaliseFhirResponse = (fhirResponse) => {
 
 	})
 }
+
+/**
+ * makes the fhir response easier to work with
+ * @param {object[]} patReport Patient diagnostic report fro fhir api
+ * @returns {object[]} formatted object: [{oxygen_saturation: 11, body_temp: 37 ...}]
+ */
+const normalisePatientReports = patReport => patReport
+	.map(report => ({
+		...report.result.reduce((acc, cur) => {
+			acc[cur.code.text] = cur.valueQuantity.value
+			return acc
+		}, {}),
+		date: new Date(report.meta.lastUpdated)}
+	))
+
 
 /**
  * Hit /Diagnostics for list of 10 most recent patient reports
@@ -70,9 +86,16 @@ class Patient extends Component {
 			fhirBase.get(`Encounter?class=admission&patient_id=${id}&_include=Encounter:patient`),
 			getPatientReport(id, this.state.pageNo),
 		])
-		console.log(data[0])
-		const patientInfo = normaliseFhirResponse({...data[0].subject, ...data[0].location[0]})
-		this.setState({patientInfo, loaded: true, patientReport})
+
+		const patientInfo = normalisePatientInfo({...data[0].subject, ...data[0].location[0]})
+		const patientReports = normalisePatientReports(patientReport) // comes pre-sorted from API
+		const ews = new WarningScore(patientReports[0])
+		this.setState({
+			patientInfo,
+			loaded: true,
+			patientReports,
+			news: ews.score(),
+		})
 	}
 
 
@@ -86,10 +109,13 @@ class Patient extends Component {
 			const {data} = await fhirBase.post('/Diagnostics', diagnosticReport)
 			M.toast({html: data.details.text})
 			const {data: patientReport} = await getPatientReport(this.props.patient_id, this.state.pageNo)
+			const patientReports = normalisePatientReports(patientReport)
+			const ews = new WarningScore(patientReports[0])
 			this.setState({
 				loaded: true,
 				patientInfo: this.state.patientInfo,
-				patientReport,
+				patientReports,
+				news: ews.score(),
 			})
 		} catch (err) {
 			console.error(err.response)
@@ -98,15 +124,22 @@ class Patient extends Component {
 	}
 
 	/**
+	 * ? Keep an eye on `history.back`, see if it malfunctions
+	 */
+	async delete() {
+		const {data} = await fhirBase.delete(`/Patient/${this.props.patient_id}`)
+		const sev = data.issue[0].severity
+		doModal(toTitle(sev), data.issue[0].details.text)
+		if (sev === 'success') window.history.back()
+	}
+
+	/**
 	 * Render our patient info
-	 * @param {object} _ props (unused)
-	 * @param {object} state component state
 	 * @returns {VNode} patient information or loading icon
 	 */
 	render() {
 		if (!this.state.loaded) return <Loader />
 		const {patient, contact} = this.state.patientInfo
-		console.log(patient)
 		return (
 			<div className="row">
 				<div className="col s12">
@@ -116,11 +149,11 @@ class Patient extends Component {
 						</div>
 						<div className="card-stacked">
 							<div className="card-content">
+								<i className="material-icons right clickable" onClick={this.delete.bind(this)}>close</i>
 								<span className="card-title">{patient.displayName}</span>
 								<p><b>Gender: </b>{patient.gender}</p>
 								<p><b>Ward: </b>{patient.location}</p>
-								<p><b>NEWS: </b>Fucked</p>
-								<br />
+								<p><b>NEWS: </b>{this.state.news}</p>
 								<p><b>Contact Name: </b>{contact.displayName}</p>
 								<p><b>Contact Number: </b>{contact.number}</p>
 
@@ -129,7 +162,7 @@ class Patient extends Component {
 					</div>
 				</div>
 				<div className="col s12">
-					<Vitals submit={this.submitVitals} history={this.state.patientReport} />
+					<Vitals submit={this.submitVitals} history={this.state.patientReports} />
 				</div>
 			</div>
 		)

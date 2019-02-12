@@ -1,5 +1,6 @@
 import {h, Component} from 'preact'
 import M from 'materialize-css'
+import format from 'date-fns/format'
 
 import {doModal} from '../../util'
 
@@ -67,14 +68,6 @@ class Vitals extends Component {
 	 * @returns {VNode} patient info
 	 */
 	render(props) {
-		const formattedObs = props.history
-			.map(report => ({
-				...report.result.reduce((acc, cur) => {
-					acc[cur.code.text] = cur.valueQuantity.value
-					return acc
-				}, {}),
-				date: report.meta.lastUpdated}
-			))
 		return (
 			<div className="card">
 				<div className="card-tabs">
@@ -160,9 +153,9 @@ class Vitals extends Component {
 								</tr>
 							</thead>
 							<tbody>
-								{formattedObs.map(obs => (
+								{props.history.map(obs => (
 									<tr>
-										<td>{obs.date}</td>
+										<td>{format(obs.date, 'ddd Mo MMM')}</td>
 										<td>{obs.respiratory_rate}</td>
 										<td>{obs.oxygen_saturation}</td>
 										<td>{obs.heart_rate}</td>

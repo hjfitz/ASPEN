@@ -95,9 +95,9 @@ patientRouter.put('/:id', async (req, res) => {
 patientRouter.delete('/:id', async (req, res) => {
 	const {id} = req.params
 	const patient = new Patient({id})
-	const deleted = await patient.delete()
-	let outcome = new OperationOutcome('success', 200, req.originalUrl, 'Successfully deleted')
-	if (!deleted) outcome = new OperationOutcome('error', 406, req.originalUrl, 'could not find patient')
+	const resp = await patient.delete()
+	let outcome = new OperationOutcome('success', 200, req.originalUrl, resp.msg)
+	if (!resp.deleted) outcome = new OperationOutcome('error', 406, req.originalUrl, resp.msg.detail)
 	outcome.makeResponse(res)
 })
 

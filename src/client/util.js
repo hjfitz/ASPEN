@@ -37,6 +37,8 @@ export function doModal(header, body) {
 	instance.open()
 }
 
+export const toTitle = str => str.charAt(0).toUpperCase() + str.slice(1)
+
 // shitty enums
 export const MINUTE = 1000 * 60
 export const HALF_HOUR = MINUTE * 30
