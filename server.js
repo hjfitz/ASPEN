@@ -4,6 +4,7 @@ const compression = require('compression') // compresses responses
 const helmet = require('helmet') // sets secure headers
 const path = require('path')
 const parser = require('body-parser')
+const auth = require('./src/server/auth')
 const {stream} = require('./src/server/logger')
 const fhirApi = require('./src/server')
 
@@ -24,8 +25,12 @@ app.use(helmet())
 app.use(parser.json())
 app.use(parser.urlencoded({extended: true}))
 
+// ensure login
+app.use(auth)
 // statically server public files
 app.use(express.static(pub))
+
+
 app.use('/patient', express.static(path.join(process.cwd(), 'patient')))
 app.use('/docs/js', express.static(path.join(process.cwd(), 'docs')))
 
