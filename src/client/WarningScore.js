@@ -1,3 +1,5 @@
+import {doModal} from './util'
+
 class NEWSError extends Error {
 	/**
 	 * Error wrapper for NEWS object
@@ -44,11 +46,9 @@ export default class WarningScore {
 		this.conscLevel = report.level_of_consciousness
 		this.suppOxygen = report.supplemental_oxygen
 		this.missingFields = this.requiredFields.filter(field => !(field in report))
+		if (this.missingFields.length === this.requiredFields.length) return
 		if (this.missingFields.length) {
-			throw new Error(
-				`Error creating object - missing fields: ${this.missingFields.join(', ')}`,
-				this.missingFields,
-			)
+			doModal('Error with EWS Calculation', `Fields were missing during submission!</p><ul><li class="browser-default">${this.missingFields.join('</li><li>')}`)
 		}
 	}
 
@@ -57,6 +57,9 @@ export default class WarningScore {
 	 * @return {object} each part of a patient warning score individually scored
 	 */
 	calculate() {
+		if (this.missingFields.length) {
+			return {score: 0}
+		}
 		return {
 			resp: this.scoreResp(),
 			oxySat: this.scoreOxy(),

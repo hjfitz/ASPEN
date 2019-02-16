@@ -13,13 +13,13 @@ class Vitals extends Component {
 	componentDidMount() {
 		const tabs = document.querySelectorAll('.tabs')
 		const select = document.querySelectorAll('select')
-		M.FormSelect.init(select)
-		M.Tabs.init(tabs, {swipeable: false})
+		if (!this.formInstance) this.formInstance = M.FormSelect.init(select)
+		if (!this.tabInstance) this.tabInstance = M.Tabs.init(tabs)
 	}
 
-	componentDidUpdate() {
-		const select = document.querySelectorAll('select')
-		M.FormSelect.init(select)
+	componentWillUnmount() {
+		if (this.formInstance) this.formInstance.map(el => el.destroy())
+		if (this.tabInstance) this.tabInstance.map(el => el.destroy())
 	}
 
 	async submitForm() {

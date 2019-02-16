@@ -99,6 +99,9 @@ class Patient {
 
 	/**
 	 * Attempts to delete a patient based on this.id
+	 * fetch patient photo URL so that this can be removed from the disk
+	 * delete the patient from the database, then the image
+	 * order is important, because if database delete fails, no more image for patient
 	 * @returns {boolean} Deleted or nah
 	 */
 	async delete() {
