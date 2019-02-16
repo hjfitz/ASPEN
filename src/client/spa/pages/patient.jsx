@@ -89,7 +89,6 @@ class Patient extends Component {
 
 		const patientInfo = normalisePatientInfo({...data[0].subject, ...data[0].location[0]})
 		const patientReports = normalisePatientReports(patientReport) // comes pre-sorted from API
-		console.log(patientReports)
 		const ews = new WarningScore(patientReports[0])
 		this.setState({
 			patientInfo,
