@@ -106,13 +106,12 @@ class Patient {
 	 */
 	async delete() {
 		try {
+			// get patient photo url from db
 			const [row] = await knex('patient').select().where('patient_id', this.id)
-			console.log(row)
-			if (row.photo_url) {
-				// attempt to delete photo
-				console.log('ye')
-			}
-			// await knex('patient').delete('patient', this.id)
+			const url = path.join(process.cwd(), row.photo_url)
+			// remove DB entry and then the associated image
+			await knex('patient').delete('patient', this.id)
+			if (row.photo_url && fs.existsSync(url)) fs.unlinkSync(url)
 			return {deleted: true, msg: 'Successfully deleted patient'}
 		} catch (err) {
 			logger.error('Unable to delete patient', {...this.meta, func: 'delete()'})
