@@ -39,8 +39,9 @@ class OperationOutcome {
 	 * @returns {void}
 	 */
 	makeResponse(res) {
-		res.status = this.code
-		return res.json(this.outcome)
+		console.log(this.code)
+		// res.status = this.code
+		return res.status(this.code).json(this.outcome)
 	}
 }
 

@@ -27,6 +27,18 @@ export const fhirBase = axios.create({
 	},
 })
 
+fhirBase.interceptors.response.use((resp) => {
+	console.log(resp)
+	return resp
+}, (err) => {
+	if (err.response.status === 401) {
+		console.log('unauthed on server. redirecting to auth')
+		return window.location.href = '/login'
+	}
+	return Promise.reject(err)
+})
+
+
 export function doModal(header, body) {
 	const modal = document.querySelector('.modal')
 	const instance = Modal.getInstance(modal) || Modal.init(modal)

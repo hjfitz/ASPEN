@@ -32,16 +32,18 @@ class App extends Component {
 		// 1. get token (if exists) from url and store it
 		const location = new URL(window.location)
 		const jwt = location.searchParams.get('token')
-		if (jwt) localStorage.setItem('token', jwt)
+		if (jwt) {
+			console.log('storing JWT')
+			localStorage.setItem('token', jwt)
+		}
 
 		// 2. ensure that there is a token in storage
 		const toCheck = jwt || localStorage.getItem('token')
-		if (!toCheck) return window.location.href = '/login'
+		// if (!toCheck) return window.location.href = '/login'
 
 		// 3. if token in storage, ensure it is fresh
-		const {iat, exp} = getJwtPayload(toCheck)
-		const expiresAt = new Date((iat + exp) * 1000)
-		if (expiresAt < Date.now()) return window.location.href = '/login'
+		const {exp} = getJwtPayload(toCheck)
+		// if (exp < Date.now()) return window.location.href = '/login'
 
 		return true // keep eslint happy
 	}
