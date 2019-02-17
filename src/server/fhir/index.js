@@ -1,8 +1,6 @@
 const router = require('express').Router()
 const fileUpload = require('express-fileupload')
-const formData = require('express-form-data')
 const bodyParser = require('body-parser')
-const os = require('os')
 
 const logger = require('../logger')
 const patientRouter = require('./patient')

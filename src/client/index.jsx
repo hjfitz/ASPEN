@@ -1,6 +1,8 @@
 import {h, render, Component} from 'preact'
 import {Router} from 'preact-router'
 
+import {getJwtPayload} from './util'
+
 import {Fab, Breadcrumb, Redirect, Modal} from './spa/Partial'
 
 import {
@@ -27,7 +29,21 @@ class App extends Component {
 	}
 
 	componentDidMount() {
-		console.log('hello world')
+		// 1. get token (if exists) from url and store it
+		const location = new URL(window.location)
+		const jwt = location.searchParams.get('token')
+		if (jwt) localStorage.setItem('token', jwt)
+
+		// 2. ensure that there is a token in storage
+		const toCheck = jwt || localStorage.getItem('token')
+		if (!toCheck) return window.location.href = '/login'
+
+		// 3. if token in storage, ensure it is fresh
+		const {iat, exp} = getJwtPayload(toCheck)
+		const expiresAt = new Date((iat + exp) * 1000)
+		if (expiresAt < Date.now()) return window.location.href = '/login'
+
+		return true // keep eslint happy
 	}
 
 	onChange(ev) {

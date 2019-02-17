@@ -8,10 +8,9 @@ import {Modal} from 'materialize-css'
  * useful for checking exp and user information
  * @returns {object} JWT
  */
-export function getJwtPayload() {
-	const token = localStorage.getItem('token')
+export function getJwtPayload(token) {
 	if (!token) return false
-	const payloadB64 = token.split('.')
+	const [, payloadB64] = token.split('.')
 	const payload = Utf8.stringify(Base64.parse(payloadB64))
 	return JSON.parse(payload)
 }
@@ -24,6 +23,7 @@ export const fhirBase = axios.create({
 	headers: {
 		accept: 'application/fhir+json',
 		'content-type': 'application/fhir+json',
+		token: localStorage.getItem('token'),
 	},
 })
 
