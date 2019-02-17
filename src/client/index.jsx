@@ -43,7 +43,7 @@ class App extends Component {
 
 		// 3. if token in storage, ensure it is fresh
 		const {exp} = getJwtPayload(toCheck)
-		// if (exp < Date.now()) return window.location.href = '/login'
+		if ((exp * 1000) < Date.now()) return window.location.href = '/login'
 
 		return true // keep eslint happy
 	}

@@ -27,18 +27,17 @@ export const fhirBase = axios.create({
 	},
 })
 
-fhirBase.interceptors.response.use((resp) => {
-	console.log(resp)
-	return resp
-}, (err) => {
-	if (err.response.status === 401) {
-		console.log('unauthed on server. redirecting to auth')
-		return window.location.href = '/login'
-	}
+// intercept response error and ensure the status code isn't 401. see server/auth.js middleware
+fhirBase.interceptors.response.use(resp => resp, (err) => {
+	if (err.response.status === 401) return window.location.href = '/login'
 	return Promise.reject(err)
 })
 
-
+/**
+ * Find the modal on the page, and pop it up!
+ * @param {string} header Modal header
+ * @param {string} body modal body
+ */
 export function doModal(header, body) {
 	const modal = document.querySelector('.modal')
 	const instance = Modal.getInstance(modal) || Modal.init(modal)

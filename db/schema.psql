@@ -59,3 +59,17 @@ CREATE TABLE encounter (
 	patient_id 		serial 		REFERENCES patient(patient_id) ON DELETE CASCADE,
 	location_id 	serial 		REFERENCES location(location_id)
 );
+
+INSERT INTO location (
+	name, 
+	last_updated, 
+	status, 
+	description, 
+	type
+) VALUES (
+	"Ward 99", 
+	"2019-02-17 14:25:25-07"
+	"active",
+	"The first ward added",
+	"Ward"
+);
