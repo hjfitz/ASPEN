@@ -28,15 +28,13 @@ app.use(parser.urlencoded({extended: true}))
 // statically server public files
 app.use(express.static(pub))
 // ensure login
-app.use(auth)
-
 
 app.use('/patient', express.static(path.join(process.cwd(), 'patient')))
 app.use('/docs/js', express.static(path.join(process.cwd(), 'docs')))
 
 app.use(fhirApi)
 
-app.get('*', (req, res) => res.sendFile(path.join(process.cwd(), 'src', 'client', 'index.html')))
+app.get('*', (req, res) => res.sendFile(path.join(pub, 'index.html')))
 
 
 module.exports = app

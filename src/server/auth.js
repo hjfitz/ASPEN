@@ -71,15 +71,17 @@ authRouter.get('/login', (_, res) => {
 	return res.redirect(url)
 })
 
-// token checking middleware
-authRouter.use((req, res, next) => {
+// token checking middleware for fhir API
+authRouter.use('/fhir', (req, res, next) => {
 	const {token} = req.headers
-	console.log(token)
-	console.log(req.url)
 	if (!token) return res.redirect('/login')
-	const valid = jwt.verify(token, sessionSecret)
-	console.log(valid)
-	next()
+	try {
+		const valid = jwt.verify(token, sessionSecret)
+		console.log({valid})
+		return next()
+	} catch (err) {
+		return res.redirect('/login')
+	}
 })
 
 
