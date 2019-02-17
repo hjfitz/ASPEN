@@ -1,4 +1,5 @@
 CREATE TYPE patient_gender AS ENUM ('male', 'female', 'other');
+CREATE TYPE account_type AS ENUM ('google', 'normal');
 
 CREATE TABLE contact (
 	contact_id 	serial 	PRIMARY KEY,
@@ -48,7 +49,22 @@ CREATE TABLE location (
 	last_updated 	timestamptz NOT NULL,
 	status		 	text 		NOT NULL,
 	description 	text 		NOT NULL,
-	type		 	text 		NOT NULL
+	type		 	text 		NOT NULL,
+);
+
+CREATE TABLE practitioner (
+	practitioner_id 	serial 		 PRIMARY KEY,
+	name 	 			text 		 NOT NULL,
+	added 				timestamptz  NOT NULL,
+	username 		 	text 		 UNIQUE NOT NULL,
+	account_type 		account_type NOT NULL,
+	permissions 		text,
+	passhash 			text
+);
+
+CREATE TABLE practitionerwards (
+	location_id 		serial REFERENCES location(location_id),
+	practitioner_id 	serial REFERENCES practitioner(practitioner_id)
 );
 
 CREATE TABLE encounter (

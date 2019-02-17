@@ -6,9 +6,35 @@ const Utf8 = require('crypto-js/enc-utf8')
 const jwt = require('jsonwebtoken')
 const logger = require('./logger')
 const OperationOutcome = require('./fhir/classes/OperationOutcome')
+const {knex} = require('./db')
 
 // ! csprng is ideal - but not good for using nodemon in development. fix this later
 const sessionSecret = process.env.AUTH_SECRET// = csprng(128, 26)
+
+/**
+ * Given user details, store them in the database, if they don't already exist
+ * This is so that admins can assign wards
+ * @param {string} payload unparsed json
+ */
+async function handleUser(payload) {
+	const meta = {file: 'auth.js', func: 'handleUser()'}
+	const parsed = JSON.parse(payload)
+	const rows = await knex('practitioner').select().where({
+		username: parsed.email,
+	})
+	if (rows.length) {
+		logger.debug('user exists. returning', meta)
+		return
+	}
+	logger.debug('creating new user', meta)
+	const [resp] = await knex('practitioner').insert({
+		name: parsed.name,
+		added: new Date(),
+		username: parsed.email,
+		account_type: 'google',
+	}).returning('*')
+	logger.info(`user created with id: ${resp.practitioner_id}`, meta)
+}
 
 /**
  * Google oauth flow. Environment variables required:
@@ -65,8 +91,10 @@ authRouter.get('/auth/callback', async (req, res) => {
 	// return the user to the homepage
 	// sadly state in google's oauth response is not the previous url as it is with other servers
 	res.redirect(`/?token=${token}`)
-})
 
+	// user has authed: handle their identity
+	handleUser(payload)
+})
 
 // user gets redirected to /login: create a URL and redirect them to google's oauth server
 authRouter.get('/login', (_, res) => {
