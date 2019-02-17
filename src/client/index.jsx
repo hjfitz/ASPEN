@@ -26,6 +26,10 @@ class App extends Component {
 		this.onChange = this.onChange.bind(this)
 	}
 
+	componentDidMount() {
+		console.log('hello world')
+	}
+
 	onChange(ev) {
 		this.setState({location: ev.url})
 	}
