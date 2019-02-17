@@ -19,9 +19,9 @@ const sessionSecret = process.env.AUTH_SECRET// = csprng(128, 26)
 async function handleUser(payload) {
 	const meta = {file: 'auth.js', func: 'handleUser()'}
 	const parsed = JSON.parse(payload)
-	const rows = await knex('practitioner').select().where({
-		username: parsed.email,
-	})
+	const rows = await knex('practitioner')
+		.select()
+		.where({username: parsed.email})
 	if (rows.length) {
 		logger.debug('user exists. returning', meta)
 		return
@@ -108,7 +108,7 @@ authRouter.get('/login', (_, res) => {
 		+ 'response_type=code&'
 		+ `client_id=${process.env.GOOGLE_CLIENT_ID}&`
 		+ `scope=${encodeURIComponent('profile email openid')}`
-	return res.redirect(url)
+	return res.redirect(`/login.html?google_redir=${url}`)
 })
 
 // token checking middleware for fhir API

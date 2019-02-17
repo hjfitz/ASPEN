@@ -1,7 +1,7 @@
 import {h, Component} from 'preact'
 import M from 'materialize-css'
 
-import {fhirBase, doModal} from '../../util'
+import {fhirBase, doModal} from '../util'
 
 import '../styles/create-location.scss'
 

@@ -7,6 +7,9 @@ yarn-error.log*
 
 client.bundle.js
 client.bundle.js.map
+login.bundle.js
+login.bundle.js.map
+
 patient/*.png
 patient/*.jpg
 patient/*.jpeg

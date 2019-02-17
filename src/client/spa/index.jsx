@@ -3,7 +3,7 @@ import {Router} from 'preact-router'
 
 import {getJwtPayload} from './util'
 
-import {Fab, Breadcrumb, Redirect, Modal} from './spa/Partial'
+import {Fab, Breadcrumb, Redirect, Modal} from './Partial'
 
 import {
 	SearchPatient,
@@ -14,10 +14,10 @@ import {
 	Welcome,
 	Ward,
 	Add,
-} from './spa/Pages'
+} from './Pages'
 
 import 'materialize-css/sass/materialize.scss'
-import './spa/styles/router.scss'
+import './styles/router.scss'
 
 class App extends Component {
 	constructor(props) {
