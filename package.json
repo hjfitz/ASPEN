@@ -15,7 +15,8 @@
     "build:prod": "webpack --mode=production",
     "lint": "eslint src/**/*.js{x,}",
     "build:docs": "jsdoc -c jsdoc.config.js",
-    "build:docs:all": "yarn build:docs ./server.js ./bin/www.js ./src/**/**/*.js"
+	"build:docs:all": "yarn build:docs ./server.js ./bin/www.js ./src/**/**/*.js",
+	"postinstall": "yarn build:prod"
   },
   "engines": {
     "node": ">=11.0.0",

@@ -1,0 +1,21 @@
+version: '3'
+services:
+  fyp:
+    container_name: fyp
+    restart: always
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+    links:
+      - pg
+    depends_on:
+      - "pg"
+  pg:
+    container_name: pg
+    image: postgres:10
+    volumes:
+      - ./db:/db/files
+    ports:
+      - "5432:5432"
