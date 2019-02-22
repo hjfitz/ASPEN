@@ -4,12 +4,16 @@ const queryString = require('querystring')
 const Base64 = require('crypto-js/enc-base64')
 const Utf8 = require('crypto-js/enc-utf8')
 const jwt = require('jsonwebtoken')
-const logger = require('./logger')
-const OperationOutcome = require('./fhir/classes/OperationOutcome')
-const {knex} = require('./db')
+const bcrypt = require('bcrypt')
+
+const checkPass = require('./passwords')
+const logger = require('../logger')
+const OperationOutcome = require('../fhir/classes/OperationOutcome')
+const {knex} = require('../db')
 
 // ! csprng is ideal - but not good for using nodemon in development. fix this later
 const sessionSecret = process.env.AUTH_SECRET// = csprng(128, 26)
+const saltRounds = 5 // has a big impact on perf
 
 /**
  * Given user details, store them in the database, if they don't already exist
@@ -108,7 +112,83 @@ authRouter.get('/login', (_, res) => {
 		+ 'response_type=code&'
 		+ `client_id=${process.env.GOOGLE_CLIENT_ID}&`
 		+ `scope=${encodeURIComponent('profile email openid')}`
-	return res.redirect(`/login.html?google_redir=${url}`)
+	res.redirect(url)
+	// return res.redirect(`/login.html?google_redir=${url}`)
+})
+
+authRouter.get('/login/url', (req, res) => {
+	const url = 'https://accounts.google.com/o/oauth2/v2/auth?'
+		+ 'state=state_parameter_passthrough_value&'
+		+ 'include_granted_scopes=true&'
+		+ 'access_type=offline&'
+		+ `redirect_uri=${encodeURIComponent(process.env.GOOGLE_OAUTH_CALLBACK)}&`
+		+ 'response_type=code&'
+		+ `client_id=${process.env.GOOGLE_CLIENT_ID}&`
+		+ `scope=${encodeURIComponent('profile email openid')}`
+	res.send(url)
+})
+
+authRouter.post('/login', async (req, res) => {
+	const {username, password} = req.body
+	try {
+		const [row] = await knex('practitioner')
+			.select()
+			.where({username, account_type: 'normal'})
+		if (!row) return res.status(400).send('Unable to login: username does not exist!')
+		const passMatch = await bcrypt.compare(password, row.passhash)
+		if (!passMatch) return res.status(400).send('Passwords do not match')
+
+
+		const fypPayload = {
+			name: row.name,
+			username: row.username,
+			// hd,
+			// given_name,
+			// family_name,
+			// google_access_token: access_token,
+			exp: Math.floor(Date.now() / 1000) + (60 * 60),
+		}
+		const token = jwt.sign(fypPayload, sessionSecret)
+
+
+		return res.send({
+			token,
+			message: `Welcome back, ${row.name}`,
+		})
+	} catch (err) {
+		return res.status(500).send(`Error logging in: ${err}`)
+	}
+})
+
+authRouter.post('/login/create', async (req, res) => {
+	const required = ['name', 'username', 'password']
+	const {name, username, password} = req.body
+
+	// check we have all required entries
+	const missing = required.filter(key => !req.body[key])
+	if (missing.length) return res.status(400).send(`Couldn't register! Missing: ${missing.join(', ')}`)
+
+	// check they don't already exist
+	const rows = await knex('practitioner').select().where({username})
+	if (rows.length) return res.status(400).send("Couldn't register! Username already exists")
+
+	// check that password > 10 chars and includes alphanum]
+	const {valid, message} = checkPass(password)
+	if (!valid) return res.status(400).send(`Issue with password: ${message}`)
+
+	try {
+		const passhash = await bcrypt.hash(password, saltRounds)
+		await knex('practitioner').insert({
+			name,
+			username,
+			passhash,
+			account_type: 'normal',
+			added: new Date(),
+		})
+		return res.status(200).send(`Successfully registered. Welcome, ${name}`)
+	} catch (err) {
+		return res.status(500).send(`<p>Couldn't register! Error:</p><p>${err}</p>`)
+	}
 })
 
 // token checking middleware for fhir API

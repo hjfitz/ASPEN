@@ -15,7 +15,16 @@ export function getJwtPayload(token) {
 	return JSON.parse(payload)
 }
 
+/**
+ * no operation!
+ */
 export function noop() {}
+
+export function showLogin() {
+	const modal = document.querySelector('.modal.login-modal')
+	const inst = Modal.getInstance(modal) || Modal.init(modal)
+	inst.open()
+}
 
 export const fhirBase = axios.create({
 	baseURL: '/fhir',
@@ -29,9 +38,10 @@ export const fhirBase = axios.create({
 
 // intercept response error and ensure the status code isn't 401. see server/auth.js middleware
 fhirBase.interceptors.response.use(resp => resp, (err) => {
-	if (err.response.status === 401) return window.location.href = '/login'
+	if (err.response.status === 401) return showLogin() // window.location.href = '/login'
 	return Promise.reject(err)
 })
+
 
 /**
  * Find the modal on the page, and pop it up!
@@ -39,7 +49,7 @@ fhirBase.interceptors.response.use(resp => resp, (err) => {
  * @param {string} body modal body
  */
 export function doModal(header, body) {
-	const modal = document.querySelector('.modal')
+	const modal = document.querySelector('.modal.information')
 	const instance = Modal.getInstance(modal) || Modal.init(modal)
 	const content = document.querySelector('.modal-content')
 	content.innerHTML = `

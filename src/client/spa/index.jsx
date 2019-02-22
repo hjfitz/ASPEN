@@ -1,9 +1,9 @@
 import {h, render, Component} from 'preact'
 import {Router} from 'preact-router'
 
-import {getJwtPayload} from './util'
+import {getJwtPayload, showLogin} from './util'
 
-import {Fab, Breadcrumb, Redirect, Modal} from './Partial'
+import {Fab, Breadcrumb, Redirect, Modal, Login} from './Partial'
 
 import {
 	SearchPatient,
@@ -26,6 +26,8 @@ class App extends Component {
 			location: window.location.pathname,
 		}
 		this.onChange = this.onChange.bind(this)
+		this.login = <Login />
+		this.showPopup = showLogin
 	}
 
 	componentDidMount() {
@@ -39,11 +41,13 @@ class App extends Component {
 
 		// 2. ensure that there is a token in storage
 		const toCheck = jwt || localStorage.getItem('token')
-		// if (!toCheck) return window.location.href = '/login'
+		if (!toCheck) this.showPopup()
+		// return window.location.href = '/login'
 
 		// 3. if token in storage, ensure it is fresh
 		const {exp} = getJwtPayload(toCheck)
-		if ((exp * 1000) < Date.now()) return window.location.href = '/login'
+		if ((exp * 1000) < Date.now()) return this.showPopup()
+		// window.location.href = '/login'
 
 		return true // keep eslint happy
 	}
@@ -69,6 +73,7 @@ class App extends Component {
 				</Router>
 				<Fab />
 				<Modal />
+				{this.login}
 			</div>
 		)
 	}
