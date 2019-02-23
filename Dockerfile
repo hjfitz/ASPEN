@@ -2,11 +2,10 @@ FROM node:11
 
 # COPY ./db /docker-entrypoint-initdb.d/
 WORKDIR /usr/src/app
-COPY ./db/10-init.sh /docker-entrypoint-initdb.d/10-init.sh
 
 # move deps and lockfile
-COPY package.json ./
-COPY yarn.lock ./
+# COPY package.json ./
+# COPY yarn.lock ./
 
 COPY ./ ./
 
@@ -20,4 +19,4 @@ RUN yarn build:dev
 
 
 EXPOSE 5000
-CMD ["yarn", "start"]
+# CMD ["yarn", "start"]

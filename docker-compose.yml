@@ -3,17 +3,15 @@ services:
   pg:
     container_name: pg
     environment:
-      - POSTGRES_USER=fyp
-      - POSTGRES_PASSWORD=donotposttogit
-      - POSTGRES_DATABASE=fyp
-    # build: ./db
+      POSTGRES_USER: fyp
+      POSTGRES_DATABASE: fyp
+      POSTGRES_PASSWORD: donotposttogit
     image: postgres:10
-    # volumes:
-    #   - ./db:/db/files
+    build: ./db
     ports:
       - "5432:5432"
     volumes:
-    - ./db:/docker-entrypoint-initdb.d/
+    - /docker-entrypoint-initdb.d
   fyp:
     container_name: fyp
     restart: always
@@ -21,7 +19,8 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - "PORT=5000"
-      - "DATABASE_URL=postgresql://postgres@pg:5432/postgres"
+      PORT: 5000
+      DATABASE_URL: postgresql://fyp:donotposttogit@pg:5432/fyp
     links:
       - pg
+    command: bash -c 'while !</dev/tcp/pg/5432; do sleep 1; done; yarn start'
