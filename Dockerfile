@@ -1,22 +1,16 @@
 FROM node:11
 
-# COPY ./db /docker-entrypoint-initdb.d/
 WORKDIR /usr/src/app
 
-# move deps and lockfile
-# COPY package.json ./
-# COPY yarn.lock ./
-
-COPY ./ ./
-
-
+# move source
+COPY . .
 
 # setup program
 RUN yarn
 RUN yarn build:dev
 
-# move app source
-
+# let the application commnuicate with the outside world!
 
 EXPOSE 5000
-# CMD ["yarn", "start"]
+
+CMD ["yarn", "start"]

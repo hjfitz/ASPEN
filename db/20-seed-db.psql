@@ -1,4 +1,0 @@
-INSERT INTO location
-  (name, last_updated status, description, type)
-VALUES
-  ("Ward 1", "Sat Feb 23 2019 13:27:53 GMT+0000", "active", "Testing area", "Ward")
