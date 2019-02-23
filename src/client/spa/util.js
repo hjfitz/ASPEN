@@ -36,6 +36,13 @@ export const fhirBase = axios.create({
 	},
 })
 
+fhirBase.interceptors.request.use((config) => {
+	if (!config.headers.token && localStorage.getItem('token')) {
+		config.headers.token = localStorage.getItem('token')
+	}
+	return config
+})
+
 // intercept response error and ensure the status code isn't 401. see server/auth.js middleware
 fhirBase.interceptors.response.use(resp => resp, (err) => {
 	if (err.response.status === 401) return showLogin() // window.location.href = '/login'
