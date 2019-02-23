@@ -1,5 +1,19 @@
 version: '3'
 services:
+  pg:
+    container_name: pg
+    environment:
+      - POSTGRES_USER=fyp
+      - POSTGRES_PASSWORD=donotposttogit
+      - POSTGRES_DATABASE=fyp
+    # build: ./db
+    image: postgres:10
+    # volumes:
+    #   - ./db:/db/files
+    ports:
+      - "5432:5432"
+    volumes:
+    - ./db:/docker-entrypoint-initdb.d/
   fyp:
     container_name: fyp
     restart: always
@@ -7,15 +21,7 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - PORT=5000
+      - "PORT=5000"
+      - "DATABASE_URL=postgresql://postgres@pg:5432/postgres"
     links:
       - pg
-    depends_on:
-      - "pg"
-  pg:
-    container_name: pg
-    image: postgres:10
-    volumes:
-      - ./db:/db/files
-    ports:
-      - "5432:5432"
