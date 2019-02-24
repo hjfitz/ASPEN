@@ -1,8 +1,8 @@
 import {h, Component} from 'preact'
 import M from 'materialize-css'
 import {Loader, Vitals} from '../Partial'
-import {fhirBase, doModal, toTitle} from '../../util'
-import WarningScore from '../../WarningScore'
+import {fhirBase, doModal, toTitle} from '../util'
+import WarningScore from '../WarningScore'
 
 /**
  * Normalise api response for ease of manipulation in this component

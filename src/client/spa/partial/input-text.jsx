@@ -1,5 +1,5 @@
 import {h} from 'preact'
-import {noop} from '../../util'
+import {noop} from '../util'
 
 /**
  * Materialize input element

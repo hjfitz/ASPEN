@@ -28,7 +28,6 @@ encounterRouter.get('/', async (req, res) => {
 	const rows = await knex('encounter').select().where(req.query)
 	const mapped = await Promise.all(rows.map(row => new Encounter(row).fhir(toInclude)))
 	res.json(mapped)
-	// res.json(rows)
 })
 
 encounterRouter.get('/:encounter_id', async (req, res) => {

@@ -1,7 +1,7 @@
 import {h, Component} from 'preact'
 import {Link} from 'preact-router'
 import {Loader} from '../Partial'
-import {fhirBase} from '../../util'
+import {fhirBase} from '../util'
 
 class WardList extends Component {
 	constructor(props) {

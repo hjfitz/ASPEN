@@ -2,7 +2,7 @@ import {h, Component} from 'preact'
 import M from 'materialize-css'
 import format from 'date-fns/format'
 
-import {doModal} from '../../util'
+import {doModal} from '../util'
 
 import '../styles/vital-signs.scss'
 

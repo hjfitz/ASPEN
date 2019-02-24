@@ -4,7 +4,7 @@ import M from 'materialize-css'
 import isMobile from 'ismobilejs'
 
 import {Input, Loader, Select} from '../Partial'
-import {fhirBase, doModal} from '../../util'
+import {fhirBase, doModal} from '../util'
 
 import '../styles/create-patient.scss'
 

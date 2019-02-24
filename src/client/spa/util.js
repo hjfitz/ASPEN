@@ -8,15 +8,23 @@ import {Modal} from 'materialize-css'
  * useful for checking exp and user information
  * @returns {object} JWT
  */
-export function getJwtPayload() {
-	const token = localStorage.getItem('token')
+export function getJwtPayload(token) {
 	if (!token) return false
-	const payloadB64 = token.split('.')
+	const [, payloadB64] = token.split('.')
 	const payload = Utf8.stringify(Base64.parse(payloadB64))
 	return JSON.parse(payload)
 }
 
+/**
+ * no operation!
+ */
 export function noop() {}
+
+export function showLogin() {
+	const modal = document.querySelector('.modal.login-modal')
+	const inst = Modal.getInstance(modal) || Modal.init(modal)
+	inst.open()
+}
 
 export const fhirBase = axios.create({
 	baseURL: '/fhir',
@@ -24,11 +32,31 @@ export const fhirBase = axios.create({
 	headers: {
 		accept: 'application/fhir+json',
 		'content-type': 'application/fhir+json',
+		token: localStorage.getItem('token'),
 	},
 })
 
+fhirBase.interceptors.request.use((config) => {
+	if (!config.headers.token && localStorage.getItem('token')) {
+		config.headers.token = localStorage.getItem('token')
+	}
+	return config
+})
+
+// intercept response error and ensure the status code isn't 401. see server/auth.js middleware
+fhirBase.interceptors.response.use(resp => resp, (err) => {
+	if (err.response.status === 401) return showLogin() // window.location.href = '/login'
+	return Promise.reject(err)
+})
+
+
+/**
+ * Find the modal on the page, and pop it up!
+ * @param {string} header Modal header
+ * @param {string} body modal body
+ */
 export function doModal(header, body) {
-	const modal = document.querySelector('.modal')
+	const modal = document.querySelector('.modal.information')
 	const instance = Modal.getInstance(modal) || Modal.init(modal)
 	const content = document.querySelector('.modal-content')
 	content.innerHTML = `
