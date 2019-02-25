@@ -108,9 +108,10 @@ class Patient {
 		try {
 			// get patient photo url from db
 			const [row] = await knex('patient').select().where('patient_id', this.id)
-			const url = path.join(process.cwd(), row.photo_url)
+			const url = path.join(process.cwd(), (row.photo_url || ''))
 			// remove DB entry and then the associated image
 			await knex('patient').delete('patient', this.id)
+			logger.debug(`attempting to delete patient photo with url: ${url}`, this.meta)
 			if (row.photo_url && fs.existsSync(url)) fs.unlinkSync(url)
 			return {deleted: true, msg: 'Successfully deleted patient'}
 		} catch (err) {
