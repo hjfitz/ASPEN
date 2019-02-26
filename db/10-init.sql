@@ -49,7 +49,7 @@ CREATE TABLE location (
 	last_updated 	timestamptz NOT NULL,
 	status		 	text 		NOT NULL,
 	description 	text 		NOT NULL,
-	type		 	text 		NOT NULL,
+	type		 	text 		NOT NULL
 );
 
 CREATE TABLE practitioner (
