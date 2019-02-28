@@ -1,6 +1,7 @@
 import {h} from 'preact'
 import format from 'date-fns/format'
 import {getJwtPayload} from '../util'
+import {SignatureBox} from '../Partial'
 
 const getName = () => getJwtPayload(localStorage.token).name
 const getDate = () => format(Date.now(), ' MMM DD, YYYY')
@@ -350,21 +351,24 @@ const PatientHistory = () => (
 		<div className="col s12">
 			<h3>Sign-off</h3>
 			<p>Please sign as the health professional taking this health history:</p>
-			<div className="input-field col s6">
-				<input id="practitioner-name" type="text" className="validate" value={getName()} />
-				<label className="active" htmlFor="practitioner-name">Name</label>
-			</div>
-			<div className="input-field col s6">
-				<input id="practitioner-signature" type="text" className="validate" />
-				<label htmlFor="practitioner-signature">Signature</label>
-			</div>
-			<div className="input-field col s6">
-				<input id="practitioner-designation" type="text" className="validate" />
-				<label htmlFor="practitioner-designation">Designation</label>
-			</div>
-			<div className="input-field col s6">
-				<input id="practitioner-date" type="text" className="validate datepicker" value={getDate()} />
-				<label className="active" htmlFor="practitioner-date">Date</label>
+			<div className="row">
+				<div className="col s12 m6">
+					<div className="input-field col s12">
+						<input id="practitioner-name" type="text" className="validate" value={getName()} />
+						<label className="active" htmlFor="practitioner-name">Name</label>
+					</div>
+					<div className="input-field col s12">
+						<input id="practitioner-designation" type="text" className="validate" />
+						<label htmlFor="practitioner-designation">Designation</label>
+					</div>
+					<div className="input-field col s12">
+						<input id="practitioner-date" type="text" className="validate datepicker" value={getDate()} />
+						<label className="active" htmlFor="practitioner-date">Date</label>
+					</div>
+				</div>
+				<div className="input-field col s12 m6">
+					<SignatureBox />
+				</div>
 			</div>
 		</div>
 	</div>
