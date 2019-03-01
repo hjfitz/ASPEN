@@ -8,7 +8,6 @@ class Signature extends Component {
 	}
 
 	componentDidMount() {
-		console.log(this.canvas)
 		// set up event listeners
 		document.addEventListener('mousemove', this.draw.bind(this))
 		document.addEventListener('mousedown', this.setPosition.bind(this))
@@ -20,7 +19,6 @@ class Signature extends Component {
 		 */
 		this.canvas.addEventListener('touchstart', ev => this.setPosition(ev.touches[0]))
 		this.canvas.addEventListener('touchend', () => document.dispatchEvent(new MouseEvent('mouseup', {})))
-
 		this.canvas.addEventListener('touchmove', (e) => {
 			e.preventDefault()
 			const touch = e.touches[0]
@@ -59,10 +57,10 @@ class Signature extends Component {
 		ctx.stroke() // draw it!
 	}
 
-	reset() {
+	reset(ev) {
+		ev.preventDefault()
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 	}
-
 
 	render() {
 		return (
@@ -74,6 +72,7 @@ class Signature extends Component {
 							this.canvas = c
 							this.ctx = c.getContext('2d')
 						}}
+						id="sign-off-canvas"
 						style={{width: '100%', border: '1px solid grey'}}
 					/>
 				</div>

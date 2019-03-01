@@ -145,7 +145,7 @@ class Patient extends Component {
 				<div className="col s12">
 					<div className="card horizontal">
 						<div className="card-image">
-							<img alt={patient.displayName} src={patient.photo} />
+							<img alt={patient.displayName} src={patient.photo || '/img/patient-placeholder.webp'} />
 						</div>
 						<div className="card-stacked">
 							<div className="card-content">

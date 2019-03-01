@@ -4,26 +4,33 @@ import M from 'materialize-css'
 import isMobile from 'ismobilejs'
 
 import {Input, Loader, Select, PatientHistory} from '../Partial'
-import {fhirBase, doModal} from '../util'
+import {fhirBase, doModal, getJwtPayload} from '../util'
 
 import '../styles/create-patient.scss'
 
 // so hacky but that's what you get for using non-standard elems materialize ¯\_(ツ)_/¯
-function createForm() {
+function createHistoryForm() {
 	const elems = document.querySelectorAll('.patient-history-input')
 	const values = [...elems].reduce((acc, elem) => {
-		const {dataset} = elem
-		if (dataset.materializeType && dataset.materializeType === 'select') {
+		const {formKey, materializeType} = elem.dataset
+		const key = formKey.replace(/-/g, '_')
+		if (materializeType && materializeType === 'select') {
 			const vals = M.FormSelect.getInstance(elem).getSelectedValues()
-			acc[dataset.formKey] = vals
-		} else if (dataset.materializeType && dataset.materializeType === 'radio-group') {
-			acc[dataset.formKey] = elem.querySelector(':checked').value
+			acc[key] = vals
+		} else if (materializeType && materializeType === 'radio-group') {
+			acc[key] = elem.querySelector(':checked').value
 		} else {
-			acc[elem.id] = elem.value
+			acc[key] = elem.value
 		}
 		return acc
 	}, {})
-	console.log(values)
+	// get user id from database
+	values.sign_off_userid = getJwtPayload(localStorage.token).userid
+	// signature
+	const sigCanv = document.getElementById('sign-off-canvas')
+	const rawImg = sigCanv.toDataURL('image/png')
+	values.sign_off_blob = rawImg
+	return values
 }
 
 class CreatePatient extends Component {
@@ -70,10 +77,6 @@ class CreatePatient extends Component {
 				}
 				const date = document.querySelectorAll('.datepicker')
 				M.Datepicker.init(date, {autoClose: true})
-
-				// const tips = document.querySelectorAll('#patient-form .tooltipped')
-				// console.log(tips)
-				// M.Tooltip.init(tips)
 			})
 		}
 	}
@@ -166,16 +169,19 @@ class CreatePatient extends Component {
 				encForm.append('patient_id', outcome.diagnostics.patient_id)
 				encForm.append('location_id', obj.location_id)
 				const encResp = await fhirBase.post('/Encounter', encForm)
-				if (encResp.data.issue[0].code !== 200) {
-					doModal('Error', encResp.data.issue[0].details.text)
-				} else {
-					doModal('Success', encResp.data.issue[0].details.text)
-					route('/')
-				}
+				const historyRaw = createHistoryForm()
+				const histForm = new FormData()
+				Object.keys(historyRaw).forEach((key) => {
+					histForm.set(key, historyRaw[key])
+				})
+				const histResp = await fhirBase.post('/History', histForm)
+				console.log(histResp)
+				doModal('Success', encResp.data.issue[0].details.text)
 			} else {
 				doModal('Error', outcome.data.issue[0].details.text)
 			}
 		} catch (err) {
+			console.warn('[create patient]', err)
 			doModal('Error', `There is an error with patient creation: ${err}`)
 		}
 	}
@@ -257,7 +263,7 @@ class CreatePatient extends Component {
 						<Input id="contact-phone" label="Phone" type="tel" />
 					</div>
 					<div className="row">
-						<a className="waves-effect waves-light btn" onClick={createForm}>
+						<a className="waves-effect waves-light btn" onClick={this.admit.bind(this)}>
 							<i className="material-icons left">perm_identity</i>Admit
 						</a>
 					</div>

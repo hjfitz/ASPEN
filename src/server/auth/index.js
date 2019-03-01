@@ -28,7 +28,7 @@ async function handleUser(payload) {
 		.where({username: parsed.email})
 	if (rows.length) {
 		logger.debug('user exists. returning', meta)
-		return
+		return rows[0].practitioner_id
 	}
 	logger.debug('creating new user', meta)
 	const [resp] = await knex('practitioner').insert({
@@ -38,6 +38,7 @@ async function handleUser(payload) {
 		account_type: 'google',
 	}).returning('*')
 	logger.info(`user created with id: ${resp.practitioner_id}`, meta)
+	return resp.practitioner_id
 }
 
 /**
@@ -80,14 +81,16 @@ authRouter.get('/auth/callback', async (req, res) => {
 	const [, payloadB64] = id_token.split('.')
 	const payload = Utf8.stringify(Base64.parse(payloadB64))
 	const {email, name, hd, given_name, family_name} = JSON.parse(payload)
+
+	const userid = await handleUser(payload)
 	// ? store user if not in database and add basic permissions + include in JWT
 	const fypPayload = {
 		email,
+		userid,
 		name,
 		hd,
 		given_name,
 		family_name,
-		google_access_token: access_token,
 		exp: Math.floor(Date.now() / 1000) + (60 * 60),
 	}
 	const token = jwt.sign(fypPayload, sessionSecret)
@@ -97,7 +100,6 @@ authRouter.get('/auth/callback', async (req, res) => {
 	res.redirect(`/?token=${token}`)
 
 	// user has authed: handle their identity
-	handleUser(payload)
 })
 
 // user gets redirected to /login: create a URL and redirect them to google's oauth server
@@ -142,14 +144,10 @@ authRouter.post('/login', async (req, res) => {
 		const fypPayload = {
 			name: row.name,
 			username: row.username,
-			// hd,
-			// given_name,
-			// family_name,
-			// google_access_token: access_token,
+			userid: row.practitioner_id,
 			exp: Math.floor(Date.now() / 1000) + (60 * 60),
 		}
 		const token = jwt.sign(fypPayload, sessionSecret)
-
 
 		return res.send({
 			token,

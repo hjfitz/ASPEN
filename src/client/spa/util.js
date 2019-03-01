@@ -60,6 +60,7 @@ export function doModal(header, body) {
 	const modal = document.querySelector('.modal.information')
 	const instance = Modal.getInstance(modal) || Modal.init(modal)
 	const content = document.querySelector('.modal-content')
+	console.log(content)
 	content.innerHTML = `
 			<h4>${header}</h4>
 			<p>${body}</p>`
