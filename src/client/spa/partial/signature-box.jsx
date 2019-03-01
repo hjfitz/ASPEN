@@ -1,5 +1,6 @@
 import {h, Component} from 'preact'
 
+
 class Signature extends Component {
 	constructor() {
 		super()
@@ -12,14 +13,28 @@ class Signature extends Component {
 		document.addEventListener('mousemove', this.draw.bind(this))
 		document.addEventListener('mousedown', this.setPosition.bind(this))
 		document.addEventListener('mouseEnter', this.setPosition.bind(this))
-		document.addEventListener('touchmove', this.draw.bind(this))
-		document.addEventListener('touchstart', this.setPosition.bind(this))
-		// document.addEventListener('touchEnter', this.setPosition.bind(this))
+
+		/**
+		 * spoof mouse events using touch events to
+		 * so that a phone user can make a signature
+		 */
+		this.canvas.addEventListener('touchstart', ev => this.setPosition(ev.touches[0]))
+		this.canvas.addEventListener('touchend', () => document.dispatchEvent(new MouseEvent('mouseup', {})))
+
+		this.canvas.addEventListener('touchmove', (e) => {
+			e.preventDefault()
+			const touch = e.touches[0]
+			const mouseEvent = new MouseEvent('mousemove', {
+				clientX: touch.clientX,
+				clientY: touch.clientY,
+				buttons: 1,
+			})
+			document.dispatchEvent(mouseEvent)
+		})
 	}
 
 	setPosition(ev) {
-		ev.preventDefault()
-		console.log(ev)
+		// no need to set state as component doesn't need to render again
 		this.pos = {
 			x: ev.clientX - this.canvas.getBoundingClientRect().left,
 			y: ev.clientY - this.canvas.getBoundingClientRect().top,
@@ -27,8 +42,7 @@ class Signature extends Component {
 	}
 
 	draw(ev) {
-		const ctx = this.canvas.getContext('2d')
-		console.log(this.pos)
+		const {ctx} = this
 		// mouse left button must be pressed
 		if (ev.buttons !== 1) return
 
@@ -46,8 +60,7 @@ class Signature extends Component {
 	}
 
 	reset() {
-		const ctx = this.canvas.getContext('2d')
-		ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 	}
 
 
@@ -56,7 +69,13 @@ class Signature extends Component {
 			<div className="card">
 				<div className="card-content">
 					<span className="card-title">Sign below</span>
-					<canvas ref={c => this.canvas = c} style={{width: '100%', border: '1px solid grey'}} />
+					<canvas
+						ref={(c) => {
+							this.canvas = c
+							this.ctx = c.getContext('2d')
+						}}
+						style={{width: '100%', border: '1px solid grey'}}
+					/>
 				</div>
 				<div className="card-action">
 					<a href="" className="teal-text text-lighten-1" onClick={this.reset.bind(this)}>Reset</a>
