@@ -114,5 +114,7 @@ CREATE TABLE patient_history (
 	sign_off_designation 							text 		NOT NULL,
 	sign_off_userid 								serial 		REFERENCES practitioner(practitioner_id),
 	sign_off_date 									timestamptz NOT NULL,
-	sign_off_blob 									text 		NOT NULL
+	sign_off_blob 									text 		NOT NULL,
+
+	patient_id 										serial 		REFERENCES patient(patient_id)
 );

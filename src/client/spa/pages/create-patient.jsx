@@ -174,6 +174,7 @@ class CreatePatient extends Component {
 				Object.keys(historyRaw).forEach((key) => {
 					histForm.set(key, historyRaw[key])
 				})
+				histForm.set('patient_id', outcome.diagnostics.patient_id)
 				const histResp = await fhirBase.post('/History', histForm)
 				console.log(histResp)
 				doModal('Success', encResp.data.issue[0].details.text)

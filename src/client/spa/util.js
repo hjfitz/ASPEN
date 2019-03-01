@@ -59,7 +59,7 @@ fhirBase.interceptors.response.use(resp => resp, (err) => {
 export function doModal(header, body) {
 	const modal = document.querySelector('.modal.information')
 	const instance = Modal.getInstance(modal) || Modal.init(modal)
-	const content = document.querySelector('.modal-content')
+	const content = document.querySelector('.modal.information .modal-content')
 	console.log(content)
 	content.innerHTML = `
 			<h4>${header}</h4>
