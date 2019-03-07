@@ -21,6 +21,7 @@ export function getJwtPayload(token) {
 export function noop() {}
 
 export function showLogin() {
+	localStorage.removeItem('token')
 	const modal = document.querySelector('.modal.login-modal')
 	const inst = Modal.getInstance(modal) || Modal.init(modal)
 	inst.open()
@@ -32,12 +33,12 @@ export const fhirBase = axios.create({
 	headers: {
 		accept: 'application/fhir+json',
 		'content-type': 'application/fhir+json',
-		token: localStorage.getItem('token'),
 	},
 })
 
+// apply a new token for every request as logging in natively will use old token
 fhirBase.interceptors.request.use((config) => {
-	if (!config.headers.token && localStorage.getItem('token')) {
+	if (localStorage.getItem('token')) {
 		config.headers.token = localStorage.getItem('token')
 	}
 	return config
@@ -45,7 +46,7 @@ fhirBase.interceptors.request.use((config) => {
 
 // intercept response error and ensure the status code isn't 401. see server/auth.js middleware
 fhirBase.interceptors.response.use(resp => resp, (err) => {
-	if (err.response.status === 401) return showLogin() // window.location.href = '/login'
+	if (err.response.status === 401) return showLogin()
 	return Promise.reject(err)
 })
 
@@ -58,7 +59,8 @@ fhirBase.interceptors.response.use(resp => resp, (err) => {
 export function doModal(header, body) {
 	const modal = document.querySelector('.modal.information')
 	const instance = Modal.getInstance(modal) || Modal.init(modal)
-	const content = document.querySelector('.modal-content')
+	const content = document.querySelector('.modal.information .modal-content')
+	console.log(content)
 	content.innerHTML = `
 			<h4>${header}</h4>
 			<p>${body}</p>`

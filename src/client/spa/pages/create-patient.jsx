@@ -3,10 +3,35 @@ import {route} from 'preact-router'
 import M from 'materialize-css'
 import isMobile from 'ismobilejs'
 
-import {Input, Loader, Select} from '../Partial'
-import {fhirBase, doModal} from '../util'
+import {Input, Loader, Select, PatientHistory} from '../Partial'
+import {fhirBase, doModal, getJwtPayload} from '../util'
 
 import '../styles/create-patient.scss'
+
+// so hacky but that's what you get for using non-standard elems materialize ¯\_(ツ)_/¯
+function createHistoryForm() {
+	const elems = document.querySelectorAll('.patient-history-input')
+	const values = [...elems].reduce((acc, elem) => {
+		const {formKey, materializeType} = elem.dataset
+		const key = formKey.replace(/-/g, '_')
+		if (materializeType && materializeType === 'select') {
+			const vals = M.FormSelect.getInstance(elem).getSelectedValues()
+			acc[key] = vals
+		} else if (materializeType && materializeType === 'radio-group') {
+			acc[key] = elem.querySelector(':checked').value
+		} else {
+			acc[key] = elem.value
+		}
+		return acc
+	}, {})
+	// get user id from database
+	values.sign_off_userid = getJwtPayload(localStorage.token).userid
+	// signature
+	const sigCanv = document.getElementById('sign-off-canvas')
+	const rawImg = sigCanv.toDataURL('image/png')
+	values.sign_off_blob = rawImg
+	return values
+}
 
 class CreatePatient extends Component {
 	/**
@@ -32,8 +57,9 @@ class CreatePatient extends Component {
 				wards: resp.data.map(ward => ({val: ward.id, text: ward.name})),
 			}, async () => {
 				// the form is showing and webcam is, so populate with webcam
-				const select = document.querySelectorAll('#location_id, #patient-gender')
+				const select = document.querySelectorAll('#location_id, #patient-gender, .patient-details-select')
 				M.FormSelect.init(select)
+
 				try {
 					const stream = await navigator.mediaDevices.getUserMedia({video: true})
 					this.video.srcObject = stream
@@ -46,14 +72,11 @@ class CreatePatient extends Component {
 						this.canvas.width = dimensions.width
 					})
 				} catch (err) {
-					doModal(
-						'Warning',
-						`An error occured whilst trying to initialise the webcam</p>
-					<p><b>Error:</b> ${err}</p>
-					<p>You should stil be able to submit a patient, but you will not be able to submit their photo</p>
-					`,
-					)
+					M.toast({html: 'There was an error initialising the Webcam'})
+					console.error(`Webcam error: ${err}`)
 				}
+				const date = document.querySelectorAll('.datepicker')
+				M.Datepicker.init(date, {autoClose: true})
 			})
 		}
 	}
@@ -146,16 +169,20 @@ class CreatePatient extends Component {
 				encForm.append('patient_id', outcome.diagnostics.patient_id)
 				encForm.append('location_id', obj.location_id)
 				const encResp = await fhirBase.post('/Encounter', encForm)
-				if (encResp.data.issue[0].code !== 200) {
-					doModal('Error', encResp.data.issue[0].details.text)
-				} else {
-					doModal('Success', encResp.data.issue[0].details.text)
-					route('/')
-				}
+				const historyRaw = createHistoryForm()
+				const histForm = new FormData()
+				Object.keys(historyRaw).forEach((key) => {
+					histForm.set(key, historyRaw[key])
+				})
+				histForm.set('patient_id', outcome.diagnostics.patient_id)
+				const histResp = await fhirBase.post('/History', histForm)
+				console.log(histResp)
+				doModal('Success', encResp.data.issue[0].details.text)
 			} else {
 				doModal('Error', outcome.data.issue[0].details.text)
 			}
 		} catch (err) {
+			console.warn('[create patient]', err)
 			doModal('Error', `There is an error with patient creation: ${err}`)
 		}
 	}
@@ -169,62 +196,65 @@ class CreatePatient extends Component {
 	render() {
 		if (!this.state.loaded) return <Loader />
 		return (
-			<div className="row">
-				<h1>Admit a New Patient</h1>
+			<div className="row" id="patient-form">
+				<h2>Admit a New Patient</h2>
 				<form className="col s12">
 					<div className="row">
-						<h3>Patient Information</h3>
-						<Input id="patient-prefix" label="Title" />
-						<Input id="patient-given" label="First Name" />
-						<Input id="patient-family" label="Surname" />
-						<Input id="patient-fullname" label="Full Name" />
-						<Select
-							id="patient-gender"
-							default="---Select a Gender---"
-							label="Gender"
-							options={[{val: 'male', text: 'Male'}, {val: 'female', text: 'Female'}, {val: 'other', text: 'Other'}]}
-						/>
-						<Select
-							id="location_id"
-							default="---Select a Ward---"
-							options={this.state.wards}
-							label="Patient Ward"
-						/>
-						<div className="col m6 s12">
-							{!isMobile.any
-								? (
-									<div className="card">
-										<div className="card-image">
-											<video ref={v => this.video = v} id="video" onClick={() => this.video.play()} />
-											<canvas ref={c => this.canvas = c} style={{display: 'none'}} width="300" height="300" />
+						<div className="col s12">
+							<h3>Patient Details</h3>
+							<Input id="patient-prefix" label="Title" />
+							<Input id="patient-given" label="First Name" />
+							<Input id="patient-family" label="Surname" />
+							<Input id="patient-fullname" label="Full Name" />
+							<Select
+								id="patient-gender"
+								default="---Select a Gender---"
+								label="Gender"
+								options={[{val: 'male', text: 'Male'}, {val: 'female', text: 'Female'}, {val: 'other', text: 'Other'}]}
+							/>
+							<Select
+								id="location_id"
+								default="---Select a Ward---"
+								options={this.state.wards}
+								label="Patient Ward"
+							/>
+							<div className="col m6 s12">
+								{!isMobile.any
+									? (
+										<div className="card">
+											<div className="card-image">
+												<video ref={v => this.video = v} id="video" onClick={() => this.video.play()} />
+												<canvas ref={c => this.canvas = c} style={{display: 'none'}} width="300" height="300" />
+											</div>
+											<div className="card-action">
+												<a onClick={this.getPicture.bind(this)} className="teal-text text-lighten-1">
+													<i className="material-icons left">camera_alt</i>Take Picture
+												</a>
+											</div>
 										</div>
-										<div className="card-action">
-											<a onClick={this.getPicture.bind(this)} className="teal-text text-lighten-1">
-												<i className="material-icons left">camera_alt</i>Take Picture
-											</a>
+									)
+									: (
+										<div className="file-field input-field">
+											<div className="btn">
+												<span>Take Photo</span>
+												<input
+													onChange={this.setImg.bind(this)}
+													type="file"
+													accept="image/*"
+													capture="camera"
+													value="Take Photo"
+												/>
+											</div>
+											<div className="file-path-wrapper">
+												<input className="file-path validate" type="text" />
+											</div>
 										</div>
-									</div>
-								)
-								: (
-									<div className="file-field input-field">
-										<div className="btn">
-											<span>Take Photo</span>
-											<input
-												onChange={this.setImg.bind(this)}
-												type="file"
-												accept="image/*"
-												capture="camera"
-												value="Take Photo"
-											/>
-										</div>
-										<div className="file-path-wrapper">
-											<input className="file-path validate" type="text" />
-										</div>
-									</div>
-								)
-							}
+									)
+								}
+							</div>
 						</div>
 					</div>
+					<PatientHistory />
 					<div className="row">
 						<h3>Contact Details</h3>
 						<Input id="contact-prefix" label="Title" />

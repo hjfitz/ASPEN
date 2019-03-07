@@ -1,6 +1,6 @@
 import {h, Component} from 'preact'
 import M from 'materialize-css'
-import {Loader, Vitals} from '../Partial'
+import {Loader, Vitals, HistoryReport} from '../Partial'
 import {fhirBase, doModal, toTitle} from '../util'
 import WarningScore from '../WarningScore'
 
@@ -73,6 +73,8 @@ class Patient extends Component {
 			loaded: false,
 			patientInfo: null,
 			pageNo: 0,
+			report: {},
+			reportLoaded: false,
 		}
 		this.submitVitals = this.submitVitals.bind(this)
 	}
@@ -133,6 +135,28 @@ class Patient extends Component {
 		if (sev === 'success') window.history.back()
 	}
 
+	async popupHistory(ev) {
+		ev.preventDefault()
+		const {patient_id} = this.props
+		const {data: report} = await fhirBase.get(`/History/${patient_id}`)
+		this.setState({
+			loaded: this.state.loaded,
+			patientInfo: this.state.patientInfo,
+			patientReports: this.state.patientReports,
+			news: this.state.news,
+			report,
+			reportLoaded: true,
+		}, () => {
+			const repModal = document.querySelector('.modal.history-report-modal')
+			const instance = M.Modal.getInstance(repModal) || M.Modal.init(repModal)
+			instance.open()
+		})
+	}
+
+	async popupAE(ev) {
+		ev.preventDefault()
+	}
+
 	/**
 	 * Render our patient info
 	 * @returns {VNode} patient information or loading icon
@@ -145,7 +169,7 @@ class Patient extends Component {
 				<div className="col s12">
 					<div className="card horizontal">
 						<div className="card-image">
-							<img alt={patient.displayName} src={patient.photo} />
+							<img alt={patient.displayName} src={patient.photo || '/img/patient-placeholder.webp'} />
 						</div>
 						<div className="card-stacked">
 							<div className="card-content">
@@ -156,7 +180,10 @@ class Patient extends Component {
 								<p><b>NEWS: </b>{this.state.news}</p>
 								<p><b>Contact Name: </b>{contact.displayName}</p>
 								<p><b>Contact Number: </b>{contact.number}</p>
-
+							</div>
+							<div className="card-action">
+								<a className="teal-text text-darken-1" onClick={this.popupHistory.bind(this)}>View History</a>
+								<a className="teal-text text-darken-1" onClick={this.popupAE.bind(this)}>View A-E Report</a>
 							</div>
 						</div>
 					</div>
@@ -164,6 +191,7 @@ class Patient extends Component {
 				<div className="col s12">
 					<Vitals submit={this.submitVitals} history={this.state.patientReports} />
 				</div>
+				<HistoryReport {...this.state.report} patientName={patient.displayName} reportLoaded={this.state.reportLoaded} />
 			</div>
 		)
 	}

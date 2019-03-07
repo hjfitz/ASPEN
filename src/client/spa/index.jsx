@@ -41,13 +41,11 @@ class App extends Component {
 
 		// 2. ensure that there is a token in storage
 		const toCheck = jwt || localStorage.getItem('token')
-		if (!toCheck) this.showPopup()
-		// return window.location.href = '/login'
+		if (!toCheck) return this.showPopup()
 
 		// 3. if token in storage, ensure it is fresh
 		const {exp} = getJwtPayload(toCheck)
 		if ((exp * 1000) < Date.now()) return this.showPopup()
-		// window.location.href = '/login'
 
 		return true // keep eslint happy
 	}

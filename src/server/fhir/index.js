@@ -9,6 +9,7 @@ const diagnosticRouter = require('./diagnostic-report')
 const observationRouter = require('./observation')
 const locationRouter = require('./location')
 const encounterRouter = require('./encounter')
+const historyRouter = require('./history')
 const {createOutcome} = require('./util')
 
 const meta = {file: 'fhir/index.js'}
@@ -48,6 +49,7 @@ router.use('/Diagnostics', diagnosticRouter)
 router.use('/Encounter', encounterRouter)
 router.use('/Location', locationRouter)
 router.use('/Patient', patientRouter)
+router.use('/History', historyRouter)
 
 // error handler - leave at base of fhir router
 router.use((req, res, next, err) => {
