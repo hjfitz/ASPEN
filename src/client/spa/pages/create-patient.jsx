@@ -255,8 +255,8 @@ class CreatePatient extends Component {
 							</div>
 						</div>
 					</div>
-					{/* <PatientHistory /> */}
 					<CreateHistory />
+					<PatientHistory />
 					<div className="row">
 						<h3>Contact Details</h3>
 						<Input id="contact-prefix" label="Title" />
