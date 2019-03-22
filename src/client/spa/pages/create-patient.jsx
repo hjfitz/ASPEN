@@ -3,6 +3,7 @@ import {route} from 'preact-router'
 import M from 'materialize-css'
 import isMobile from 'ismobilejs'
 
+import CreateHistory from './admit-patient'
 import {Input, Loader, Select, PatientHistory} from '../Partial'
 import {fhirBase, doModal, getJwtPayload} from '../util'
 
@@ -254,7 +255,8 @@ class CreatePatient extends Component {
 							</div>
 						</div>
 					</div>
-					<PatientHistory />
+					{/* <PatientHistory /> */}
+					<CreateHistory />
 					<div className="row">
 						<h3>Contact Details</h3>
 						<Input id="contact-prefix" label="Title" />
