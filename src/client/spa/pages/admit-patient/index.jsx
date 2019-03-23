@@ -4,8 +4,10 @@ import M from 'materialize-css'
 import HealthHistory from './health-history'
 import Medication from './medication'
 import Exercise from './exercise'
+import Tobacco from './tobacco'
 import Alcohol from './alcohol'
 import Diet from './diet'
+import Drugs from './drugs'
 
 class CreateHistory extends Component {
 	constructor() {
@@ -42,11 +44,11 @@ class CreateHistory extends Component {
 				</li>
 				<li>
 					<div className="collapsible-header">Tobacco Use</div>
-					<div className="collapsible-body" />
+					<div className="collapsible-body"><Tobacco /></div>
 				</li>
 				<li>
 					<div className="collapsible-header">Drug Use</div>
-					<div className="collapsible-body" />
+					<div className="collapsible-body"><Drugs /></div>
 				</li>
 				<li>
 					<div className="collapsible-header">Further Information</div>
