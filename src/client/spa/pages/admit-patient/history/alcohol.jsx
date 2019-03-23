@@ -9,7 +9,7 @@ class Alcohol extends Questionnaire {
 				<div className="col s12">
 					<h4>Alcohol Use</h4>
 					<div className="row">
-						<form className="col s12 patient-history-input" data-form-key="health-habits-drink-alcohol" data-materialize-type="radio-group" action="">
+						<form className="col s12 patient-history-input" data-form-key="alcohol-does-drink" data-materialize-type="radio-group" action="">
 							<h5>Do you drink alcohol?</h5>
 							<p>
 								<label>
@@ -38,15 +38,15 @@ const AlcoholQuestionnaire = () => (
 			<div className="row">
 				<div className="col s12">
 					<h5>What kind?</h5>
-					<input id="alcohol-type" type="text" className="validate patient-history-input" data-form-key="health-habits-alcohol-type" />
+					<input id="alcohol-type" type="text" className="validate patient-history-input" data-form-key="alcohol-type" />
 				</div>
 				<div className="input-field col s12">
 					<h5>How many drinks do you consume a week?</h5>
-					<input id="alcohol-num" type="number" className="validate patient-history-input" data-form-key="health-habits-alcohol-num" value={1} />
+					<input id="alcohol-num" type="number" className="validate patient-history-input" data-form-key="alcohol-freq" value={1} />
 				</div>
 			</div>
 		</div>
-		<form className="col s12 patient-history-input" data-form-key="health-habits-drink-alcohol-concern" data-materialize-type="radio-group" action="">
+		<form className="col s12 patient-history-input" data-form-key="alcohol-concern" data-materialize-type="radio-group" action="">
 			<h5>Are you concerned about how much you drink?</h5>
 			<p>
 				<label>
@@ -61,7 +61,7 @@ const AlcoholQuestionnaire = () => (
 				</label>
 			</p>
 		</form>
-		<form className="col s12 patient-history-input" data-form-key="health-habits-drink-alcohol-consider-stopping" data-materialize-type="radio-group" action="">
+		<form className="col s12 patient-history-input" data-form-key="alcohol-consider-stopping" data-materialize-type="radio-group" action="">
 			<h5>Have you considered stopping?</h5>
 			<p>
 				<label>

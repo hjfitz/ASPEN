@@ -9,7 +9,7 @@ class Tobacco extends Questionnaire {
 				<h4>Tobacco Use</h4>
 				<div className="col s12">
 					<div className="row">
-						<form className="col s12 patient-history-input" data-form-key="health-habits-tobacco-used-prior" data-materialize-type="radio-group" action="">
+						<form className="col s12 patient-history-input" data-form-key="tobacco-used-prior" data-materialize-type="radio-group" action="">
 							<h6>Have you used Tobacco in the last 5 years?</h6>
 							<p>
 								<label>
@@ -38,7 +38,7 @@ const TobaccoQuestionnaire = () => (
 			<h6>If you have given up, when did you last smoke?</h6>
 			<input type="text" className="datepicker" />
 		</div>
-		<form className="col s12 patient-history-input" data-form-key="health-habits-current-tobacco-use" data-materialize-type="radio-group" action="">
+		<form className="col s12 patient-history-input" data-form-key="tobacco-current-use" data-materialize-type="radio-group" action="">
 			<h6>Are you currently using Tobacco?</h6>
 			<p>
 				<label>
@@ -55,9 +55,9 @@ const TobaccoQuestionnaire = () => (
 		</form>
 		<div className="input-field col s12 tooltipped" data-position="top" data-tooltip="Include Cigarettes, Pipe and Cigars">
 			<h6>If you're currently using tobacco, which are you using?</h6>
-			<textarea id="tobacco-used" className="materialize-textarea  patient-history-input" data-form-key="health-habits-types-tobacco-used" />
+			<textarea id="tobacco-used" className="materialize-textarea  patient-history-input" data-form-key="tobacco-type-used" />
 		</div>
-		<form className="col s12 patient-history-input" data-form-key="health-habits-nicotine-replace-therapy" data-materialize-type="radio-group" action="">
+		<form className="col s12 patient-history-input" data-form-key="tobacco-nicotine-replace-therapy" data-materialize-type="radio-group" action="">
 			<h6>Are you currently using nicotine replacement therapy?</h6>
 			<p>
 				<label>
@@ -73,7 +73,7 @@ const TobaccoQuestionnaire = () => (
 			</p>
 		</form>
 		<div className="input-field col s12">
-			<select className="patient-details-select patient-history-input" data-form-key="health-habits-nicotine-replacement-types" data-materialize-type="select">
+			<select className="patient-details-select patient-history-input" data-form-key="tobacco-nicotine-replacement-types" data-materialize-type="select">
 				<option value="" disabled selected>Select one</option>
 				<option value="">dont know</option>
 				<option value="">which types</option>

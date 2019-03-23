@@ -6,7 +6,7 @@ const Exercise = () => (
 		<div className="col s12">
 
 			<h5>How frequently do you exercise?</h5>
-			<form className="patient-history-input" data-form-key="health-habits-exercise-frequency" data-materialize-type="radio-group" action="">
+			<form className="patient-history-input" data-form-key="exercise-frequency" data-materialize-type="radio-group" action="">
 				<p>
 					<label>
 						<input className="with-gap" name="group1" type="radio" value="sedentary" checked />

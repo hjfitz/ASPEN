@@ -7,7 +7,7 @@ import {Fab, Breadcrumb, Redirect, Modal, Login} from './Partial'
 
 import {
 	SearchPatient,
-	CreatePatient,
+	AdmitPatient,
 	CreateWard,
 	WardList,
 	Patient,
@@ -64,7 +64,7 @@ class App extends Component {
 					<Ward path="/wards/:ward_id" />
 					<Add path="/add" />
 					<CreateWard path="/add/ward" />
-					<CreatePatient path="/add/patient" />
+					<AdmitPatient path="/add/patient" />
 					<SearchPatient path="/search/patient" />
 					<Redirect path="/patient" to="/search/patient" />
 					<Patient path="/patient/:patient_id" />

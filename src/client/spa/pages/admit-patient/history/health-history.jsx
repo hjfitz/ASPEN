@@ -1,4 +1,5 @@
 import {h, Component} from 'preact'
+import M from 'materialize-css'
 
 import {IncButton, DecButton} from './util'
 
@@ -20,9 +21,15 @@ class HealthHistory extends Component {
 		return () => this.setState({[type]: this.state[type] - 1})
 	}
 
+	// selects fall over on inc/dec, re-init
+	componentDidUpdate() {
+		const select = this.mainContainer.querySelectorAll('select')
+		M.FormSelect.init(select)
+	}
+
 	render() {
 		return (
-			<div className="row">
+			<div className="row" ref={m => this.mainContainer = m}>
 				<h4>Health History</h4>
 				<div className="input-field col s12 m6">
 					<select multiple className="patient-details-select patient-history-input" data-form-key="health-childhood-illnesses" data-materialize-type="select">
@@ -49,12 +56,12 @@ class HealthHistory extends Component {
 				</div>
 				<div className="col s12">
 					<h6>Medical Issues</h6>
-					<div className="patient-history-input" data-form-key="health-medical-problems" data-materialize-type="form-group">
+					<div className="patient-history-input" data-form-key="health-medical-problems" data-materialize-type="input-group">
 						{Array.from({length: this.state.numProbs}).map((_, idx) => (
 							<div className="row">
 								<div className="col s12 input-field">
-									<input id="med-name" type="text" className={`validate med-name-${idx}`} />
-									<label htmlFor="med-name">Medical Problem</label>
+									<input id={`med-name-${idx}`} type="text" className={`validate med-name-${idx}`} />
+									<label htmlFor={`med-name-${idx}`}>Medical Problem</label>
 								</div>
 							</div>
 						))}
@@ -66,12 +73,12 @@ class HealthHistory extends Component {
 				</div>
 				<div className="col s12">
 					<h6>Surgical Operations</h6>
-					<div className="patient-history-input" data-form-key="health-medical-problems" data-materialize-type="form-group">
+					<div className="patient-history-input" data-form-key="health-operations" data-materialize-type="input-group">
 						{Array.from({length: this.state.numOps}).map((_, idx) => (
 							<div className="row">
 								<div className="col s12 input-field">
-									<input id="med-name" type="text" className={`validate med-name-${idx}`} />
-									<label htmlFor="med-name">Operation</label>
+									<input id={`op-name-${idx}`} type="text" className={`validate med-name-${idx}`} />
+									<label htmlFor={`op-name-${idx}`}>Operation</label>
 								</div>
 							</div>
 						))}
@@ -83,12 +90,12 @@ class HealthHistory extends Component {
 				</div>
 				<div className="input-field col s12">
 					<h6>Other Hospitalisations</h6>
-					<div className="patient-history-input" data-form-key="health-medical-problems" data-materialize-type="form-group">
+					<div className="patient-history-input" data-form-key="health-hospitalisations" data-materialize-type="input-group">
 						{Array.from({length: this.state.numOth}).map((_, idx) => (
 							<div className="row">
 								<div className="col s12 input-field">
-									<input id="med-name" type="text" className={`validate med-name-${idx}`} />
-									<label htmlFor="med-name">Hospitalisation Reason</label>
+									<input id={`hosp-name-${idx}`} type="text" className={`validate med-name-${idx}`} />
+									<label htmlFor={`hosp-name-${idx}`}>Hospitalisation Reason</label>
 								</div>
 							</div>
 						))}

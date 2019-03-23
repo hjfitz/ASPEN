@@ -6,7 +6,7 @@ class Drugs extends Questionnaire {
 		return (
 			<div className="row">
 				<h4>Drug Use</h4>
-				<form className="col s12 patient-history-input" data-form-key="health-habits-current-drug-use" data-materialize-type="radio-group" action="">
+				<form className="col s12 patient-history-input" data-form-key="drug-currently-use" data-materialize-type="radio-group" action="">
 					<h6>Do you currently use recreational drugs/substances?</h6>
 					<p>
 						<label>
@@ -31,9 +31,9 @@ const DrugsQuestionnaire = () => (
 	<div>
 		<div className="input-field col s12">
 			<h6>Which kind and how frequently?</h6>
-			<textarea id="drugs-used" className="materialize-textarea patient-history-input" data-form-key="health-habits-drug-use-frequency" />
+			<textarea id="drugs-used" className="materialize-textarea patient-history-input" data-form-key="drug-use-frequency" />
 		</div>
-		<form className="col s12 patient-history-input" data-form-key="health-habits-patient-ever-injected-drugs" data-materialize-type="radio-group" action="">
+		<form className="col s12 patient-history-input" data-form-key="drug-injected" data-materialize-type="radio-group" action="">
 			<h6>Have you ever injected recreational drugs with a needle?</h6>
 			<p>
 				<label>
