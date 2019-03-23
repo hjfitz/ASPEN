@@ -1,10 +1,6 @@
 import {h, Component} from 'preact'
 
-const ClearButton = props => (
-	<div className="col m1 input-field center">
-		<a className="waves-effect waves-light clear-button" onClick={props.onClick}><i className="material-icons black-text">clear</i></a>
-	</div>
-)
+import {IncButton, DecButton} from './util'
 
 class Medication extends Component {
 	constructor() {
@@ -32,8 +28,7 @@ class Medication extends Component {
 					<h6>Prescription Medication</h6>
 					{Array.from({length: this.state.numScrip}).map((_, idx) => (
 						<div className="scrip-input row">
-							<ClearButton onClick={this.dec('numScrip').bind(this)} />
-							<div className="col m5 s12 input-field">
+							<div className="col m6 s12 input-field">
 								<input id="med-name" type="text" className={`validate med-name-${idx}`} />
 								<label htmlFor="med-name">Medication Name</label>
 							</div>
@@ -48,7 +43,8 @@ class Medication extends Component {
 						</div>
 					))}
 					<div className="row">
-						<a className="waves-effect waves-light btn" onClick={this.inc('numScrip').bind(this)}><i className="material-icons left">add</i>Add</a>
+						<IncButton onClick={this.inc('numScrip').bind(this)} />
+						<DecButton onClick={this.dec('numScrip').bind(this)} />
 					</div>
 				</div>
 				<div className="divider" />
@@ -56,8 +52,7 @@ class Medication extends Component {
 					<h6>Over the Counter Medication</h6>
 					{Array.from({length: this.state.numOtc}).map((_, idx) => (
 						<div className="scrip-input row">
-							<ClearButton onClick={this.dec('numOtc').bind(this)} />
-							<div className="col m5 s12 input-field">
+							<div className="col m6 s12 input-field">
 								<input id="otc-med-name" type="text" className={`validate otc-med-name-${idx}`} />
 								<label htmlFor="otc-med-name">OTC Medication Name</label>
 							</div>
@@ -72,24 +67,27 @@ class Medication extends Component {
 						</div>
 					))}
 					<div className="row">
-						<a className="waves-effect waves-light btn" onClick={this.inc('numOtc').bind(this)}><i className="material-icons left">add</i>Add</a>
+						<IncButton onClick={this.inc('numOtc').bind(this)} />
+						<DecButton onClick={this.dec('numOtc').bind(this)} />
 					</div>
 				</div>
+				<div className="divider" />
 				<div>
 					<h6>Allergies</h6>
 					{Array.from({length: this.state.numAllergies}).map(() => (
 						<div className="row">
-							<ClearButton onClick={this.dec('numAllergies').bind(this)} />
-							<div className="col s11 input-field">
+							<div className="col s12 input-field">
 								<input id="allergy-name" type="text" className="validate med-name" />
 								<label htmlFor="allergy-name">Allergy</label>
 							</div>
 						</div>
 					))}
 					<div className="row">
-						<a className="waves-effect waves-light btn" onClick={this.inc('numAllergies').bind(this)}><i className="material-icons left">add</i>Add</a>
+						<IncButton onClick={this.inc('numAllergies').bind(this)} />
+						<DecButton onClick={this.dec('numAllergies').bind(this)} />
 					</div>
 				</div>
+
 			</div>
 		)
 	}
