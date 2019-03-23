@@ -2,6 +2,8 @@ import {h, Component} from 'preact'
 import M from 'materialize-css'
 
 import HealthHistory from './health-history'
+import OtherQuestions from './other'
+import SignOff from './sign-off'
 import Medication from './medication'
 import Exercise from './exercise'
 import Tobacco from './tobacco'
@@ -52,7 +54,11 @@ class CreateHistory extends Component {
 				</li>
 				<li>
 					<div className="collapsible-header">Further Information</div>
-					<div className="collapsible-body" />
+					<div className="collapsible-body"><OtherQuestions /></div>
+				</li>
+				<li>
+					<div className="collapsible-header">Sign Off</div>
+					<div className="collapsible-body"><SignOff /></div>
 				</li>
 			</ul>
 		)

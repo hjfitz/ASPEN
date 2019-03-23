@@ -31,26 +31,24 @@ class Drugs extends Questionnaire {
 const DrugsQuestionnaire = () => (
 	<div>
 		<div className="input-field col s6">
-			<h6>If yes, which type and how frequently?</h6>
+			<h6>Which kind and how frequently?</h6>
 			<textarea id="drugs-used" className="materialize-textarea patient-history-input" data-form-key="health-habits-drug-use-frequency" />
 		</div>
-		<div className="row">
-			<form className="col s6 patient-history-input" data-form-key="health-habits-patient-ever-injected-drugs" data-materialize-type="radio-group" action="">
-				<h6>Have you ever injected recreational drugs with a needle?</h6>
-				<p>
-					<label>
-						<input className="with-gap" name="group1" type="radio" value="no" checked />
-						<span>No</span>
-					</label>
-				</p>
-				<p>
-					<label>
-						<input className="with-gap" name="group1" type="radio" value="yes" />
-						<span>yes</span>
-					</label>
-				</p>
-			</form>
-		</div>
+		<form className="col s6 patient-history-input" data-form-key="health-habits-patient-ever-injected-drugs" data-materialize-type="radio-group" action="">
+			<h6>Have you ever injected recreational drugs with a needle?</h6>
+			<p>
+				<label>
+					<input className="with-gap" name="group1" type="radio" value="no" checked />
+					<span>No</span>
+				</label>
+			</p>
+			<p>
+				<label>
+					<input className="with-gap" name="group1" type="radio" value="yes" />
+					<span>yes</span>
+				</label>
+			</p>
+		</form>
 	</div>
 )
 

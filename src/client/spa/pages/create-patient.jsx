@@ -201,62 +201,62 @@ class CreatePatient extends Component {
 				<h2>Admit a New Patient</h2>
 				<form className="col s12">
 					<div className="row">
-						<div className="col s12">
-							<h3>Patient Details</h3>
-							<Input id="patient-prefix" label="Title" />
-							<Input id="patient-given" label="First Name" />
-							<Input id="patient-family" label="Surname" />
-							<Input id="patient-fullname" label="Full Name" />
-							<Select
-								id="patient-gender"
-								default="---Select a Gender---"
-								label="Gender"
-								options={[{val: 'male', text: 'Male'}, {val: 'female', text: 'Female'}, {val: 'other', text: 'Other'}]}
-							/>
-							<Select
-								id="location_id"
-								default="---Select a Ward---"
-								options={this.state.wards}
-								label="Patient Ward"
-							/>
-							<div className="col m6 s12">
-								{!isMobile.any
-									? (
-										<div className="card">
-											<div className="card-image">
-												<video ref={v => this.video = v} id="video" onClick={() => this.video.play()} />
-												<canvas ref={c => this.canvas = c} style={{display: 'none'}} width="300" height="300" />
-											</div>
-											<div className="card-action">
-												<a onClick={this.getPicture.bind(this)} className="teal-text text-lighten-1">
-													<i className="material-icons left">camera_alt</i>Take Picture
-												</a>
-											</div>
+						<h3>Patient Details</h3>
+						<Input id="patient-prefix" label="Title" />
+						<Input id="patient-given" label="First Name" />
+						<Input id="patient-family" label="Surname" />
+						<Input id="patient-fullname" label="Full Name" />
+						<Select
+							id="patient-gender"
+							default="---Select a Gender---"
+							label="Gender"
+							options={[{val: 'male', text: 'Male'}, {val: 'female', text: 'Female'}, {val: 'other', text: 'Other'}]}
+						/>
+						<Select
+							id="location_id"
+							default="---Select a Ward---"
+							options={this.state.wards}
+							label="Patient Ward"
+						/>
+						<div className="col m6 s12">
+							{!isMobile.any
+								? (
+									<div className="card">
+										<div className="card-image">
+											<video ref={v => this.video = v} id="video" onClick={() => this.video.play()} />
+											<canvas ref={c => this.canvas = c} style={{display: 'none'}} width="300" height="300" />
 										</div>
-									)
-									: (
-										<div className="file-field input-field">
-											<div className="btn">
-												<span>Take Photo</span>
-												<input
-													onChange={this.setImg.bind(this)}
-													type="file"
-													accept="image/*"
-													capture="camera"
-													value="Take Photo"
-												/>
-											</div>
-											<div className="file-path-wrapper">
-												<input className="file-path validate" type="text" />
-											</div>
+										<div className="card-action">
+											<a onClick={this.getPicture.bind(this)} className="teal-text text-lighten-1">
+												<i className="material-icons left">camera_alt</i>Take Picture
+											</a>
 										</div>
-									)
-								}
-							</div>
+									</div>
+								)
+								: (
+									<div className="file-field input-field">
+										<div className="btn">
+											<span>Take Photo</span>
+											<input
+												onChange={this.setImg.bind(this)}
+												type="file"
+												accept="image/*"
+												capture="camera"
+												value="Take Photo"
+											/>
+										</div>
+										<div className="file-path-wrapper">
+											<input className="file-path validate" type="text" />
+										</div>
+									</div>
+								)
+							}
 						</div>
 					</div>
-					<CreateHistory />
-					<PatientHistory />
+					<div className="row">
+						<h3>Patient History</h3>
+						<CreateHistory />
+					</div>
 					<div className="row">
 						<h3>Contact Details</h3>
 						<Input id="contact-prefix" label="Title" />
