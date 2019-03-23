@@ -11,6 +11,8 @@ import Alcohol from './alcohol'
 import Diet from './diet'
 import Drugs from './drugs'
 
+import '../../styles/patient-history.scss'
+
 class CreateHistory extends Component {
 	constructor() {
 		super()
