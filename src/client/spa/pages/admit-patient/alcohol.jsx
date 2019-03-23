@@ -7,20 +7,20 @@ class Alcohol extends Questionnaire {
 		return (
 			<div className="row">
 				<div className="col s12">
-					<h4>Alcohol</h4>
+					<h4>Alcohol Use</h4>
 					<div className="row">
 						<form className="col s12 patient-history-input" data-form-key="health-habits-drink-alcohol" data-materialize-type="radio-group" action="">
 							<h5>Do you drink alcohol?</h5>
 							<p>
 								<label>
-									<input className="with-gap" name="group1" value="no" type="radio" checked />
-									<span onClick={this.toggleQuestionnaire().bind(this)}>No</span>
+									<input className="with-gap" name="group1" value="yes" type="radio" />
+									<span onClick={this.toggleQuestionnaire(true).bind(this)}>Yes</span>
 								</label>
 							</p>
 							<p>
 								<label>
-									<input className="with-gap" name="group1" value="yes" type="radio" />
-									<span onClick={this.toggleQuestionnaire(true).bind(this)}>Yes</span>
+									<input className="with-gap" name="group1" value="no" type="radio" checked />
+									<span onClick={this.toggleQuestionnaire().bind(this)}>No</span>
 								</label>
 							</p>
 						</form>

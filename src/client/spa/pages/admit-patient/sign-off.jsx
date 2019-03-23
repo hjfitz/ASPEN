@@ -8,8 +8,8 @@ const getDate = () => format(Date.now(), ' MMM DD, YYYY')
 
 const SignOff = () => (
 	<div className="row">
+		<h4>Sign-off</h4>
 		<div className="col s12">
-			<h3>Sign-off</h3>
 			<p>Please sign as the health professional taking this health history:</p>
 			<div className="row">
 				<div className="col s12">

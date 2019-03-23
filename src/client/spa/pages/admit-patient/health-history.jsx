@@ -2,6 +2,7 @@ import {h} from 'preact'
 
 const HealthHistory = () => (
 	<div className="row">
+		<h4>Health History</h4>
 		<div className="input-field col s6">
 			<select multiple className="patient-details-select patient-history-input" data-form-key="personal-health-history-childhood-illnesses" data-materialize-type="select">
 				<option value="" disabled selected>Select all that apply</option>

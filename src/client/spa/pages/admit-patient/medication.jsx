@@ -2,6 +2,7 @@ import {h} from 'preact'
 
 const Medication = () => (
 	<div className="row">
+		<h4>Medication</h4>
 		<div className="input-field col s12">
 			<textarea id="scrip-meds" className="materialize-textarea patient-history-input" data-form-key="medication-prescription-medications" />
 			<label htmlFor="scrip-meds">Prescribed medication taken (and dose + frequency)</label>

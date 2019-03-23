@@ -2,6 +2,7 @@ import {h} from 'preact'
 
 const Exercise = () => (
 	<div className="row">
+		<h4>Exercise</h4>
 		<div className="col s12">
 
 			<h5>How frequently do you exercise?</h5>

@@ -2,6 +2,7 @@ import {h} from 'preact'
 
 const Diet = () => (
 	<div className="row">
+		<h4>Diet</h4>
 		<form className="col s12 patient-history-input" data-form-key="health-habits-dieting" data-materialize-type="radio-group" action="">
 			<h5>Are you dieting?</h5>
 			<p>
