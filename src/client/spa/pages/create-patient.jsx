@@ -10,7 +10,7 @@ import {fhirBase, doModal, getJwtPayload} from '../util'
 import '../styles/create-patient.scss'
 
 // so hacky but that's what you get for using non-standard elems materialize ¯\_(ツ)_/¯
-function createHistoryForm() {
+function createHistoryFormOls() {
 	const elems = document.querySelectorAll('.patient-history-input')
 	const values = [...elems].reduce((acc, elem) => {
 		const {formKey, materializeType} = elem.dataset
@@ -32,6 +32,10 @@ function createHistoryForm() {
 	const rawImg = sigCanv.toDataURL('image/png')
 	values.sign_off_blob = rawImg
 	return values
+}
+
+function createHistoryForm() {
+	const elems = document.querySelectorAll('.patient-history-input')
 }
 
 class CreatePatient extends Component {
@@ -266,7 +270,8 @@ class CreatePatient extends Component {
 						<Input id="contact-phone" label="Phone" type="tel" />
 					</div>
 					<div className="row">
-						<a className="waves-effect waves-light btn" onClick={this.admit.bind(this)}>
+						<a className="waves-effect waves-light btn" onClick={() => console.log(createHistoryForm())}>
+							{/* this.admit.bind(this)}> */}
 							<i className="material-icons left">perm_identity</i>Admit
 						</a>
 					</div>

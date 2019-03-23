@@ -25,7 +25,7 @@ class HealthHistory extends Component {
 			<div className="row">
 				<h4>Health History</h4>
 				<div className="input-field col s12 m6">
-					<select multiple className="patient-details-select patient-history-input" data-form-key="personal-health-history-childhood-illnesses" data-materialize-type="select">
+					<select multiple className="patient-details-select patient-history-input" data-form-key="health-childhood-illnesses" data-materialize-type="select">
 						<option value="" disabled selected>Select all that apply</option>
 						<option value="Measles">Measles</option>
 						<option value="Mumps">Mumps</option>
@@ -36,7 +36,7 @@ class HealthHistory extends Component {
 					<label>Childhood Illnesses</label>
 				</div>
 				<div className="input-field col s12 m6">
-					<select multiple className="patient-details-select patient-history-input" data-form-key="personal-health-history-immunisations" data-materialize-type="select">
+					<select multiple className="patient-details-select patient-history-input" data-form-key="health-immunisations" data-materialize-type="select">
 						<option value="" disabled selected>Select all that apply</option>
 						<option value="Tetanus">Tetanus</option>
 						<option value="Hepatitis">Hepatitis</option>
@@ -49,14 +49,16 @@ class HealthHistory extends Component {
 				</div>
 				<div className="col s12">
 					<h6>Medical Issues</h6>
-					{Array.from({length: this.state.numProbs}).map((_, idx) => (
-						<div className="row">
-							<div className="col s12 input-field">
-								<input id="med-name" type="text" className={`validate med-name-${idx}`} />
-								<label htmlFor="med-name">Medical Problem</label>
+					<div className="patient-history-input" data-form-key="health-medical-problems" data-materialize-type="form-group">
+						{Array.from({length: this.state.numProbs}).map((_, idx) => (
+							<div className="row">
+								<div className="col s12 input-field">
+									<input id="med-name" type="text" className={`validate med-name-${idx}`} />
+									<label htmlFor="med-name">Medical Problem</label>
+								</div>
 							</div>
-						</div>
-					))}
+						))}
+					</div>
 					<div className="row">
 						<IncButton onClick={this.inc('numProbs').bind(this)} />
 						<DecButton onClick={this.dec('numProbs').bind(this)} />
@@ -64,14 +66,16 @@ class HealthHistory extends Component {
 				</div>
 				<div className="col s12">
 					<h6>Surgical Operations</h6>
-					{Array.from({length: this.state.numOps}).map((_, idx) => (
-						<div className="row">
-							<div className="col s12 input-field">
-								<input id="med-name" type="text" className={`validate med-name-${idx}`} />
-								<label htmlFor="med-name">Operation</label>
+					<div className="patient-history-input" data-form-key="health-medical-problems" data-materialize-type="form-group">
+						{Array.from({length: this.state.numOps}).map((_, idx) => (
+							<div className="row">
+								<div className="col s12 input-field">
+									<input id="med-name" type="text" className={`validate med-name-${idx}`} />
+									<label htmlFor="med-name">Operation</label>
+								</div>
 							</div>
-						</div>
-					))}
+						))}
+					</div>
 					<div className="row">
 						<IncButton onClick={this.inc('numOps').bind(this)} />
 						<DecButton onClick={this.dec('numOps').bind(this)} />
@@ -79,14 +83,16 @@ class HealthHistory extends Component {
 				</div>
 				<div className="input-field col s12">
 					<h6>Other Hospitalisations</h6>
-					{Array.from({length: this.state.numOth}).map((_, idx) => (
-						<div className="row">
-							<div className="col s12 input-field">
-								<input id="med-name" type="text" className={`validate med-name-${idx}`} />
-								<label htmlFor="med-name">Hospitalisation Reason</label>
+					<div className="patient-history-input" data-form-key="health-medical-problems" data-materialize-type="form-group">
+						{Array.from({length: this.state.numOth}).map((_, idx) => (
+							<div className="row">
+								<div className="col s12 input-field">
+									<input id="med-name" type="text" className={`validate med-name-${idx}`} />
+									<label htmlFor="med-name">Hospitalisation Reason</label>
+								</div>
 							</div>
-						</div>
-					))}
+						))}
+					</div>
 					<div className="row">
 						<IncButton onClick={this.inc('numOth').bind(this)} />
 						<DecButton onClick={this.dec('numOth').bind(this)} />
