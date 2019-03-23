@@ -1,8 +1,17 @@
 import {h} from 'preact'
+import M from 'materialize-css'
 
 import Questionnaire from './Questionnaire'
 
 class Tobacco extends Questionnaire {
+	componentDidUpdate() {
+		// todo: change this to ref
+		const pickers = document.querySelectorAll('.datepicker')
+		M.Datepicker.init(pickers)
+		const select = document.querySelectorAll('select')
+		M.FormSelect.init(select)
+	}
+
 	render() {
 		return (
 			<div className="row">

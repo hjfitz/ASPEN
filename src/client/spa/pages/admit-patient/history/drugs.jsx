@@ -1,7 +1,22 @@
 import {h} from 'preact'
+
 import Questionnaire from './Questionnaire'
+import {IncButton, DecButton} from './util'
 
 class Drugs extends Questionnaire {
+	constructor() {
+		super()
+		this.state = {numDrugs: 1}
+	}
+
+	inc() {
+		this.setState({numDrugs: this.state.numDrugs + 1})
+	}
+
+	dec() {
+		this.setState({numDrugs: this.state.numDrugs - 1})
+	}
+
 	render() {
 		return (
 			<div className="row">
@@ -21,17 +36,40 @@ class Drugs extends Questionnaire {
 						</label>
 					</p>
 				</form>
-				{this.state.showQuestionnaire ? <DrugsQuestionnaire /> : ''}
+				{this.state.showQuestionnaire ? <DrugsQuestionnaire inc={this.inc.bind(this)} dec={this.dec.bind(this)} numDrugs={this.state.numDrugs} /> : ''}
 			</div>
 		)
 	}
 }
 
-const DrugsQuestionnaire = () => (
+const DrugsQuestionnaire = props => (
 	<div>
 		<div className="input-field col s12">
-			<h6>Which kind and how frequently?</h6>
-			<textarea id="drugs-used" className="materialize-textarea patient-history-input" data-form-key="drug-use-frequency" />
+			<div>
+				<h6>Which kind and how frequently?</h6>
+				<div className="patient-history-input" data-form-key="drug-use-frequency" data-materialize-type="multiple-input-group">
+					{Array.from({length: props.numDrugs}).map(() => (
+						<div className="scrip-input row">
+							<div className="col m6 s12 input-field">
+								<input id="drug-name" type="text" className="validate" />
+								<label htmlFor="drug-name">Drug Name</label>
+							</div>
+							<div className="col m3 s12 input-field">
+								<input id="drug-dose" type="text" className="validate" />
+								<label htmlFor="drug-dose">Dose</label>
+							</div>
+							<div className="col m3 s12 input-field">
+								<input id="drug-freq" type="text" className="validate" />
+								<label htmlFor="drug-freq">Frequency</label>
+							</div>
+						</div>
+					))}
+				</div>
+				<div className="row">
+					<IncButton onClick={props.inc} />
+					<DecButton onClick={props.dec} />
+				</div>
+			</div>
 		</div>
 		<form className="col s12 patient-history-input" data-form-key="drug-injected" data-materialize-type="radio-group" action="">
 			<h6>Have you ever injected recreational drugs with a needle?</h6>

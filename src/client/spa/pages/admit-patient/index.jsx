@@ -3,15 +3,15 @@ import {route} from 'preact-router'
 import M from 'materialize-css'
 
 import PatientDemographicInfo from './Patient'
-import PatientHistoryInfo from  './History'
+import PatientHistoryInfo from './History'
 import ContactInfo from './Contact'
 
-import {Input, Loader, Select, PatientHistory} from '../../Partial'
-import {fhirBase, doModal, getJwtPayload} from '../../util'
+import {Loader} from '../../Partial'
+import {fhirBase, doModal} from '../../util'
 
 import '../../styles/create-patient.scss'
 
-function createHistoryForm() {
+async function createHistoryForm() {
 	const elems = document.querySelectorAll('.patient-history-input')
 	const form = [...elems].reduce((acc, elem) => {
 		// dataset should be of form '$KEY-attr, eg health-childhood-illnesses
@@ -22,37 +22,38 @@ function createHistoryForm() {
 		// get handle on current place in data structure
 		const cur = acc[key]
 		// fetch data from element
-		switch(elem.dataset.materializeType) {
-			// use materialize method to get selected values
-			case 'select': {
-				const inst = M.FormSelect.getInstance(elem)
-				cur[attr] = inst.getSelectedValues()
-				return acc
-			}
-			// materialize requires a lot of markup for a radio button (form>p>label>input)
-			// find the checked radio button and get the val (true/false - set in elem.value prop)
-			case 'radio-group': {
-				const checked = elem.querySelector(':checked')
-				cur[attr] = checked.value
-				return acc
-			}
-			// saved for when there's the option to add/remove 
-			case 'input-group': {
-				const inputs = elem.querySelectorAll('input')
-				// get all non-null values from inputs in the group
-				cur[attr] = [...inputs].map(el => el.value.trim()).filter(Boolean)
-				return acc
-			}
-			default: {
-				cur[attr] = elem.value.trim()
-				return acc
-			}
+		switch (elem.dataset.materializeType) {
+		// use materialize method to get selected values
+		case 'select': {
+			const inst = M.FormSelect.getInstance(elem)
+			cur[attr] = inst.getSelectedValues()
+			return acc
+		}
+		// materialize requires a lot of markup for a radio button (form>p>label>input)
+		// find the checked radio button and get the val (true/false - set in elem.value prop)
+		case 'radio-group': {
+			const checked = elem.querySelector(':checked')
+			cur[attr] = checked.value
+			return acc
+		}
+		// saved for when there's the option to add/remove
+		case 'input-group': {
+			const inputs = elem.querySelectorAll('input')
+			// get all non-null values from inputs in the group
+			cur[attr] = [...inputs].map(el => el.value.trim()).filter(Boolean)
+			return acc
+		}
+		default: {
+			cur[attr] = elem.value.trim()
+			return acc
+		}
 		}
 	}, {})
 	const sigCanv = document.getElementById('sign-off-canvas')
 	const rawImg = sigCanv.toDataURL('image/png')
 	form.sign.image = rawImg
-	return form
+	const histResp = await fhirBase.post('/History', form)
+	// return form
 }
 
 class AdmitPatient extends Component {
@@ -66,6 +67,11 @@ class AdmitPatient extends Component {
 			wards: [],
 			loaded: false,
 		}
+
+		this.getImg = this.getImg.bind(this)
+		this.setImg = this.setImg.bind(this)
+		this.setVideo = this.setVideo.bind(this)
+		this.setCanvas = this.setCanvas.bind(this)
 	}
 
 	/**
@@ -129,6 +135,15 @@ class AdmitPatient extends Component {
 		} catch (err) {
 			doModal('Error', `There was an error setting the image: ${err}`)
 		}
+	}
+
+
+	setVideo(ref) {
+		this.video = ref
+	}
+
+	setCanvas(ref) {
+		this.canvas = ref
 	}
 
 	/**
@@ -208,14 +223,6 @@ class AdmitPatient extends Component {
 		}
 	}
 
-	setVideo(ref) {
-		this.video = ref
-	}
-
-	setCanvas(ref) {
-		this.canvas = ref
-	}
-
 
 	/**
 	 * renders component
@@ -228,20 +235,20 @@ class AdmitPatient extends Component {
 			<div className="row" id="patient-form">
 				<h2>Admit a New Patient</h2>
 				<form>
-					<PatientDemographicInfo 
-						wards={this.state.wards} 
-						getImg={this.getImg.bind(this)} 
-						setImg={this.setImg.bind(this)} 
-						setVideo={this.setVideo.bind(this)}
-						setCanvas={this.setCanvas.bind(this)}
+					<PatientDemographicInfo
+						wards={this.state.wards}
+						getImg={this.getImg}
+						setImg={this.setImg}
+						setVideo={this.setVideo}
+						setCanvas={this.setCanvas}
 						playVideo={() => this.video.play()}
 					/>
 					<PatientHistoryInfo />
 					<ContactInfo />
-						<a className="waves-effect waves-light btn col s12" onClick={() => console.log(createHistoryForm())}>
-							{/* this.admit.bind(this)}> */}
-							<i className="material-icons left">perm_identity</i>Admit
-						</a>
+					<a className="waves-effect waves-light btn col s12" onClick={() => console.log(createHistoryForm())}>
+						{/* this.admit.bind(this)}> */}
+						<i className="material-icons left">perm_identity</i>Admit
+					</a>
 				</form>
 			</div>
 		)

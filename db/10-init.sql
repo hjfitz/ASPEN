@@ -118,3 +118,79 @@ CREATE TABLE patient_history (
 
 	patient_id 										serial 		REFERENCES patient(patient_id)
 );
+
+-- todo: find out units for dose and frequency
+CREATE TABLE medication_usage (
+	medication_usage_id serial PRIMARY KEY,
+	medication_name text NOT NULL,
+	medication_dose text NOT NULL,
+	medication_frequency text NOT NULL
+);
+
+-- intersection table for patient history and medication usage
+CREATE TABLE history_prescription_medication_usage (
+	medication_usage_id serial REFERENCES medication_usage(medication_usage_id),
+	history_id serial REFERENCES patient_history(history_id),
+	PRIMARY KEY (medication_usage_id, history_id)
+);
+
+-- intersection for otc usage
+CREATE TABLE history_otc_medication_usage (
+	medication_usage_id serial REFERENCES medication_usage(medication_usage_id),
+	history_id serial REFERENCES patient_history(history_id),
+	PRIMARY KEY (medication_usage_id, history_id)
+);
+
+-- intersection for drug usage
+CREATE TABLE history_otc_drug_usage (
+	medication_usage_id serial REFERENCES medication_usage(medication_usage_id),
+	history_id serial REFERENCES patient_history(history_id),
+	PRIMARY KEY (medication_usage_id, history_id)
+);
+
+CREATE TABLE patient_history (
+	history_id serial PRIMARY KEY,
+	-- health history information
+	childhood_illnesses json,
+	immunisations json,
+	-- could have used a mtm table here, but data is read and write, and not necessarily searchable
+	-- data is unstructured here - just multiple string entries. should expect an array
+	medical_issues json,
+	surgical_operations json,
+	other_hospitalisations json,
+	-- medication info
+	-- prescription medication, otc meds both mtm
+	allergies json,
+	-- exercise
+	exercise_frequency text,
+	-- diet info
+	dieting boolean,
+	difficulties_eating boolean,
+	meals_daily int,
+	-- alcohol questions
+	drinks_alcohol boolean,
+	alcohol_type text,
+	alcoholic_drinks_weekly int,
+	alcohol_concern boolean,
+	alcohol_consider_stopping boolean,
+	-- tobacco use
+	tobacco_used_past_5_years boolean,
+	tobacco_last_smoked timestamptz,
+	currently_uses_tobacco boolean,
+	currently_uses_tobacco_repalcement boolean,
+	tobacco_replacement_type text,
+	-- drug use
+	uses_recreational_drugs boolean,
+	-- type and frequency mtm
+	used_recreational_with_needle boolean,
+	-- other questions
+	mental_health_history text,
+	social_history text,
+	family_history text,
+	relevant_history text,
+
+	-- sign off
+	practitioner_id serial REFERENCES practitioner(practitioner_id),
+	date timestamptz NOT NULL,
+	signature_blob text NOT NULL
+);
