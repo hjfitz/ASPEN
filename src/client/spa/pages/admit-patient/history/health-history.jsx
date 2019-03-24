@@ -13,18 +13,18 @@ class HealthHistory extends Component {
 		}
 	}
 
+	// selects fall over on inc/dec, re-init
+	componentDidUpdate() {
+		const select = this.mainContainer.querySelectorAll('select')
+		M.FormSelect.init(select)
+	}
+
 	inc(type) {
 		return () => this.setState({[type]: this.state[type] + 1})
 	}
 
 	dec(type) {
 		return () => this.setState({[type]: this.state[type] - 1})
-	}
-
-	// selects fall over on inc/dec, re-init
-	componentDidUpdate() {
-		const select = this.mainContainer.querySelectorAll('select')
-		M.FormSelect.init(select)
 	}
 
 	render() {
@@ -56,7 +56,7 @@ class HealthHistory extends Component {
 				</div>
 				<div className="col s12">
 					<h6>Medical Issues</h6>
-					<div className="patient-history-input" data-form-key="health-medical-problems" data-materialize-type="input-group">
+					<div className="patient-history-input" data-form-key="health-medical-issues" data-materialize-type="input-group">
 						{Array.from({length: this.state.numProbs}).map((_, idx) => (
 							<div className="row">
 								<div className="col s12 input-field">

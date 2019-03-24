@@ -45,7 +45,7 @@ const TobaccoQuestionnaire = () => (
 	<div>
 		<div className="col s12">
 			<h6>If you have given up, when did you last smoke?</h6>
-			<input type="text" className="datepicker" />
+			<input type="text" className="datepicker patient-history-input" data-form-key="tobacco-last-use" />
 		</div>
 		<form className="col s12 patient-history-input" data-form-key="tobacco-current-use" data-materialize-type="radio-group" action="">
 			<h6>Are you currently using Tobacco?</h6>

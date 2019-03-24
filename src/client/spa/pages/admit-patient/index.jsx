@@ -1,4 +1,5 @@
 import {h, Component} from 'preact'
+import qs from 'qs'
 import {route} from 'preact-router'
 import M from 'materialize-css'
 
@@ -7,7 +8,7 @@ import PatientHistoryInfo from './History'
 import ContactInfo from './Contact'
 
 import {Loader} from '../../Partial'
-import {fhirBase, doModal} from '../../util'
+import {fhirBase, doModal, getJwtPayload} from '../../util'
 
 import '../../styles/create-patient.scss'
 
@@ -44,7 +45,7 @@ async function createHistoryForm() {
 			return acc
 		}
 		default: {
-			cur[attr] = elem.value.trim()
+			cur[attr] = elem.value ? elem.value.trim() : null
 			return acc
 		}
 		}
@@ -52,7 +53,12 @@ async function createHistoryForm() {
 	const sigCanv = document.getElementById('sign-off-canvas')
 	const rawImg = sigCanv.toDataURL('image/png')
 	form.sign.image = rawImg
-	const histResp = await fhirBase.post('/History', form)
+	form.sign.practitioner_id = getJwtPayload(localStorage.token).userid
+	const histResp = await fhirBase.post('/History', form, {
+		headers: {
+			'content-type': 'application/json',
+		},
+	})
 	// return form
 }
 
