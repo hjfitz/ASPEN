@@ -176,7 +176,7 @@ CREATE TABLE patient_history (
 	-- tobacco use
 	tobacco_used_past_5_years boolean,
 	tobacco_last_smoked timestamptz,
-	tobacco_type: text,
+	tobacco_type text,
 	currently_uses_tobacco boolean,
 	currently_uses_tobacco_repalcement boolean,
 	tobacco_replacement_type text,

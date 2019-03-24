@@ -48,19 +48,19 @@ const DrugsQuestionnaire = props => (
 			<div>
 				<h6>Which kind and how frequently?</h6>
 				<div className="patient-history-input" data-form-key="drug-use-frequency" data-materialize-type="multiple-input-group">
-					{Array.from({length: props.numDrugs}).map(() => (
-						<div className="scrip-input row">
+					{Array.from({length: props.numDrugs}).map((_, idx) => (
+						<div className="scrip-input row input-group">
 							<div className="col m6 s12 input-field">
-								<input id="drug-name" type="text" className="validate" />
-								<label htmlFor="drug-name">Drug Name</label>
+								<input id={`drug-name-${idx}`} type="text" className="validate name" />
+								<label htmlFor={`drug-name-${idx}`}>Drug Name</label>
 							</div>
 							<div className="col m3 s12 input-field">
-								<input id="drug-dose" type="text" className="validate" />
-								<label htmlFor="drug-dose">Dose</label>
+								<input id={`drug-dose-${idx}`} type="text" className="validate dose" />
+								<label htmlFor={`drug-dose-${idx}`}>Dose</label>
 							</div>
 							<div className="col m3 s12 input-field">
-								<input id="drug-freq" type="text" className="validate" />
-								<label htmlFor="drug-freq">Frequency</label>
+								<input id={`drug-freq-${idx}`} type="text" className="validate frequency" />
+								<label htmlFor={`drug-freq-${idx}`}>Frequency</label>
 							</div>
 						</div>
 					))}

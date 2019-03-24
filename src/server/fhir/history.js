@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 const historyRouter = require('express').Router()
 const OperationOutcome = require('./classes/OperationOutcome')
 const {knex} = require('../db')
@@ -17,16 +18,16 @@ historyRouter.get('/:id', async (req, res) => {
 historyRouter.post('/', async (req, res) => {
 	try {
 		const queries = []
-		console.log(req.body)
+		// console.log(req.body)
 		const historyBody = {
 			// health history
-			childhood_illnesses: req.body.health['childhood-illnesses'],
-			immunisations: req.body.health.immunisations,
-			medical_issues: req.body.health['medical-issues'],
-			surgical_operations: req.body.health.operations,
-			other_hospitalisations: req.body.health.hispitalisations,
+			childhood_illnesses: JSON.stringify(req.body.health['childhood-illnesses']),
+			immunisations: JSON.stringify(req.body.health.immunisations),
+			medical_issues: JSON.stringify(req.body.health['medical-issues']),
+			surgical_operations: JSON.stringify(req.body.health.operations),
+			other_hospitalisations: JSON.stringify(req.body.health.hispitalisations),
 			// medications. otc and prescription meds are in mtm so omitted from this body
-			allergies: req.body.medication.allergies,
+			allergies: JSON.stringify(req.body.medication.allergies),
 			// exercise information
 			exercise_frequency: req.body.exercise.frequency,
 			// dietary information
@@ -57,43 +58,73 @@ historyRouter.post('/', async (req, res) => {
 			// sign off
 			practitioner_id: req.body.sign.practitioner_id,
 			date: new Date(req.body.sign.date),
-			designation: req.body.sign.designation,
+			practitioner_designation: req.body.sign.designation,
 			signature_blob: req.body.sign.image,
 		}
-		queries.push(knex('patient_history').insert(historyBody).returning('history_id'))
-		if (req.body.mediaction.prescription) {
-			const scripBody = {
-				medication_name: req.body.medication.prescription.name,
-				medication_dose: req.body.medication.prescription.dose,
-				medication_frequency: req.body.medication.prescription.frequency,
+		// console.log(req.body)
+		const [history_id] = await knex('patient_history').insert(historyBody).returning('history_id')
+		// console.log({row})
+		if (req.body.medication.prescription.length) {
+			for await (const prescription of req.body.medication.prescription) {
+				console.log({prescription})
+				const body = {
+					medication_name: prescription.name,
+					medication_dose: prescription.dose,
+					medication_frequency: prescription.freq,
+				}
+				console.log(body)
+				// add data to table
+				const [medication_usage_id] = await knex('medication_usage').insert(body).returning('medication_usage_id')
+				// create mtm relation
+				await knex('history_prescription_medication_usage').insert({
+					medication_usage_id,
+					history_id,
+				})
 			}
-			queries.push(knex('medication_usage').insert(scripBody).returning('medication_usage_id'))
 		}
-		if (req.body.medication.otc) {
-			const scripBody = {
-				medication_name: req.body.medication.otc.name,
-				medication_dose: req.body.medication.otc.dose,
-				medication_frequency: req.body.medication.otc.frequency,
+		if (req.body.medication.otc.length) {
+			for await (const otc of req.body.medication.otc) {
+				console.log({otc})
+				const body = {
+					medication_name: otc.name,
+					medication_dose: otc.dose,
+					medication_frequency: otc.freq,
+				}
+				// create drug entry
+				const [medication_usage_id] = await knex('medication_usage').insert(body).returning('medication_usage_id')
+				// create mtm relation
+				await knex('history_otc_medication_usage').insert({
+					medication_usage_id,
+					history_id,
+				})
 			}
-			queries.push(knex('medication_usage').insert(scripBody).returning('medication_usage_id'))
 		}
-		if (req.body.drug.used) {
-			const scripBody = {
-				medication_name: req.body.drug.used.name,
-				medication_dose: req.body.drug.used.dose,
-				medication_frequency: req.body.drug.used.frequency,
+		if (req.body.drug['use-frequency'] && req.body.drug['use-frequency'].length) {
+			for await (const drug of req.body.drug['use-frequency']) {
+				console.log({drug})
+				const body = {
+					medication_name: drug.name,
+					medication_dose: drug.dose,
+					medication_frequency: drug.freq,
+				}
+				// create drug entry
+				const [medication_usage_id] = await knex('medication_usage').insert(body).returning('medication_usage_id')
+				// create mtm relation
+				await knex('history_otc_drug_usage').insert({
+					medication_usage_id,
+					history_id,
+				})
 			}
-			queries.push(knex('medication_usage').insert(scripBody).returning('medication_usage_id'))
 		}
 		// async do all promises
-		await Promise.all(queries) // this will not work as not all mtm will be populated. see 3 if statements! tired reeeeeeee
 		// create mtm relations
 
 		// const results = Object.keys(queries).reduce((acc, cur) => {})
 		// const resp = await knex('patient_history').insert(req.body)
-		const outcome = new OperationOutcome('success', 200, req.url, 'Successfully added history', resp)
+		const outcome = new OperationOutcome('success', 200, req.url, 'Successfully added history', {})
 		return outcome.makeResponse(res)
 	} catch (err) {
+		console.log(err)
 		const outcome = new OperationOutcome('error', 500, req.url, err)
 		return outcome.makeResponse(res)
 	}

@@ -60,8 +60,8 @@ class HealthHistory extends Component {
 						{Array.from({length: this.state.numProbs}).map((_, idx) => (
 							<div className="row">
 								<div className="col s12 input-field">
-									<input id={`med-name-${idx}`} type="text" className={`validate med-name-${idx}`} />
-									<label htmlFor={`med-name-${idx}`}>Medical Problem</label>
+									<input id={`med-issue-name-${idx}`} type="text" className={`validate med-issue-name-${idx}`} />
+									<label htmlFor={`med-issue-name-${idx}`}>Medical Problem</label>
 								</div>
 							</div>
 						))}

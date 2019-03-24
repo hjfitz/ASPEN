@@ -34,7 +34,7 @@ async function createHistoryForm() {
 		// find the checked radio button and get the val (true/false - set in elem.value prop)
 		case 'radio-group': {
 			const checked = elem.querySelector(':checked')
-			cur[attr] = checked.value
+			cur[attr] = checked.value.replace('yes', 'true').replace('no', 'false')
 			return acc
 		}
 		// saved for when there's the option to add/remove
@@ -42,6 +42,15 @@ async function createHistoryForm() {
 			const inputs = elem.querySelectorAll('input')
 			// get all non-null values from inputs in the group
 			cur[attr] = [...inputs].map(el => el.value.trim()).filter(Boolean)
+			return acc
+		}
+		case 'multiple-input-group': {
+			const inputs = elem.querySelectorAll('.input-group')
+			cur[attr] = [...inputs].map(input => ({
+				name: input.querySelector('.name').value,
+				dose: input.querySelector('.dose').value,
+				freq: input.querySelector('.frequency').value,
+			}))
 			return acc
 		}
 		default: {
@@ -54,12 +63,11 @@ async function createHistoryForm() {
 	const rawImg = sigCanv.toDataURL('image/png')
 	form.sign.image = rawImg
 	form.sign.practitioner_id = getJwtPayload(localStorage.token).userid
+	console.log(form)
 	const histResp = await fhirBase.post('/History', form, {
-		headers: {
-			'content-type': 'application/json',
-		},
+		headers: {'content-type': 'application/json'},
 	})
-	// return form
+	return form
 }
 
 class AdmitPatient extends Component {
