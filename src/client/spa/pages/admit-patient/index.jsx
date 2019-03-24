@@ -12,7 +12,7 @@ import {fhirBase, doModal, getJwtPayload} from '../../util'
 
 import '../../styles/create-patient.scss'
 
-async function createHistoryForm() {
+function createHistory(patient_id) {
 	const elems = document.querySelectorAll('.patient-history-input')
 	const form = [...elems].reduce((acc, elem) => {
 		// dataset should be of form '$KEY-attr, eg health-childhood-illnesses
@@ -62,12 +62,11 @@ async function createHistoryForm() {
 	const sigCanv = document.getElementById('sign-off-canvas')
 	const rawImg = sigCanv.toDataURL('image/png')
 	form.sign.image = rawImg
+	form.patient_id = patient_id
 	form.sign.practitioner_id = getJwtPayload(localStorage.token).userid
-	console.log(form)
-	const histResp = await fhirBase.post('/History', form, {
+	return fhirBase.post('/History', form, {
 		headers: {'content-type': 'application/json'},
 	})
-	return form
 }
 
 class AdmitPatient extends Component {
@@ -219,13 +218,7 @@ class AdmitPatient extends Component {
 				encForm.append('patient_id', outcome.diagnostics.patient_id)
 				encForm.append('location_id', obj.location_id)
 				const encResp = await fhirBase.post('/Encounter', encForm)
-				const historyRaw = createHistoryForm()
-				const histForm = new FormData()
-				Object.keys(historyRaw).forEach((key) => {
-					histForm.set(key, historyRaw[key])
-				})
-				histForm.set('patient_id', outcome.diagnostics.patient_id)
-				const histResp = await fhirBase.post('/History', histForm)
+				const histResp = await createHistory(outcome.diagnostics.patient_id)
 				console.log(histResp)
 				doModal('Success', encResp.data.issue[0].details.text)
 			} else {
@@ -259,8 +252,7 @@ class AdmitPatient extends Component {
 					/>
 					<PatientHistoryInfo />
 					<ContactInfo />
-					<a className="waves-effect waves-light btn col s12" onClick={() => console.log(createHistoryForm())}>
-						{/* this.admit.bind(this)}> */}
+					<a className="waves-effect waves-light btn col s12" onClick={this.admit.bind(this)}>
 						<i className="material-icons left">perm_identity</i>Admit
 					</a>
 				</form>

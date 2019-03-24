@@ -191,6 +191,7 @@ CREATE TABLE patient_history (
 	relevant_history text,
 
 	-- sign off
+	patient_id serial REFERENCES patient(patient_id),
 	practitioner_id serial REFERENCES practitioner(practitioner_id),
 	date timestamptz NOT NULL,
 	practitioner_designation text NOT NULL,

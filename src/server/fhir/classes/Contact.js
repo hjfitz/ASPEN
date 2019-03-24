@@ -21,6 +21,7 @@ class Contact {
 		this.family = family
 		this.required = ['prefix', 'fullname', 'given', 'phone']
 		this.values = [...this.required, 'family']
+		console.log(this)
 	}
 
 	// fhir() {}
@@ -51,8 +52,14 @@ class Contact {
 				return acc
 			}, {})
 		// make query
-		const [resp] = await knex('contact').insert(obj).returning(['contact_id', ...this.values])
-		return resp
+		try {
+			const [resp] = await knex('contact').insert(obj).returning(['contact_id', ...this.values])
+			logger.debug('created contact', {file: 'Contact.js', func: 'insert()'})
+			return resp
+		} catch (err) {
+			logger.error(err, {file: 'Contact.js', func: 'insert()'})
+			return false
+		}
 	}
 
 	// delete() {}

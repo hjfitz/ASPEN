@@ -7,8 +7,15 @@ const {knex} = require('../db')
 historyRouter.get('/:id', async (req, res) => {
 	const [row] = await knex('patient_history').select().where({patient_id: req.params.id})
 	if (row) {
-		const [practitioner] = await knex('practitioner').select().where({practitioner_id: row.sign_off_userid})
-		res.json({...row, ...practitioner})
+		// aim to change to promise.all
+		const [practitioner] = await knex('practitioner').select().where({practitioner_id: row.practitioner_id})
+		const prescriptionLinks = await knex('history_prescription_medication_usage').select().where({history_id: row.history_id})
+		const otcLinks = await knex('history_otc_medication_usage').select().where({history_id: row.history_id})
+		const drugLinks = await knex('history_otc_drug_usage').select().where({history_id: row.history_id})
+		const prescriptions = await Promise.all(prescriptionLinks.map(link => knex('medication_usage').select().where({medication_usage_id: link.medication_usage_id})))
+		const otc = await Promise.all(otcLinks.map(link => knex('medication_usage').select().where({medication_usage_id: link.medication_usage_id})))
+		const recreational = await Promise.all(drugLinks.map(link => knex('medication_usage').select().where({medication_usage_id: link.medication_usage_id})))
+		res.json({...row, practitioner, drugs: {prescriptions, otc, recreational}})
 	} else {
 		const outcome = new OperationOutcome('error', 404, req.originalUrl, 'unable to find history')
 		outcome.makeResponse(res)
@@ -17,8 +24,6 @@ historyRouter.get('/:id', async (req, res) => {
 
 historyRouter.post('/', async (req, res) => {
 	try {
-		const queries = []
-		// console.log(req.body)
 		const historyBody = {
 			// health history
 			childhood_illnesses: JSON.stringify(req.body.health['childhood-illnesses']),
@@ -56,6 +61,7 @@ historyRouter.post('/', async (req, res) => {
 			family_history: req.body.other['family-history'],
 			relevant_history: req.body.other['relevant-history'],
 			// sign off
+			patient_id: req.body.patient_id,
 			practitioner_id: req.body.sign.practitioner_id,
 			date: new Date(req.body.sign.date),
 			practitioner_designation: req.body.sign.designation,
