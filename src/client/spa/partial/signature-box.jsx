@@ -1,34 +1,61 @@
 import {h, Component} from 'preact'
 
+function emulateTouch(e) {
+	e.preventDefault()
+	const touch = e.touches[0]
+	const mouseEvent = new MouseEvent('mousemove', {
+		clientX: touch.clientX,
+		clientY: touch.clientY,
+		buttons: 1,
+	})
+	document.dispatchEvent(mouseEvent)
+}
+
+function dispatchMouseUp() {
+	return document.dispatchEvent(new MouseEvent('mouseup', {}))
+}
+
 
 class Signature extends Component {
 	constructor() {
 		super()
 		this.pos = {x: 0, y: 0}
+		this.draw = this.draw.bind(this)
+		this.setPosition = this.setPosition.bind(this)
+		this.setTouchPosition = this.setTouchPosition.bind(this)
 	}
 
 	componentDidMount() {
 		// set up event listeners
-		document.addEventListener('mousemove', this.draw.bind(this))
-		document.addEventListener('mousedown', this.setPosition.bind(this))
-		document.addEventListener('mouseEnter', this.setPosition.bind(this))
+		document.addEventListener('mousemove', this.draw)
+		document.addEventListener('mousedown', this.setPosition)
+		document.addEventListener('mouseEnter', this.setPosition)
 
 		/**
 		 * spoof mouse events using touch events to
 		 * so that a phone user can make a signature
 		 */
-		this.canvas.addEventListener('touchstart', ev => this.setPosition(ev.touches[0]))
-		this.canvas.addEventListener('touchend', () => document.dispatchEvent(new MouseEvent('mouseup', {})))
-		this.canvas.addEventListener('touchmove', (e) => {
-			e.preventDefault()
-			const touch = e.touches[0]
-			const mouseEvent = new MouseEvent('mousemove', {
-				clientX: touch.clientX,
-				clientY: touch.clientY,
-				buttons: 1,
-			})
-			document.dispatchEvent(mouseEvent)
-		})
+		this.canvas.addEventListener('touchstart', this.setTouchPosition)
+		this.canvas.addEventListener('touchend', dispatchMouseUp)
+		this.canvas.addEventListener('touchmove', emulateTouch)
+	}
+
+	componentWillUnmount() {
+		document.removeEventListener('mousemove', this.draw)
+		document.removeEventListener('mousedown', this.setPosition)
+		document.removeEventListener('mouseEnter', this.setPosition)
+
+		/**
+		 * spoof mouse events using touch events to
+		 * so that a phone user can make a signature
+		 */
+		this.canvas.removeEventListener('touchstart', this.setTouchPosition)
+		this.canvas.removeEventListener('touchend', dispatchMouseUp)
+		this.canvas.removeEventListener('touchmove', emulateTouch)
+	}
+
+	setTouchPosition(ev) {
+		return this.setPosition(ev.touches[0])
 	}
 
 	setPosition(ev) {
@@ -69,8 +96,10 @@ class Signature extends Component {
 					<span className="card-title">Sign below</span>
 					<canvas
 						ref={(c) => {
-							this.canvas = c
-							this.ctx = c.getContext('2d')
+							try {
+								this.canvas = c
+								this.ctx = c.getContext('2d')
+							} catch (e) {}
 						}}
 						id="sign-off-canvas"
 						style={{width: '100%', border: '1px solid grey'}}
