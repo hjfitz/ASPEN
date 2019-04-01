@@ -1,5 +1,9 @@
 import {h, Component} from 'preact'
 
+const getStyle = container => prop => parseInt(getComputedStyle(container, null)
+	.getPropertyValue(prop)
+	.replace('px', ''), 10)
+
 function emulateTouch(e) {
 	e.preventDefault()
 	const touch = e.touches[0]
@@ -66,10 +70,27 @@ class Signature extends Component {
 		}
 	}
 
+	setCanvasDimensions() {
+		if (!this.setWidth) {
+			const getProp = getStyle(this.content)
+			const padLeft = getProp('padding-left')
+			const padRight = getProp('padding-right')
+			const horzPad = padLeft + padRight
+
+			const {width} = this.content.getBoundingClientRect()
+			const {height} = this.canvas.getBoundingClientRect()
+			this.canvas.height = height
+			this.canvas.width = (width - horzPad)
+			this.setWidth = true
+		}
+	}
+
 	draw(ev) {
 		const {ctx} = this
 		// mouse left button must be pressed
+
 		if (ev.buttons !== 1) return
+		this.setCanvasDimensions()
 
 		ctx.beginPath() // begin
 
@@ -91,8 +112,8 @@ class Signature extends Component {
 
 	render() {
 		return (
-			<div className="card">
-				<div className="card-content">
+			<div className="card z-depth-0">
+				<div className="card-content" ref={c => this.content = c}>
 					<span className="card-title">Sign below</span>
 					<canvas
 						ref={(c) => {
