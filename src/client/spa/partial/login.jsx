@@ -34,6 +34,7 @@ class Login extends Component {
 			const modal = document.querySelector('.modal.login-modal')
 			const inst = M.Modal.getInstance(modal) || M.Modal.init(modal)
 			inst.close()
+			window.location.href = window.location.href
 		} catch (err) {
 			M.toast({html: err.response.data})
 		}
