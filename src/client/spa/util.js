@@ -15,6 +15,8 @@ export function getJwtPayload(token) {
 	return JSON.parse(payload)
 }
 
+export const getName = () => getJwtPayload(localStorage.token).name
+
 /**
  * no operation!
  */

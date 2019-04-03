@@ -1,7 +1,11 @@
 import {h} from 'preact'
 import {Link} from 'preact-router'
 
+import {getName, getJwtPayload} from '../util'
+
 import '../styles/welcome.scss'
+
+const getGiven = () => getJwtPayload(localStorage.token).given_name
 
 /**
  * Welcome page
@@ -11,7 +15,7 @@ const Welcome = () => (
 	<div className="row">
 		<div className="col s12">
 			<header>
-				<h1>What would you like to do?</h1>
+				<h1>Hi {getGiven()}! Welcome to ASPEN</h1>
 			</header>
 		</div>
 		<div className="col s12">
@@ -36,9 +40,7 @@ const Welcome = () => (
 						<Link href="/wards">
 							<div className="card-content">
 								<span className="card-title">View your wards</span>
-								<p>I am a very simple card. I am good at containing small bits of information.
-					I am convenient because I require little markup to use effectively.
-								</p>
+								<p>View wards in the practice and access patient details.</p>
 							</div>
 						</Link>
 					</div>
@@ -48,9 +50,7 @@ const Welcome = () => (
 						<Link href="/search/patient">
 							<div className="card-content">
 								<span className="card-title">Search for a Patient's Vital signs</span>
-								<p>I am a very simple card. I am good at containing small bits of information.
-					I am convenient because I require little markup to use effectively.
-								</p>
+								<p>Search by details for a given patient.</p>
 							</div>
 						</Link>
 					</div>
@@ -60,9 +60,7 @@ const Welcome = () => (
 						<Link href="/add/patient">
 							<div className="card-content">
 								<span className="card-title">Admit a Patient</span>
-								<p>I am a very simple card. I am good at containing small bits of information.
-					I am convenient because I require little markup to use effectively.
-								</p>
+								<p>Create a new patient, including their photograph and history.</p>
 							</div>
 						</Link>
 					</div>
@@ -72,9 +70,7 @@ const Welcome = () => (
 						<Link href="/add/ward">
 							<div className="card-content">
 								<span className="card-title">Create a ward</span>
-								<p>I am a very simple card. I am good at containing small bits of information.
-					I am convenient because I require little markup to use effectively.
-								</p>
+								<p>Create a new ward to group patients in.</p>
 							</div>
 						</Link>
 					</div>

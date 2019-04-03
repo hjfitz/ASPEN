@@ -9,7 +9,7 @@ import {h} from 'preact'
  * @returns {VNode} Preact element
  */
 const Select = props => (
-	<div className="input-field col s12 m6">
+	<div className={`input-field col s12 m6 ${props.className}`}>
 		<select id={props.id || ''}>
 			<option value="" disabled selected>{props.default}</option>
 			{props.options.map(opt => <option value={opt.val}>{opt.text}</option>)}

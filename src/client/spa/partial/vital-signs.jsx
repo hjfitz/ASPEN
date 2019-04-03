@@ -18,8 +18,12 @@ class Vitals extends Component {
 	}
 
 	componentWillUnmount() {
-		if (this.formInstance) this.formInstance.map(el => el.destroy())
-		if (this.tabInstance) this.tabInstance.map(el => el.destroy())
+		try {
+			if (this.formInstance) this.formInstance.map(el => el.destroy())
+			if (this.tabInstance) this.tabInstance.map(el => el.destroy())
+		} catch (err) {
+			console.log('[VITAL SIGNS] Error with unmount cleanup: ', err)
+		}
 	}
 
 	async submitForm() {

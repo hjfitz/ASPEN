@@ -174,7 +174,6 @@ class AdmitPatient extends Component {
 			'patient-prefix',
 			'patient-given',
 			'patient-family',
-			'patient-fullname',
 			'patient-gender',
 			'location_id',
 			'contact-prefix',
@@ -207,6 +206,8 @@ class AdmitPatient extends Component {
 			doModal('Error with form!', `Please complete the following fields: <ul>${err}</ul>`)
 			return
 		}
+		obj['patient-fullname'] = obj['patient-given'] + obj['patient-family']
+
 		Object.keys(obj).forEach(label => form.append(label, obj[label]))
 		try {
 			const resp = await fhirBase.post('/Patient', form)

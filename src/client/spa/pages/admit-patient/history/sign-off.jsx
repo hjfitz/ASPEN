@@ -1,9 +1,8 @@
 import {h} from 'preact'
 import format from 'date-fns/format'
-import {getJwtPayload} from '../../../util'
+import {getName} from '../../../util'
 import {SignatureBox} from '../../../Partial'
 
-const getName = () => getJwtPayload(localStorage.token).name
 const getDate = () => format(Date.now(), ' MMM DD, YYYY')
 
 const SignOff = () => (
@@ -14,7 +13,7 @@ const SignOff = () => (
 			<div className="row">
 				<div className="col s12">
 					<div className="input-field col s12">
-						<input id="practitioner-name" type="text" className="validate" disabled value={getName()} data-form-key="sign-name"/>
+						<input id="practitioner-name" type="text" className="validate" disabled value={getName()} data-form-key="sign-name" />
 						<label className="active" htmlFor="practitioner-name">Name</label>
 					</div>
 					<div className="input-field col s12">

@@ -12,7 +12,7 @@ const PatientDemographicInfo = props => (
 				<Input id="patient-prefix" label="Title" />
 				<Input id="patient-given" label="First Name" />
 				<Input id="patient-family" label="Surname" />
-				<Input id="patient-fullname" label="Full Name" />
+				{/* <Input id="patient-fullname" label="Full Name" /> */}
 				<Select
 					id="patient-gender"
 					default="---Select a Gender---"
@@ -24,8 +24,9 @@ const PatientDemographicInfo = props => (
 					default="---Select a Ward---"
 					options={props.wards}
 					label="Patient Ward"
+					className="m12"
 				/>
-				<div className="col m6 s12">
+				<div className="col s12">
 					{/* fuckin clean me lad */}
 					{!isMobile.any
 						? (
