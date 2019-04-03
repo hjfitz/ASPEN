@@ -4,6 +4,7 @@ module.exports = {
 	"env": {
 		"browser": true,
 		"node": true,
+		"mocha": true,
 	},
 	"rules": {
 		"indent": ["error", "tab"],
@@ -31,7 +32,7 @@ module.exports = {
 		"jsx-a11y/label-has-associated-control": 0,
 		"jsx-a11y/anchor-is-valid": 0,
 		"jsx-a11y/media-has-caption": 0,
-			
+
 	},
 	"settings": {
 		"react": {
