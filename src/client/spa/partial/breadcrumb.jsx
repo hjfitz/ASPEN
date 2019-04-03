@@ -20,7 +20,7 @@ function getCurrentUrl(index, places) {
  * @returns {VNode}
  */
 const Breadcrumbs = (props) => {
-	const places = props.location.split('/').filter(Boolean)
+	const places = props.location.split('/').filter(Boolean).filter(path => !!path.indexOf('?'))
 	const crumbs = [
 		<Link href="/" className="breadcrumb">Home</Link>,
 		...places.map((loc, idx) => (
