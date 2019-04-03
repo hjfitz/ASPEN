@@ -6,6 +6,7 @@ services:
       POSTGRES_USER: fyp
       POSTGRES_DATABASE: fyp
       POSTGRES_PASSWORD: donotposttogit
+      ALLOW_IP_RANGE: 0.0.0.0/0
     image: postgres:10
     build: ./db
     ports:

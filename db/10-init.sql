@@ -76,76 +76,12 @@ CREATE TABLE encounter (
 	location_id 	serial 		REFERENCES location(location_id)
 );
 
-CREATE TABLE patient_history (
-	history_id 										serial 	PRIMARY KEY,
-	-- health habits
-	health_habits_drink_alcohol_consider_stopping 	text,
-	health_habits_patient_ever_injected_drugs 		text,
-	health_habits_nicotine_replacement_types 		text,
-	health_habits_nicotine_replace_therapy 			text,
-	health_habits_mental_health_wellbeing 			text,
-	health_habits_drink_alcohol_concern 			text,
-	health_habits_current_tobacco_use 				text,
-	health_habits_difficulties_eating 				text,
-	health_habits_types_tobacco_used 				text,
-	health_habits_drug_use_frequency 				text,
-	health_habits_exercise_frequency 				text,
-	health_habits_tobacco_used_prior 				text,
-	health_habits_current_drug_use 					text,
-	health_habits_relevant_history 					text,
-	health_habits_family_history 					text,
-	health_habits_social_history 					text,
-	health_habits_drink_alcohol 					text,
-	health_habits_meals_eaten 						text,
-	health_habits_alcohol_type 						text,
-	health_habits_alcohol_num 						text,
-	health_habits_dieting 							text,
-	-- medications
-	medication_prescription_medications 			text,
-	medication_otc_medications 						text,
-	medication_allergies 							text,
-	-- personal health history
-	personal_health_history_other_hospitalisations 	text,
-	personal_health_history_childhood_illnesses 	text,
-	personal_health_history_surgical_operations 	text,
-	personal_health_history_medical_problems 		text,
-	personal_health_history_immunisations 			text,
-	-- practitioner sign off
-	sign_off_designation 							text 		NOT NULL,
-	sign_off_userid 								serial 		REFERENCES practitioner(practitioner_id),
-	sign_off_date 									timestamptz NOT NULL,
-	sign_off_blob 									text 		NOT NULL,
-
-	patient_id 										serial 		REFERENCES patient(patient_id)
-);
-
 -- todo: find out units for dose and frequency
 CREATE TABLE medication_usage (
 	medication_usage_id serial PRIMARY KEY,
 	medication_name text NOT NULL,
 	medication_dose text NOT NULL,
 	medication_frequency text NOT NULL
-);
-
--- intersection table for patient history and medication usage
-CREATE TABLE history_prescription_medication_usage (
-	medication_usage_id serial REFERENCES medication_usage(medication_usage_id),
-	history_id serial REFERENCES patient_history(history_id),
-	PRIMARY KEY (medication_usage_id, history_id)
-);
-
--- intersection for otc usage
-CREATE TABLE history_otc_medication_usage (
-	medication_usage_id serial REFERENCES medication_usage(medication_usage_id),
-	history_id serial REFERENCES patient_history(history_id),
-	PRIMARY KEY (medication_usage_id, history_id)
-);
-
--- intersection for drug usage
-CREATE TABLE history_otc_drug_usage (
-	medication_usage_id serial REFERENCES medication_usage(medication_usage_id),
-	history_id serial REFERENCES patient_history(history_id),
-	PRIMARY KEY (medication_usage_id, history_id)
 );
 
 CREATE TABLE patient_history (
@@ -196,4 +132,25 @@ CREATE TABLE patient_history (
 	date timestamptz NOT NULL,
 	practitioner_designation text NOT NULL,
 	signature_blob text NOT NULL
+);
+
+-- intersection table for patient history and medication usage
+CREATE TABLE history_prescription_medication_usage (
+	medication_usage_id serial REFERENCES medication_usage(medication_usage_id),
+	history_id serial REFERENCES patient_history(history_id),
+	PRIMARY KEY (medication_usage_id, history_id)
+);
+
+-- intersection for otc usage
+CREATE TABLE history_otc_medication_usage (
+	medication_usage_id serial REFERENCES medication_usage(medication_usage_id),
+	history_id serial REFERENCES patient_history(history_id),
+	PRIMARY KEY (medication_usage_id, history_id)
+);
+
+-- intersection for drug usage
+CREATE TABLE history_otc_drug_usage (
+	medication_usage_id serial REFERENCES medication_usage(medication_usage_id),
+	history_id serial REFERENCES patient_history(history_id),
+	PRIMARY KEY (medication_usage_id, history_id)
 );
