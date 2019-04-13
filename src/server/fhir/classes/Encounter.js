@@ -120,6 +120,7 @@ class Encounter {
 	async fhir(include) {
 		let patient = {reference: `Patient/${this.patient_id}`}
 		let location = {reference: `Location/${this.location_id}`}
+		console.log(include)
 		if (include.patient) {
 			const unwrappedPat = new Patient({id: this.patient_id})
 			await unwrappedPat.populate()

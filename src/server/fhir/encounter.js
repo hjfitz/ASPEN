@@ -25,6 +25,7 @@ encounterRouter.get('/', async (req, res) => {
 		acc[cur] = true
 		return acc
 	}, {})
+	console.log(toInclude)
 	const rows = await knex('encounter').select().where(req.query)
 	const mapped = await Promise.all(rows.map(row => new Encounter(row).fhir(toInclude)))
 	res.json(mapped)

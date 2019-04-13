@@ -190,25 +190,25 @@ authRouter.post('/login/create', async (req, res) => {
 })
 
 // token checking middleware for fhir API
-authRouter.use('/fhir', (req, res, next) => {
-	const meta = {file: 'auth.js', func: 'auth middleware'}
-	const {token} = req.headers
-	logger.debug(`has token: ${!!token}`, meta)
-	logger.silly(`token: ${token}`, meta)
-	// no token? login
-	if (!token) return res.redirect('/login')
-	try {
-		const valid = jwt.verify(token, sessionSecret)
-		logger.debug(`validated user token. allowing them through, ${JSON.stringify(valid)}`, meta)
-		return next()
-	} catch (err) {
-		// error verifying token? redirect to login
-		logger.debug('user not valid. informing client axios', meta)
-		logger.error(`error caught: ${err}`, meta)
-		const outcome = new OperationOutcome('error', 401, req.originalUrl, 'JWT invalid or inaccessible', err)
-		return outcome.makeResponse(res)
-	}
-})
+// authRouter.use('/fhir', (req, res, next) => {
+// 	const meta = {file: 'auth.js', func: 'auth middleware'}
+// 	const {token} = req.headers
+// 	logger.debug(`has token: ${!!token}`, meta)
+// 	logger.silly(`token: ${token}`, meta)
+// 	// no token? login
+// 	if (!token) return res.redirect('/login')
+// 	try {
+// 		const valid = jwt.verify(token, sessionSecret)
+// 		logger.debug(`validated user token. allowing them through, ${JSON.stringify(valid)}`, meta)
+// 		return next()
+// 	} catch (err) {
+// 		// error verifying token? redirect to login
+// 		logger.debug('user not valid. informing client axios', meta)
+// 		logger.error(`error caught: ${err}`, meta)
+// 		const outcome = new OperationOutcome('error', 401, req.originalUrl, 'JWT invalid or inaccessible', err)
+// 		return outcome.makeResponse(res)
+// 	}
+// })
 
 
 module.exports = authRouter

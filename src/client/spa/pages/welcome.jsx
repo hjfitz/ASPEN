@@ -75,6 +75,16 @@ const Welcome = () => (
 						</Link>
 					</div>
 				</div>
+				<div className="col s6 l4">
+					<div className="hoverable card little home-card">
+						<Link href="/permissions">
+							<div className="card-content">
+								<span className="card-title">Manage Permissions</span>
+								<p>Enable practitioners to access different patients.</p>
+							</div>
+						</Link>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

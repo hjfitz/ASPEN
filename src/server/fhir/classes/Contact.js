@@ -21,7 +21,6 @@ class Contact {
 		this.family = family
 		this.required = ['prefix', 'fullname', 'given', 'phone']
 		this.values = [...this.required, 'family']
-		console.log(this)
 	}
 
 	// fhir() {}

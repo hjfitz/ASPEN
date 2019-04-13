@@ -1,5 +1,5 @@
 const logger = require('../../logger')
-const knex = require('../../db')
+const {knex} = require('../../db')
 
 class Location {
 	/**
@@ -17,7 +17,7 @@ class Location {
 		this.name = params.name
 		this.description = params.description
 		this.lastUpdated = params.lastUpdated || new Date()
-		this.type = Location.lookup(params.type)
+		this.type = Location.lookup(params.type || 'ward')
 	}
 
 	// based on the data this object is constructed with, create an insert query
@@ -42,7 +42,12 @@ class Location {
 	}
 
 	async populate() {
-		const resp = await knex('location').select().where({location_id: this.location_id})
+		const [resp] = await knex('location').select().where({location_id: this.id})
+		console.log(resp)
+		this.lastUpdated = resp.last_updated
+		this.status = resp.status
+		this.name = resp.name
+		this.description = resp.description
 	}
 
 	/**
@@ -71,6 +76,7 @@ class Location {
 	 * @return {object} - correct formatting for location type
 	 */
 	static lookup(type) {
+		console.log(type)
 		switch (type.toLowerCase()) {
 		case 'wing': {
 			return {

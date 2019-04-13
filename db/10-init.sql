@@ -62,9 +62,10 @@ CREATE TABLE practitioner (
 	passhash 			text
 );
 
-CREATE TABLE practitionerwards (
-	location_id 		serial REFERENCES location(location_id),
-	practitioner_id 	serial REFERENCES practitioner(practitioner_id)
+CREATE TABLE practitionerpatients (
+	practitioner_id serial REFERENCES practitioner(practitioner_id),
+	patient_id 	serial REFERENCES patient(patient_id),
+	PRIMARY KEY(practitioner_id, patient_id)
 );
 
 CREATE TABLE encounter (
