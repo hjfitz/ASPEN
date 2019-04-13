@@ -28,7 +28,6 @@ class Practitioner extends FHIRBase {
 			const {outcome} = new OperationOutcome('error', 404, `/fhir/Practitioner/${this.id}`, 'Item not found')
 			return outcome
 		}
-		console.log(this)
 		return {
 			resourceType: 'Practitioner',
 			active: true,

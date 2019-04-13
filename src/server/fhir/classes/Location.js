@@ -43,7 +43,6 @@ class Location {
 
 	async populate() {
 		const [resp] = await knex('location').select().where({location_id: this.id})
-		console.log(resp)
 		this.lastUpdated = resp.last_updated
 		this.status = resp.status
 		this.name = resp.name
@@ -76,7 +75,6 @@ class Location {
 	 * @return {object} - correct formatting for location type
 	 */
 	static lookup(type) {
-		console.log(type)
 		switch (type.toLowerCase()) {
 		case 'wing': {
 			return {
