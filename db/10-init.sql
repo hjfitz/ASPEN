@@ -58,7 +58,7 @@ CREATE TABLE practitioner (
 	added 				timestamptz  NOT NULL,
 	username 		 	text 		 UNIQUE NOT NULL,
 	account_type 		account_type NOT NULL,
-	permissions 		text,
+	permissions 		json NOT NULL,
 	passhash 			text
 );
 

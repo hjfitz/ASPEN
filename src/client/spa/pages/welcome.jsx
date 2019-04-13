@@ -5,7 +5,7 @@ import {getName, getJwtPayload} from '../util'
 
 import '../styles/welcome.scss'
 
-const getGiven = () => getJwtPayload(localStorage.token).given_name
+const getGiven = () => getJwtPayload(localStorage.token).given_name || getJwtPayload(localStorage.token).name
 
 /**
  * Welcome page

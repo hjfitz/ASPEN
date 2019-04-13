@@ -1,10 +1,10 @@
 import {h, Component} from 'preact'
 import cloneDeep from 'lodash/cloneDeep'
+import Axios from 'axios'
 import {Loader} from '../Partial'
 import {fhirBase} from '../util'
 
 import '../styles/permissions.scss'
-import Axios from 'axios'
 
 class Permissions extends Component {
 	constructor() {
@@ -25,7 +25,6 @@ class Permissions extends Component {
 			fhirBase.get('/Practitioner'),
 			fhirBase.get('/Encounter/?class=admission&_include=Encounter:patient;location'),
 		])
-		console.log({practitioners, patients})
 		this.setState({
 			practitioners,
 			patients,
@@ -41,19 +40,11 @@ class Permissions extends Component {
 			// sadly FHIR has poor support for permissions
 			const {data} = await Axios.get(`/permissions/${id}`)
 			const patientIDs = data.map(datum => datum.patient_id)
-			console.log(data)
-			console.log(this.state.patients)
 			const patients = cloneDeep(this.state.oldPatients)
 			// elems in matches are objects and thus handlded by ref
 			// they can be given a 'grouped' attr
 			const matches = patients.filter(patient => patientIDs.includes(patient.subject.id))
 			matches.map(match => match.grouped = true)
-			// data.forEach((pairing) => {
-			// 	console.log(pairing)
-			// 	patients.forEach((patient) => {
-			// 		patient.grouped = (patient.subject.id === pairing.patient_id)
-			// 	})
-			// })
 			this.setState({selectedPractitioner: id, patients})
 		}
 	}
@@ -62,7 +53,7 @@ class Permissions extends Component {
 		return async () => {
 			if (!this.state.selectedPractitioner) return false
 			const baseUrl = grouped ? 'destroy' : 'create'
-			const resp = await Axios.post(`/permissions/${baseUrl}`, {
+			await Axios.post(`/permissions/${baseUrl}`, {
 				patientID,
 				practitionerID: this.state.selectedPractitioner,
 			})

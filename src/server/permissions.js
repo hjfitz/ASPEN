@@ -8,23 +8,20 @@ permissionsRouter.post('/create', async (req, res) => {
 		patient_id: req.body.patientID,
 	})
 	res.json(resp)
-	console.log({patientID, practitionerID})
 })
 
 permissionsRouter.post('/destroy', async (req, res) => {
-	const {patientID, practitionerID} = req.body
 	const unionDeleted = await knex('practitionerpatients').delete().where({
 		practitioner_id: req.body.practitionerID,
 		patient_id: req.body.patientID,
 	})
-	res.send(200)
+	res.json(unionDeleted)
 })
 
 permissionsRouter.get('/:id', async (req, res) => {
 	const unionTable = await knex('practitionerpatients').select().where({
 		practitioner_id: req.params.id,
 	})
-	console.log(unionTable)
 	res.json(unionTable)
 })
 
