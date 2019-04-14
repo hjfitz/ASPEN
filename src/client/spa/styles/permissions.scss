@@ -1,0 +1,14 @@
+.permissions-table {
+	.hover {
+		cursor: pointer;
+		&:hover {
+			background-color: #ddd;
+		}
+	}
+	.selected {
+		background-color: #ddd!important;
+	}
+	.collection {
+		max-height: 70vh;
+	}
+}

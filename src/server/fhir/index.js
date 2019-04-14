@@ -10,6 +10,7 @@ const observationRouter = require('./observation')
 const locationRouter = require('./location')
 const encounterRouter = require('./encounter')
 const historyRouter = require('./history')
+const practitionerRouter = require('./practitioner')
 const {createOutcome} = require('./util')
 
 const meta = {file: 'fhir/index.js'}
@@ -35,7 +36,11 @@ router.use(async (req, res, next) => {
 		return createOutcome(req, res, 406, 'application/x-www-form-urlencoded is not accepted here', {}, 'error')
 	}
 	logger.silly('good request', {...meta, func: 'validation mw'})
-	await connect()
+	try {
+		await connect()
+	} catch (err) {
+		logger.error(`error connecting to db: ${err}`, {...meta, func: 'validation mw'})
+	}
 	return next()
 })
 
@@ -50,6 +55,7 @@ router.use('/Encounter', encounterRouter)
 router.use('/Location', locationRouter)
 router.use('/Patient', patientRouter)
 router.use('/History', historyRouter)
+router.use('/Practitioner', practitionerRouter)
 
 // error handler - leave at base of fhir router
 router.use((req, res, next, err) => {

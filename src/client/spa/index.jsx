@@ -9,6 +9,7 @@ import {
 	SearchPatient,
 	AdmitPatient,
 	ViewPatient,
+	Permissions,
 	CreateWard,
 	WardList,
 	Home,
@@ -22,9 +23,7 @@ import './styles/router.scss'
 class App extends Component {
 	constructor(props) {
 		super(props)
-		this.state = {
-			location: window.location.pathname,
-		}
+		this.state = {location: window.location.pathname}
 		this.onChange = this.onChange.bind(this)
 		this.login = <Login />
 		this.showPopup = showLogin
@@ -62,6 +61,7 @@ class App extends Component {
 					<Home path="/" />
 					<WardList path="/wards" />
 					<ViewWard path="/wards/:ward_id" />
+					<Permissions path="/permissions" />
 					<Add path="/add" />
 					<CreateWard path="/add/ward" />
 					<AdmitPatient path="/add/patient" />

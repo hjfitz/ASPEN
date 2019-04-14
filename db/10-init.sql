@@ -58,13 +58,14 @@ CREATE TABLE practitioner (
 	added 				timestamptz  NOT NULL,
 	username 		 	text 		 UNIQUE NOT NULL,
 	account_type 		account_type NOT NULL,
-	permissions 		text,
+	permissions 		json NOT NULL,
 	passhash 			text
 );
 
-CREATE TABLE practitionerwards (
-	location_id 		serial REFERENCES location(location_id),
-	practitioner_id 	serial REFERENCES practitioner(practitioner_id)
+CREATE TABLE practitionerpatients (
+	practitioner_id serial REFERENCES practitioner(practitioner_id),
+	patient_id 	serial REFERENCES patient(patient_id),
+	PRIMARY KEY(practitioner_id, patient_id)
 );
 
 CREATE TABLE encounter (

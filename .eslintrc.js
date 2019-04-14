@@ -13,6 +13,7 @@ module.exports = {
 		"no-param-reassign": 0,
 		"no-return-assign": 0,
 		"no-tabs": 0,
+		"no-underscore-dangle": 0,
 
 		"object-curly-spacing": ["error", "never"],
 		"object-curly-newline": 0,
