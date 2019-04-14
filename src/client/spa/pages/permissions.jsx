@@ -107,11 +107,17 @@ class Permissions extends Component {
 	togglePermission(perm) {
 		return async () => {
 			try {
+				console.log({
+					practitionerID: this.state.selectedPractitioner,
+					permission: perm,
+					set: this.state.practitionerPermissions,
+				})
 				const resp = await permissionsBase.post('/permissions/toggle', {
 					practitionerID: this.state.selectedPractitioner,
 					permission: perm,
 					set: this.state.practitionerPermissions,
 				})
+				console.log(resp)
 				this.setState({practitionerPermissions: resp.data.permissions}, () => {
 					M.toast({html: `Successfully changed ${perm}`})
 				})
@@ -152,6 +158,7 @@ class Permissions extends Component {
 		const perms = this.state.practitionerPermissions
 		return this.permissions.map(perm => (
 			<li
+				key={perm.ident}
 				className={`collection-item hover ${perms.includes(perm.ident) ? 'selected' : ''}`}
 				onClick={this.togglePermission(perm.ident)}
 			>

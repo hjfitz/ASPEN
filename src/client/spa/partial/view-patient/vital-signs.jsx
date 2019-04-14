@@ -2,22 +2,115 @@ import {h, Component} from 'preact'
 import M from 'materialize-css'
 import format from 'date-fns/format'
 
-import {doModal} from '../util'
+import WarningScore from '../../WarningScore'
+import {doModal} from '../../util'
 
-import '../styles/vital-signs.scss'
+import '../../styles/vital-signs.scss'
+
+// swap an EWS for a class to colour table cells (in createTable())
+const ewsToClass = [
+	'',
+	' yellow',
+	' orange',
+	' red',
+]
+
+function createTable(history) {
+	const historyWithEWS = history.map((observation) => {
+		const ews = new WarningScore(observation)
+		// format observation history (from FHIR API) in to something that can be used within the DOM
+		// score for a hover <abbr>
+		// className to visualise the EWS
+		// value to display
+		return {
+			date: format(observation.date, 'hh:mma, Do MMM YYYY'),
+			respiratoryRate: {
+				score: ews.scoreResp(),
+				classname: ewsToClass[ews.scoreResp()],
+				value: observation.respiratory_rate,
+			},
+			oxySat: {
+				score: ews.scoreOxy(),
+				classname: ewsToClass[ews.scoreOxy()],
+				value: observation.oxygen_saturation,
+			},
+			heartRate: {
+				score: ews.scoreHeart(),
+				classname: ewsToClass[ews.scoreHeart()],
+				value: observation.heart_rate,
+			},
+			bodyTemp: {
+				score: ews.scoreTemp(),
+				classname: ewsToClass[ews.scoreTemp()],
+				value: observation.body_temperature,
+			},
+			bloodPressure: {
+				score: ews.scoreBP(),
+				classname: ewsToClass[ews.scoreBP()],
+				value: observation.systolic_bp,
+			},
+			levelOfConsciousness: {
+				score: ews.scoreCons(),
+				classname: ewsToClass[ews.scoreCons()],
+				value: observation.level_of_consciousness,
+			},
+			supplOxygen: {
+				score: ews.scoreSuppOxy(),
+				classname: ewsToClass[ews.scoreSuppOxy()],
+				value: observation.supplemental_oxygen,
+			},
+		}
+	})
+	const tableDOM = historyWithEWS.map(row => (
+		<tr>
+			<td>{row.date}</td>
+			<td className={row.respiratoryRate.classname}>
+				<abbr title={row.respiratoryRate.score}>{row.respiratoryRate.value}</abbr>
+			</td>
+			<td className={row.oxySat.classname}>
+				<abbr title={row.oxySat.score}>{row.oxySat.value}</abbr>
+			</td>
+			<td className={row.heartRate.classname}>
+				<abbr title={row.heartRate.score}>{row.heartRate.value}</abbr>
+			</td>
+			<td className={row.bodyTemp.classname}>
+				<abbr title={row.bodyTemp.score}>{row.bodyTemp.value}</abbr>
+			</td>
+			<td className={row.bloodPressure.classname}>
+				<abbr title={row.bloodPressure.score}>{row.bloodPressure.value}</abbr>
+			</td>
+			<td className={row.levelOfConsciousness.classname}>
+				<abbr title={row.levelOfConsciousness.score}>{row.levelOfConsciousness.value}</abbr>
+			</td>
+			<td className={row.supplOxygen.classname}>
+				<abbr title={row.supplOxygen.score}>{row.supplOxygen.value}</abbr>
+			</td>
+		</tr>
+	))
+	return tableDOM
+}
 
 class Vitals extends Component {
 	/**
 	 * Initialise materialize components on page load
 	 */
 	componentDidMount() {
-		const tabs = document.querySelectorAll('.tabs')
+		console.log('[VITAL SIGNS] mounting')
+		const tabs = document.querySelectorAll('.tabs.tabs-fixed-width.vital-record-view-tabs')
 		const select = document.querySelectorAll('select')
 		if (!this.formInstance) this.formInstance = M.FormSelect.init(select)
 		if (!this.tabInstance) this.tabInstance = M.Tabs.init(tabs)
 	}
 
+	componentDidUpdate() {
+		console.log('[VITAL SIGNS] updating')
+		const select = document.querySelectorAll('select')
+		if (!this.formInstance) this.formInstance = M.FormSelect.init(select)
+		else M.FormSelect.init(select)
+	}
+
 	componentWillUnmount() {
+		console.log('[VITAL SIGNS] unmounting')
 		try {
 			if (this.formInstance) this.formInstance.map(el => el.destroy())
 			if (this.tabInstance) this.tabInstance.map(el => el.destroy())
@@ -55,12 +148,16 @@ class Vitals extends Component {
 
 		// everything must be correct, send it back to the main component
 		const form = new FormData()
-		const inputs = [...requiredInputs, 'supplemental_oxygen'].map(el => document.getElementById(el))
+		const inputs = requiredInputs.map(el => document.getElementById(el))
 
 		inputs.forEach(field => form.append(field.id, field.value))
 
-		await this.props.submit(form)
+		const oxygen = document.getElementById('supplemental_oxygen')
+		const usesOxygen = oxygen.checked ? 'yes' : 'no'
+		form.append('supplemental_oxygen', usesOxygen)
 
+		await this.props.submit(form)
+		inputs.splice(inputs.length - 1) // remove level of consciousness from cleanup
 		inputs.forEach(input => input.value = '')
 		M.updateTextFields()
 	}
@@ -75,7 +172,7 @@ class Vitals extends Component {
 		return (
 			<div className="card">
 				<div className="card-tabs">
-					<ul className="tabs tabs-fixed-width">
+					<ul className="tabs tabs-fixed-width vital-record-view-tabs">
 						<li className="tab"><a className="active" href="#record">Record Vital Signs</a></li>
 						<li className="tab"><a href="#history">Previous Vital Signs</a></li>
 					</ul>
@@ -127,7 +224,7 @@ class Vitals extends Component {
 									<div className="col s6">
 										<p>
 											<label>
-												<input name="supplemental_oxygen" id="supplemental_oxygen" type="checkbox" />
+												<input name="supplemental_oxygen" id="supplemental_oxygen" type="checkbox" value="on" />
 												<span>Supplemental Oxygen</span>
 											</label>
 										</p>
@@ -157,18 +254,7 @@ class Vitals extends Component {
 								</tr>
 							</thead>
 							<tbody>
-								{props.history.map(obs => (
-									<tr>
-										<td>{format(obs.date, 'ddd Mo MMM')}</td>
-										<td>{obs.respiratory_rate}</td>
-										<td>{obs.oxygen_saturation}</td>
-										<td>{obs.heart_rate}</td>
-										<td>{obs.body_temperature}</td>
-										<td>{obs.systolic_bp}</td>
-										<td>{obs.level_of_consciousness}</td>
-										<td>{obs.supplemental_oxygen}</td>
-									</tr>
-								))}
+								{createTable(props.history)}
 							</tbody>
 						</table>
 					</div>

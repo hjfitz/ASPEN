@@ -1,7 +1,7 @@
 import {h} from 'preact'
 import {Link} from 'preact-router'
 
-import '../styles/breadcrumb.scss'
+import '../../styles/breadcrumb.scss'
 
 
 function getCurrentUrl(index, places) {

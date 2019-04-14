@@ -31,11 +31,13 @@ permissionsRouter.post('/destroy', async (req, res) => {
 
 permissionsRouter.post('/toggle', async (req, res) => {
 	const decodedToken = decodeJWTPayload(req.headers.token)
+	console.log(decodedToken)
 	if (decodedToken.permissions.includes('edit:permissions')) {
 		// if the permission is in the permission set, remove it
+		console.log(req.body)
 		const index = req.body.set.indexOf(req.body.permission)
 
-		if (index > -1) req.body.set.splice(index)
+		if (index > -1) req.body.set.splice(index, 1)
 		else req.body.set.push(req.body.permission)
 
 		const [row] = await knex('practitioner')

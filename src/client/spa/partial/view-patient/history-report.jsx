@@ -1,7 +1,7 @@
 import {h} from 'preact'
 import format from 'date-fns/format'
 
-import '../styles/history-report.scss'
+import '../../styles/history-report.scss'
 
 const formatDate = date => format(new Date(date), ' MMM DD, YYYY')
 

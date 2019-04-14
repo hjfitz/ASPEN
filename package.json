@@ -26,6 +26,7 @@
     "axios": "^0.18.0",
     "bcrypt": "^3.0.4",
     "body-parser": "^1.18.3",
+    "chart.js": "^2.8.0",
     "compression": "^1.7.3",
     "crypto-js": "^3.1.9-1",
     "csprng": "^0.1.2",

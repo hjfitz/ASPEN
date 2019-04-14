@@ -36,7 +36,11 @@ router.use(async (req, res, next) => {
 		return createOutcome(req, res, 406, 'application/x-www-form-urlencoded is not accepted here', {}, 'error')
 	}
 	logger.silly('good request', {...meta, func: 'validation mw'})
-	await connect()
+	try {
+		await connect()
+	} catch (err) {
+		logger.error(`error connecting to db: ${err}`, {...meta, func: 'validation mw'})
+	}
 	return next()
 })
 

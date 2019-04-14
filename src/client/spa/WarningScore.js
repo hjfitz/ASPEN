@@ -76,10 +76,11 @@ export default class WarningScore {
 	 * @returns {number} patient NEWS
 	 */
 	score() {
-		const vals = Object.values(this.calculate())
-		return Math.ceil(
-			vals.reduce((acc, cur) => acc + cur) / vals.length,
-		)
+		const scores = this.calculate()
+		console.table(scores)
+		const vals = Object.values(scores)
+		const highest = vals.sort().reverse()
+		return highest[0]
 	}
 
 	/**

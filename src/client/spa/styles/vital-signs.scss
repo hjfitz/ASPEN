@@ -18,4 +18,19 @@
 		background-color:#26a69a!important;
 	}
 
+	td {
+		padding: 0;
+	}
+
 }
+
+abbr[title] {
+	border-bottom: none !important;
+	cursor: inherit !important;
+	text-decoration: none !important;
+	height: 100%;
+    width: 100%;
+    display: block;
+    padding: 15px;
+  }
+  

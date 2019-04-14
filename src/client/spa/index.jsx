@@ -8,12 +8,12 @@ import {Fab, Breadcrumb, Redirect, Modal, Login} from './Partial'
 import {
 	SearchPatient,
 	AdmitPatient,
+	ViewPatient,
 	Permissions,
 	CreateWard,
 	WardList,
-	Patient,
-	Welcome,
-	Ward,
+	Home,
+	ViewWard,
 	Add,
 } from './Pages'
 
@@ -23,9 +23,7 @@ import './styles/router.scss'
 class App extends Component {
 	constructor(props) {
 		super(props)
-		this.state = {
-			location: window.location.pathname,
-		}
+		this.state = {location: window.location.pathname}
 		this.onChange = this.onChange.bind(this)
 		this.login = <Login />
 		this.showPopup = showLogin
@@ -60,16 +58,16 @@ class App extends Component {
 			<div className="container">
 				<Breadcrumb location={this.state.location} />
 				<Router onChange={this.onChange}>
-					<Welcome path="/" />
+					<Home path="/" />
 					<WardList path="/wards" />
+					<ViewWard path="/wards/:ward_id" />
 					<Permissions path="/permissions" />
-					<Ward path="/wards/:ward_id" />
 					<Add path="/add" />
 					<CreateWard path="/add/ward" />
 					<AdmitPatient path="/add/patient" />
 					<SearchPatient path="/search/patient" />
 					<Redirect path="/patient" to="/search/patient" />
-					<Patient path="/patient/:patient_id" />
+					<ViewPatient path="/patient/:patient_id" />
 				</Router>
 				<Fab />
 				<Modal />
