@@ -1,5 +1,5 @@
 import {h} from 'preact'
-import {noop} from '../../util'
+import {noop} from '../util'
 
 /**
  * Materialize input element
@@ -12,7 +12,15 @@ import {noop} from '../../util'
  */
 const Input = props => (
 	<div className={`input-field col ${props.className || 's6'}`}>
-		<input onKeyUp={props.onKeyUp || noop} id={props.id} type={props.type || 'text'} className="validate" />
+		<input
+			onKeyUp={props.onKeyUp || noop}
+			id={props.id}
+			type={props.type || 'text'}
+			ref={(i) => {
+				if (props.cbRef) props.cbRef(i)
+			}}
+			className="validate"
+		/>
 		<label htmlFor={props.id}>{props.label}</label>
 	</div>
 )

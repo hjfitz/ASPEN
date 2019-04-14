@@ -2,7 +2,7 @@ import {h, Component} from 'preact'
 import {Link} from 'preact-router'
 
 import Loader from '../partial/loader'
-import {fhirBase} from '../../util'
+import {fhirBase} from '../util'
 
 
 class Ward extends Component {
@@ -16,7 +16,7 @@ class Ward extends Component {
 
 	async componentDidMount() {
 		const {ward_id} = this.props.matches
-		const base = `Encounter/?class=admission&location_id=${ward_id}&_include=Encounter:patient`
+		const base = `/Encounter/?class=admission&location_id=${ward_id}&_include=Encounter:patient`
 		const {data: wardData} = await fhirBase.get(base)
 		this.setState({loaded: true, wardData})
 	}

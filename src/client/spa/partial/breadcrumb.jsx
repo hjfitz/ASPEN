@@ -20,7 +20,7 @@ function getCurrentUrl(index, places) {
  * @returns {VNode}
  */
 const Breadcrumbs = (props) => {
-	const places = props.location.split('/').filter(Boolean)
+	const places = props.location.split('/').filter(Boolean).filter(path => !!path.indexOf('?'))
 	const crumbs = [
 		<Link href="/" className="breadcrumb">Home</Link>,
 		...places.map((loc, idx) => (
@@ -28,11 +28,15 @@ const Breadcrumbs = (props) => {
 		)),
 	]
 
+	if (!places.length) {
+		return ''
+	}
+
 	return (
 		<div className="navbar-fixed">
 			<nav className="white z-depth-0">
 				<div className="row">
-					<div className="col s12">{places.length ? crumbs : []}</div>
+					<div className="col s12">{crumbs}</div>
 				</div>
 			</nav>
 		</div>

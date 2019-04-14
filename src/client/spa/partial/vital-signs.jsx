@@ -2,7 +2,7 @@ import {h, Component} from 'preact'
 import M from 'materialize-css'
 import format from 'date-fns/format'
 
-import {doModal} from '../../util'
+import {doModal} from '../util'
 
 import '../styles/vital-signs.scss'
 
@@ -13,13 +13,17 @@ class Vitals extends Component {
 	componentDidMount() {
 		const tabs = document.querySelectorAll('.tabs')
 		const select = document.querySelectorAll('select')
-		M.FormSelect.init(select)
-		M.Tabs.init(tabs, {swipeable: false})
+		if (!this.formInstance) this.formInstance = M.FormSelect.init(select)
+		if (!this.tabInstance) this.tabInstance = M.Tabs.init(tabs)
 	}
 
-	componentDidUpdate() {
-		const select = document.querySelectorAll('select')
-		M.FormSelect.init(select)
+	componentWillUnmount() {
+		try {
+			if (this.formInstance) this.formInstance.map(el => el.destroy())
+			if (this.tabInstance) this.tabInstance.map(el => el.destroy())
+		} catch (err) {
+			console.log('[VITAL SIGNS] Error with unmount cleanup: ', err)
+		}
 	}
 
 	async submitForm() {

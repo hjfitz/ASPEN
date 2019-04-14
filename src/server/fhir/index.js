@@ -1,8 +1,6 @@
 const router = require('express').Router()
 const fileUpload = require('express-fileupload')
-const formData = require('express-form-data')
 const bodyParser = require('body-parser')
-const os = require('os')
 
 const logger = require('../logger')
 const patientRouter = require('./patient')
@@ -11,6 +9,8 @@ const diagnosticRouter = require('./diagnostic-report')
 const observationRouter = require('./observation')
 const locationRouter = require('./location')
 const encounterRouter = require('./encounter')
+const historyRouter = require('./history')
+const practitionerRouter = require('./practitioner')
 const {createOutcome} = require('./util')
 
 const meta = {file: 'fhir/index.js'}
@@ -50,6 +50,8 @@ router.use('/Diagnostics', diagnosticRouter)
 router.use('/Encounter', encounterRouter)
 router.use('/Location', locationRouter)
 router.use('/Patient', patientRouter)
+router.use('/History', historyRouter)
+router.use('/Practitioner', practitionerRouter)
 
 // error handler - leave at base of fhir router
 router.use((req, res, next, err) => {
