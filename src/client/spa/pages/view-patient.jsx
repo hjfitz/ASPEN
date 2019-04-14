@@ -1,6 +1,6 @@
 import {h, Component} from 'preact'
 import M from 'materialize-css'
-import {Loader, Vitals, HistoryReport} from '../Partial'
+import {Loader, Vitals, HistoryReport, NewsChart} from '../Partial'
 import {fhirBase, doModal, toTitle} from '../util'
 import WarningScore from '../WarningScore'
 
@@ -155,10 +155,19 @@ class Patient extends Component {
 
 	async popupAE(ev) {
 		ev.preventDefault()
+		console.log(this)
 	}
 
 	popupWarningScoreHistory(ev) {
 		ev.preventDefault()
+		const instance = M.Modal.getInstance(this.newsChart) || M.Modal.init(this.newsChart, {
+			onOpenEnd() {
+				const tabs = document.querySelector('.tabs.chart-tabs')
+				M.Tabs.init(tabs)
+				console.log('opening tabs')
+			},
+		})
+		instance.open()
 	}
 
 	/**
@@ -203,6 +212,7 @@ class Patient extends Component {
 					patientName={patient.displayName}
 					reportLoaded={this.state.reportLoaded}
 				/>
+				<NewsChart refCb={ref => this.newsChart = ref} history={this.state.patientReports} />
 			</div>
 		)
 	}

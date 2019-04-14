@@ -96,7 +96,7 @@ class Vitals extends Component {
 	 */
 	componentDidMount() {
 		console.log('[VITAL SIGNS] mounting')
-		const tabs = document.querySelectorAll('.tabs')
+		const tabs = document.querySelectorAll('.tabs.tabs-fixed-width.vital-record-view-tabs')
 		const select = document.querySelectorAll('select')
 		if (!this.formInstance) this.formInstance = M.FormSelect.init(select)
 		if (!this.tabInstance) this.tabInstance = M.Tabs.init(tabs)
@@ -172,7 +172,7 @@ class Vitals extends Component {
 		return (
 			<div className="card">
 				<div className="card-tabs">
-					<ul className="tabs tabs-fixed-width">
+					<ul className="tabs tabs-fixed-width vital-record-view-tabs">
 						<li className="tab"><a className="active" href="#record">Record Vital Signs</a></li>
 						<li className="tab"><a href="#history">Previous Vital Signs</a></li>
 					</ul>
