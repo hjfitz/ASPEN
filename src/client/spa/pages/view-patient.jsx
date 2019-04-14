@@ -1,9 +1,10 @@
 import {h, Component} from 'preact'
 import M from 'materialize-css'
-import {Loader, Vitals, HistoryReport, NewsChart} from '../Partial'
+import {Loader, Vitals, HistoryReport, VitalCharts} from '../Partial'
 import {fhirBase, doModal, toTitle} from '../util'
 import WarningScore from '../WarningScore'
 
+import '../styles/view-patient.scss'
 /**
  * Normalise api response for ease of manipulation in this component
  * @param {object} fhirResponse API response
@@ -180,26 +181,37 @@ class Patient extends Component {
 		return (
 			<div className="row">
 				<div className="col s12">
-					<div className="card horizontal">
+					<div className="card horizontal patient-view">
 						<div className="card-image">
 							<img alt={patient.displayName} src={patient.photo || '/img/patient-placeholder.webp'} />
 						</div>
 						<div className="card-stacked">
 							<div className="card-content">
 								<i className="material-icons right clickable" onClick={this.delete.bind(this)}>close</i>
-								<span className="card-title">{patient.displayName}</span>
-								<h6><b>NEWS: </b>{this.state.news}</h6>
-								<p><b>Gender: </b>{patient.gender}</p>
-								<p><b>Ward: </b>{patient.location}</p>
-								<div className="divider" />
-								<h6>Contact Information</h6>
-								<p><b>Name: </b>{contact.displayName}</p>
-								<p><b>Number: </b>{contact.number}</p>
+								<div className="row">
+									<div className="col s12">
+										<span className="card-title">{patient.displayName}</span>
+									</div>
+								</div>
+								<div className="row">
+									<div className="col s6">
+										<h6>Patient Information</h6>
+										<p><b>NEWS: </b>{this.state.news}</p>
+										<p><b>Gender: </b>{patient.gender}</p>
+										<p><b>Ward: </b>{patient.location}</p>
+									</div>
+									<div className="col s6">
+
+										<h6>Contact Information</h6>
+										<p><b>Name: </b>{contact.displayName}</p>
+										<p><b>Number: </b>{contact.number}</p>
+									</div>
+								</div>
 							</div>
 							<div className="card-action">
-								<a className="teal-text text-darken-1" onClick={this.popupHistory.bind(this)}>View History</a>
-								<a className="teal-text text-darken-1" onClick={this.popupAE.bind(this)}>View A-E Report</a>
-								<a className="teal-text text-darken-1" onClick={this.popupWarningScoreHistory.bind(this)}>NEWS Chart</a>
+								<a className="teal-text text-darken-1" onClick={this.popupHistory.bind(this)}>History</a>
+								<a className="teal-text text-darken-1" onClick={this.popupAE.bind(this)}>A-E Report</a>
+								<a className="teal-text text-darken-1" onClick={this.popupWarningScoreHistory.bind(this)}>Vitals Chart</a>
 							</div>
 						</div>
 					</div>
@@ -212,7 +224,7 @@ class Patient extends Component {
 					patientName={patient.displayName}
 					reportLoaded={this.state.reportLoaded}
 				/>
-				<NewsChart refCb={ref => this.newsChart = ref} history={this.state.patientReports} />
+				<VitalCharts refCb={ref => this.newsChart = ref} history={this.state.patientReports.reverse()} />
 			</div>
 		)
 	}

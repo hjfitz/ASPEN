@@ -66,7 +66,6 @@ class NewsChart extends Component {
 		const {history} = this.props
 		const labels = history.map(obs => format(obs.date, 'hh:mma, Do MMM YYYY'))
 		const scores = history.map(obs => new WarningScore(obs).score())
-		console.log({labels, scores})
 		const ctx = this.newsChart.getContext('2d')
 		this.newsChartInst = new Chart(ctx, {
 			type: 'line',
@@ -98,10 +97,10 @@ class NewsChart extends Component {
 						</ul>
 					</div>
 					<div id="vital-signs" className="col s12">
-						<canvas ref={c => this.vitalsChart = c} height="500" width="500" />
+						<canvas ref={c => this.vitalsChart = c} height="500" width="900" />
 					</div>
 					<div id="news-tab" className="col s12">
-						<canvas ref={c => this.newsChart = c} height="500" width="500" />
+						<canvas ref={c => this.newsChart = c} height="500" width="900" />
 					</div>
 				</div>
 			</div>
