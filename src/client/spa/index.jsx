@@ -8,11 +8,11 @@ import {Fab, Breadcrumb, Redirect, Modal, Login} from './Partial'
 import {
 	SearchPatient,
 	AdmitPatient,
+	ViewPatient,
 	CreateWard,
 	WardList,
-	Patient,
-	Welcome,
-	Ward,
+	Home,
+	ViewWard,
 	Add,
 } from './Pages'
 
@@ -59,15 +59,15 @@ class App extends Component {
 			<div className="container">
 				<Breadcrumb location={this.state.location} />
 				<Router onChange={this.onChange}>
-					<Welcome path="/" />
+					<Home path="/" />
 					<WardList path="/wards" />
-					<Ward path="/wards/:ward_id" />
+					<ViewWard path="/wards/:ward_id" />
 					<Add path="/add" />
 					<CreateWard path="/add/ward" />
 					<AdmitPatient path="/add/patient" />
 					<SearchPatient path="/search/patient" />
 					<Redirect path="/patient" to="/search/patient" />
-					<Patient path="/patient/:patient_id" />
+					<ViewPatient path="/patient/:patient_id" />
 				</Router>
 				<Fab />
 				<Modal />

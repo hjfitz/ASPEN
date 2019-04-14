@@ -2,10 +2,10 @@ import {h, Component} from 'preact'
 import M from 'materialize-css'
 import format from 'date-fns/format'
 
-import WarningScore from '../WarningScore'
-import {doModal} from '../util'
+import WarningScore from '../../WarningScore'
+import {doModal} from '../../util'
 
-import '../styles/vital-signs.scss'
+import '../../styles/vital-signs.scss'
 
 // swap an EWS for a class to colour table cells (in createTable())
 const ewsToClass = [
@@ -18,6 +18,10 @@ const ewsToClass = [
 function createTable(history) {
 	const historyWithEWS = history.map((observation) => {
 		const ews = new WarningScore(observation)
+		// format observation history (from FHIR API) in to something that can be used within the DOM
+		// score for a hover <abbr>
+		// className to visualise the EWS
+		// value to display
 		return {
 			date: format(observation.date, 'hh:mma, Do MMM YYYY'),
 			respiratoryRate: {

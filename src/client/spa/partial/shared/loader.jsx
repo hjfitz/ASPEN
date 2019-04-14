@@ -1,5 +1,5 @@
 import {h} from 'preact'
-import '../styles/loader.scss'
+import '../../styles/loader.scss'
 
 /**
  * Materialize loading element, centered

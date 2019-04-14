@@ -1,7 +1,7 @@
 import {h, Component} from 'preact'
 import {Link} from 'preact-router'
 
-import Loader from '../partial/loader'
+import {Loader} from '../Partial'
 import {fhirBase} from '../util'
 
 

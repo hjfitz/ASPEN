@@ -157,6 +157,10 @@ class Patient extends Component {
 		ev.preventDefault()
 	}
 
+	popupWarningScoreHistory(ev) {
+		ev.preventDefault()
+	}
+
 	/**
 	 * Render our patient info
 	 * @returns {VNode} patient information or loading icon
@@ -175,15 +179,18 @@ class Patient extends Component {
 							<div className="card-content">
 								<i className="material-icons right clickable" onClick={this.delete.bind(this)}>close</i>
 								<span className="card-title">{patient.displayName}</span>
+								<h6><b>NEWS: </b>{this.state.news}</h6>
 								<p><b>Gender: </b>{patient.gender}</p>
 								<p><b>Ward: </b>{patient.location}</p>
-								<p><b>NEWS: </b>{this.state.news}</p>
-								<p><b>Contact Name: </b>{contact.displayName}</p>
-								<p><b>Contact Number: </b>{contact.number}</p>
+								<div className="divider" />
+								<h6>Contact Information</h6>
+								<p><b>Name: </b>{contact.displayName}</p>
+								<p><b>Number: </b>{contact.number}</p>
 							</div>
 							<div className="card-action">
 								<a className="teal-text text-darken-1" onClick={this.popupHistory.bind(this)}>View History</a>
 								<a className="teal-text text-darken-1" onClick={this.popupAE.bind(this)}>View A-E Report</a>
+								<a className="teal-text text-darken-1" onClick={this.popupWarningScoreHistory.bind(this)}>NEWS Chart</a>
 							</div>
 						</div>
 					</div>
@@ -191,7 +198,11 @@ class Patient extends Component {
 				<div className="col s12">
 					<Vitals submit={this.submitVitals} history={this.state.patientReports} />
 				</div>
-				<HistoryReport {...this.state.report} patientName={patient.displayName} reportLoaded={this.state.reportLoaded} />
+				<HistoryReport
+					{...this.state.report}
+					patientName={patient.displayName}
+					reportLoaded={this.state.reportLoaded}
+				/>
 			</div>
 		)
 	}
