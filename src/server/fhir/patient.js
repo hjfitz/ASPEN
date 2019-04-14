@@ -32,14 +32,31 @@ patientRouter.get('/:id', async (req, res) => {
 
 patientRouter.get('/', async (req, res) => {
 	const {_query} = req.query
+	// handle searches and Bundle requests for all
+	if (_query) {
+		const rows = await knex('patient')
+			.where('fullname', 'ilike', _query)
+			.orWhere('given', 'ilike', _query)
+			.orWhere('family', 'ilike', _query)
+		const mapped = await Promise.all(
+			rows.map(row => new Patient({...row, id: row.patient_id}).fhir()),
+		)
+		res.json(mapped)
+	}
 	const rows = await knex('patient')
-		.where('fullname', 'ilike', _query)
-		.orWhere('given', 'ilike', _query)
-		.orWhere('family', 'ilike', _query)
-	const mapped = await Promise.all(
-		rows.map(row => new Patient({...row, id: row.patient_id}).fhir()),
-	)
-	res.json(mapped)
+	const patients = await Promise.all(rows.map(row => new Patient({id: row.patient_id}).fhir()))
+	const resp = patients.map(patient => ({
+		url: `/fhir/Patient/${patient.id}`,
+		...patient,
+	}))
+	res.json({
+		resourceType: 'Bundle',
+		meta: {
+			lastUpdated: new Date(),
+		},
+		type: 'searchset',
+		entry: resp,
+	})
 })
 
 // create

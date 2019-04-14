@@ -5,7 +5,7 @@ import {getName, getJwtPayload} from '../util'
 
 import '../styles/welcome.scss'
 
-const getGiven = () => getJwtPayload(localStorage.token).given_name
+const getGiven = () => getJwtPayload(localStorage.token).given_name || getJwtPayload(localStorage.token).name
 
 /**
  * Welcome page
@@ -71,6 +71,16 @@ const Welcome = () => (
 							<div className="card-content">
 								<span className="card-title">Create a ward</span>
 								<p>Create a new ward to group patients in.</p>
+							</div>
+						</Link>
+					</div>
+				</div>
+				<div className="col s6 l4">
+					<div className="hoverable card little home-card">
+						<Link href="/permissions">
+							<div className="card-content">
+								<span className="card-title">Manage Permissions</span>
+								<p>Enable practitioners to access different patients.</p>
 							</div>
 						</Link>
 					</div>

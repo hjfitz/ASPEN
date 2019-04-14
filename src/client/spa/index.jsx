@@ -8,6 +8,7 @@ import {Fab, Breadcrumb, Redirect, Modal, Login} from './Partial'
 import {
 	SearchPatient,
 	AdmitPatient,
+	Permissions,
 	CreateWard,
 	WardList,
 	Patient,
@@ -61,6 +62,7 @@ class App extends Component {
 				<Router onChange={this.onChange}>
 					<Welcome path="/" />
 					<WardList path="/wards" />
+					<Permissions path="/permissions" />
 					<Ward path="/wards/:ward_id" />
 					<Add path="/add" />
 					<CreateWard path="/add/ward" />

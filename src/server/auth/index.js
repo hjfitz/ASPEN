@@ -28,7 +28,7 @@ async function handleUser(payload) {
 		.where({username: parsed.email})
 	if (rows.length) {
 		logger.debug('user exists. returning', meta)
-		return rows[0].practitioner_id
+		return rows[0]
 	}
 	logger.debug('creating new user', meta)
 	const [resp] = await knex('practitioner').insert({
@@ -36,9 +36,10 @@ async function handleUser(payload) {
 		added: new Date(),
 		username: parsed.email,
 		account_type: 'google',
+		permissions: '[]',
 	}).returning('*')
 	logger.info(`user created with id: ${resp.practitioner_id}`, meta)
-	return resp.practitioner_id
+	return resp
 }
 
 /**
@@ -74,7 +75,8 @@ authRouter.get('/auth/callback', async (req, res) => {
 	}
 	// send body to google and wait for AT/ID Token
 	const resp = await request(opts)
-	const {access_token, id_token} = JSON.parse(resp)
+	// can access google ACCESS_TOKEN here
+	const {id_token} = JSON.parse(resp)
 
 	// ID Token is a JWT, extract this and use it in our new JWT
 	// create our own JWT because we know the pass and can verify it
@@ -82,11 +84,12 @@ authRouter.get('/auth/callback', async (req, res) => {
 	const payload = Utf8.stringify(Base64.parse(payloadB64))
 	const {email, name, hd, given_name, family_name} = JSON.parse(payload)
 
-	const userid = await handleUser(payload)
+	const userData = await handleUser(payload)
 	// ? store user if not in database and add basic permissions + include in JWT
 	const fypPayload = {
 		email,
-		userid,
+		userid: userData.practitioner_id,
+		permissions: userData.permissions,
 		name,
 		hd,
 		given_name,
@@ -145,6 +148,7 @@ authRouter.post('/login', async (req, res) => {
 			name: row.name,
 			username: row.username,
 			userid: row.practitioner_id,
+			permissions: row.permissions,
 			exp: Math.floor(Date.now() / 1000) + (60 * 60),
 		}
 		const token = jwt.sign(fypPayload, sessionSecret)
@@ -180,6 +184,7 @@ authRouter.post('/login/create', async (req, res) => {
 			name,
 			username,
 			passhash,
+			permissions: '[]',
 			account_type: 'normal',
 			added: new Date(),
 		})
