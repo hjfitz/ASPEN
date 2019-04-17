@@ -1,4 +1,5 @@
-import {doModal} from './util'
+// node modules used as this class is tested
+const {doModal} = require('./util')
 
 class NEWSError extends Error {
 	/**
@@ -16,7 +17,7 @@ class NEWSError extends Error {
 /**
  * ! TODO thorough testing
  */
-export default class WarningScore {
+module.exports = class WarningScore {
 	/**
 	 * Warning score wrapper for patient info
 	 * @param {object} report formatted diagnostic report
