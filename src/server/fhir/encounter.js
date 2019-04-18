@@ -5,7 +5,13 @@ const Encounter = require('./classes/Encounter')
 const OperationOutcome = require('./classes/OperationOutcome')
 
 encounterRouter.post('/', async (req, res) => {
+	const decodedToken = decodeJWTPayload(req.headers.token)
 	const enc = new Encounter(req.body)
+	if (!decodedToken.permissions.includes('add:patients')) {
+		const outcome = new OperationOutcome('error', 403, req.originalUrl, 'you have no access!')
+		outcome.makeResponse(res)
+		return
+	}
 	const inserted = await enc.insert()
 	const outcome = inserted
 		? new OperationOutcome('success', 200, req.originalUrl, 'Successfully added encounter')

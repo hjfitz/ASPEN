@@ -94,7 +94,7 @@ authRouter.get('/auth/callback', async (req, res) => {
 		hd,
 		given_name,
 		family_name,
-		exp: Math.floor(Date.now() / 1000) + (60 * 60),
+		// exp: Math.floor(Date.now() / 1000) + (60 * 60),
 	}
 	const token = jwt.sign(fypPayload, sessionSecret)
 
@@ -149,7 +149,7 @@ authRouter.post('/login', async (req, res) => {
 			username: row.username,
 			userid: row.practitioner_id,
 			permissions: row.permissions,
-			exp: Math.floor(Date.now() / 1000) + (60 * 60),
+			// exp: Math.floor(Date.now() / 1000) + (60 * 60),
 		}
 		const token = jwt.sign(fypPayload, sessionSecret)
 

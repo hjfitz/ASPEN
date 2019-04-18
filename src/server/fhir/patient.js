@@ -42,6 +42,7 @@ patientRouter.get('/', async (req, res) => {
 			rows.map(row => new Patient({...row, id: row.patient_id}).fhir()),
 		)
 		res.json(mapped)
+		return
 	}
 	const rows = await knex('patient')
 	const patients = await Promise.all(rows.map(row => new Patient({id: row.patient_id}).fhir()))
