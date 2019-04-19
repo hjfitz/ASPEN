@@ -67,6 +67,8 @@ historyRouter.post('/', async (req, res) => {
 			practitioner_designation: req.body.sign.designation,
 			signature_blob: req.body.sign.image,
 		}
+
+		console.log(req.body.patient_id)
 		// console.log(req.body)
 		const [history_id] = await knex('patient_history').insert(historyBody).returning('history_id')
 		// console.log({row})
@@ -127,7 +129,7 @@ historyRouter.post('/', async (req, res) => {
 
 		// const results = Object.keys(queries).reduce((acc, cur) => {})
 		// const resp = await knex('patient_history').insert(req.body)
-		const outcome = new OperationOutcome('success', 200, req.url, 'Successfully added history', {})
+		const outcome = new OperationOutcome('success', 200, req.url, 'Successfully added history', {history_id})
 		return outcome.makeResponse(res)
 	} catch (err) {
 		console.log(err)

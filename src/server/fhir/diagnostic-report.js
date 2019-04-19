@@ -23,6 +23,8 @@ diagnosticRouter.get('/', async (req, res) => {
 		.limit(_count)
 		.offset(offset)
 
+	console.log(_count)
+
 	const reports = await Promise.all(
 		rows
 			.map(row => new DiagnosticReport(row))

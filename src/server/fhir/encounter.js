@@ -33,6 +33,7 @@ encounterRouter.get('/', async (req, res) => {
 		acc[cur] = true
 		return acc
 	}, {})
+	console.log(decodedToken.permissions)
 	const rows = await knex('encounter').select().where(req.query)
 	// if no permission to view all, select all from union table and filter our
 	if (!decodedToken.permissions.includes('view:allpatients')) {
@@ -44,7 +45,9 @@ encounterRouter.get('/', async (req, res) => {
 		res.json(mapped)
 		return
 	}
+	console.log('getting all')
 	const mapped = await Promise.all(rows.map(row => new Encounter(row).fhir(toInclude)))
+	console.log(req.query)
 	res.json(mapped)
 })
 
