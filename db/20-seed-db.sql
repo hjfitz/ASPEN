@@ -177,7 +177,7 @@ INSERT INTO medication_usage (
 	medication_frequency
 ) VALUES (
 	1,
-	'penicillin'
+	'penicillin',
 	'500mg',
 	'twice daily'
 );
