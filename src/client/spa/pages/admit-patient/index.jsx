@@ -12,7 +12,7 @@ import {fhirBase, doModal, getJwtPayload} from '../../util'
 
 import '../../styles/create-patient.scss'
 
-function createHistory(patient_id) {
+async function createHistory(patient_id) {
 	const elems = document.querySelectorAll('.patient-history-input')
 	const form = [...elems].reduce((acc, elem) => {
 		// dataset should be of form '$KEY-attr, eg health-childhood-illnesses
@@ -64,9 +64,18 @@ function createHistory(patient_id) {
 	form.sign.image = rawImg
 	form.patient_id = patient_id
 	form.sign.practitioner_id = getJwtPayload(localStorage.token).userid
-	return fhirBase.post('/History', form, {
-		headers: {'content-type': 'application/json'},
-	})
+	try {
+		fhirBase.post('/History', form, {
+			headers: {'content-type': 'application/json'},
+		})
+	} catch (err) {
+		console.warn('[patient history]', err)
+		if ('response' in err) {
+			doModal('Error', err.response.data.issue[0].details.text)
+			return
+		}
+		doModal('Error', `There is an error with patient creation: ${err}`)
+	}
 }
 
 class AdmitPatient extends Component {
@@ -179,7 +188,6 @@ class AdmitPatient extends Component {
 			'contact-prefix',
 			'contact-given',
 			'contact-family',
-			'contact-fullname',
 			'contact-phone',
 		]
 		const invalid = []
@@ -206,7 +214,8 @@ class AdmitPatient extends Component {
 			doModal('Error with form!', `Please complete the following fields: <ul>${err}</ul>`)
 			return
 		}
-		obj['patient-fullname'] = obj['patient-given'] + obj['patient-family']
+		obj['patient-fullname'] = `${obj['patient-given']} ${obj['patient-family']}`
+		obj['contact-fullname'] = `${obj['contact-given']} ${obj['contact-family']}`
 
 		Object.keys(obj).forEach(label => form.append(label, obj[label]))
 		try {
@@ -227,6 +236,10 @@ class AdmitPatient extends Component {
 			}
 		} catch (err) {
 			console.warn('[create patient]', err)
+			if ('response' in err) {
+				doModal('Error', err.response.data.issue[0].details.text)
+				return
+			}
 			doModal('Error', `There is an error with patient creation: ${err}`)
 		}
 	}

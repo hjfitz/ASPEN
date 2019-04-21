@@ -31,9 +31,9 @@ function checkPass(password) {
 		message: 'Password acceptable',
 	}
 
-	if (!correctLength) outcome.message = lengthReason
 	if (!noRepeated) outcome.message = identicalReason
 	if (!doesContain) outcome.message = containsReason
+	if (!correctLength) outcome.message = lengthReason
 
 	return outcome
 }

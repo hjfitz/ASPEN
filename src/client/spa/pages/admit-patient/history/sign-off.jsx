@@ -1,7 +1,7 @@
 import {h} from 'preact'
 import format from 'date-fns/format'
 import {getName} from '../../../util'
-import {SignatureBox} from '../../../Partial'
+import SignatureBox from './signature-box'
 
 const getDate = () => format(Date.now(), ' MMM DD, YYYY')
 

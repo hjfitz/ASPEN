@@ -68,6 +68,11 @@ historyRouter.post('/', async (req, res) => {
 			signature_blob: req.body.sign.image,
 		}
 
+		if (!req.body.sign.designation) {
+			const outcome = new OperationOutcome('error', 400, req.url, 'Missing practitioner designation!', {})
+			return outcome.makeResponse(res)
+		}
+
 		console.log(req.body.patient_id)
 		// console.log(req.body)
 		const [history_id] = await knex('patient_history').insert(historyBody).returning('history_id')

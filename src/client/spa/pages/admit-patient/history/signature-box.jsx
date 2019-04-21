@@ -79,7 +79,7 @@ class Signature extends Component {
 
 			const {width} = this.content.getBoundingClientRect()
 			const {height} = this.canvas.getBoundingClientRect()
-			this.canvas.height = height
+			this.canvas.height = height < 100 ? 100 : height
 			this.canvas.width = (width - horzPad)
 			this.setWidth = true
 		}

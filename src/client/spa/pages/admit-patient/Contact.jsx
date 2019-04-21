@@ -10,7 +10,6 @@ const Contact = () => (
 				<Input id="contact-prefix" label="Title" />
 				<Input id="contact-given" label="First Name" />
 				<Input id="contact-family" label="Surname" />
-				<Input id="contact-fullname" label="Full Name" />
 				<Input id="contact-phone" label="Phone" type="tel" />
 			</div>
 		</div>
