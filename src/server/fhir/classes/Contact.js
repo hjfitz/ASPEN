@@ -50,6 +50,7 @@ class Contact {
 				acc[cur] = this[cur]
 				return acc
 			}, {})
+		logger.silly(`attempting to create patient with ${JSON.stringify(obj)}`, {file: 'Contact.js', func: 'insert()'})
 		// make query
 		try {
 			const [resp] = await knex('contact').insert(obj).returning(['contact_id', ...this.values])

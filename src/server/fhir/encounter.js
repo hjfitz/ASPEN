@@ -1,6 +1,6 @@
 const encounterRouter = require('express').Router()
 const {knex} = require('../db')
-const {logger} = require('../logger')
+const logger = require('../logger')
 const {decodeJWTPayload} = require('../auth/token')
 const Encounter = require('./classes/Encounter')
 const OperationOutcome = require('./classes/OperationOutcome')

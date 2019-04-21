@@ -36,8 +36,8 @@ const HistoryReport = (props) => {
 	}
 
 	console.log(props)
-	const prescriptionDrugs = props.drugs.prescriptions[0].filter(drug => drug.medication_name)
-	const otcDrugs = props.drugs.otc[0].filter(drug => drug.medication_name)
+	const prescriptionDrugs = (props.drugs.prescriptions[0] || []).filter(drug => drug.medication_name)
+	const otcDrugs = (props.drugs.otc[0] || []).filter(drug => drug.medication_name)
 	const recreationalDrugs = (props.drugs.recreational[0] || []).filter(drug => drug.medication_name)
 	// console.log({otcDrugs, recreationalDrugs, prescriptionDrugs})
 	console.log(otcDrugs)
