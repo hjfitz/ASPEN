@@ -2,6 +2,15 @@ import {h, Component} from 'preact'
 import {Link} from 'preact-router'
 import M from 'materialize-css'
 
+import {showLogin} from '../../util'
+
+function logout(ev) {
+	ev.preventDefault()
+	console.log('oioi')
+	localStorage.removeItem('token')
+	showLogin()
+}
+
 
 class Fab extends Component {
 	/**
@@ -44,6 +53,11 @@ class Fab extends Component {
 						<Link href="/" className="btn-floating red tooltipped" data-position="left" data-tooltip="Go home">
 							<i className="material-icons">home</i>
 						</Link>
+					</li>
+					<li>
+						<a onClick={logout} href="/" className="btn-floating blue-grey" data-position="left" data-tooltip="Logout">
+							<i className="material-icons">input</i>
+						</a>
 					</li>
 				</ul>
 			</div>
