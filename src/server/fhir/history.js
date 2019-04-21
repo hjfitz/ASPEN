@@ -3,6 +3,8 @@ const historyRouter = require('express').Router()
 const OperationOutcome = require('./classes/OperationOutcome')
 const {knex} = require('../db')
 
+const file = 'fhir/history.js'
+
 
 historyRouter.get('/:id', async (req, res) => {
 	const [row] = await knex('patient_history').select().where({patient_id: req.params.id})
@@ -73,19 +75,14 @@ historyRouter.post('/', async (req, res) => {
 			return outcome.makeResponse(res)
 		}
 
-		console.log(req.body.patient_id)
-		// console.log(req.body)
 		const [history_id] = await knex('patient_history').insert(historyBody).returning('history_id')
-		// console.log({row})
 		if (req.body.medication.prescription.length) {
 			for await (const prescription of req.body.medication.prescription) {
-				console.log({prescription})
 				const body = {
 					medication_name: prescription.name,
 					medication_dose: prescription.dose,
 					medication_frequency: prescription.freq,
 				}
-				console.log(body)
 				// add data to table
 				const [medication_usage_id] = await knex('medication_usage').insert(body).returning('medication_usage_id')
 				// create mtm relation
@@ -97,7 +94,6 @@ historyRouter.post('/', async (req, res) => {
 		}
 		if (req.body.medication.otc.length) {
 			for await (const otc of req.body.medication.otc) {
-				console.log({otc})
 				const body = {
 					medication_name: otc.name,
 					medication_dose: otc.dose,
@@ -114,7 +110,6 @@ historyRouter.post('/', async (req, res) => {
 		}
 		if (req.body.drug['use-frequency'] && req.body.drug['use-frequency'].length) {
 			for await (const drug of req.body.drug['use-frequency']) {
-				console.log({drug})
 				const body = {
 					medication_name: drug.name,
 					medication_dose: drug.dose,
@@ -137,7 +132,7 @@ historyRouter.post('/', async (req, res) => {
 		const outcome = new OperationOutcome('success', 200, req.url, 'Successfully added history', {history_id})
 		return outcome.makeResponse(res)
 	} catch (err) {
-		console.log(err)
+		logger.error('error adding patient history', {file, func: 'POST /fhir/History'})
 		const outcome = new OperationOutcome('error', 500, req.url, err)
 		return outcome.makeResponse(res)
 	}

@@ -198,7 +198,7 @@ class Vitals extends Component {
 										<label htmlFor="heart_rate">Heart Rate</label>
 									</div>
 									<div className="input-field col s6">
-										<input id="body_temperature" type="number" className="validate" data-invalid-name="Body Temperature" />
+										<input id="body_temperature" type="number" step="0.01" className="validate" data-invalid-name="Body Temperature" />
 										<label htmlFor="body_temperature">Body Temperature</label>
 									</div>
 								</div>

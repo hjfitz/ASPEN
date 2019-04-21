@@ -1,5 +1,5 @@
 const log = require('../../logger')
-const {client} = require('../../db')
+const {knex} = require('../../db')
 
 class Observation {
 	/**
@@ -69,7 +69,7 @@ class Observation {
 		const valueQuantity = Object.assign({value, system: 'http://unitsofmeasure.org'}, unitCode)
 		log.debug(`querying database for ${name} = ${id}`, {file: 'fhir/classes/Observation.js', func: 'Observation#fhir()'})
 		// DIRTY FIX ME PLEAAAASE
-		const {rows: [row]} = await client.query(`SELECT * FROM diagnostic_report WHERE ${name} = ${id}`)
+		const [row] = await knex('diagnostic_report').where({[name]: id})
 		return {
 			resourceType: 'Observation',
 			id,

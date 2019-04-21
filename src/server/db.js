@@ -1,14 +1,9 @@
-const pg = require('pg')
 const bcrypt = require('bcrypt')
 const knex = require('knex')({
 	client: 'pg',
 	connection: process.env.DATABASE_URL,
 })
 const logger = require('./logger')
-
-let isConnected = false
-
-const client = new pg.Client(process.env.DATABASE_URL)
 
 logger.info(`attempting to connect to postgres on ${process.env.DATABASE_URL}`, {file: 'server/db.js', func: 'main'})
 
@@ -49,11 +44,4 @@ async function checkAdmin() {
 
 checkAdmin()
 
-async function connect() {
-	if (isConnected) return
-	await client.connect()
-	logger.debug('successfully connected to database', {file: 'server/db.js', func: 'connect()'})
-	isConnected = true
-}
-
-module.exports = {client, connect, knex}
+module.exports = {knex}
