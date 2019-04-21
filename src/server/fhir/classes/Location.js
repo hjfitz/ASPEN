@@ -33,6 +33,18 @@ class Location {
 		}
 	}
 
+	insert() {
+		const values = [this.status, this.name, this.description, this.type.display]
+		if (values.includes(undefined)) return false
+		return knex('location').insert({
+			status: this.status,
+			name: this.name,
+			description: this.description,
+			last_updated: new Date(),
+			type: this.type.display,
+		}).returning('location_id')
+	}
+
 	/**
 	 * Ensure object is created with proper params
 	 * @returns {boolean} - Whether the object is valid or not
@@ -47,6 +59,10 @@ class Location {
 		this.status = resp.status
 		this.name = resp.name
 		this.description = resp.description
+	}
+
+	delete() {
+		return knex('location').where({location_id: this.id}).del()
 	}
 
 	/**

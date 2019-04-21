@@ -1,7 +1,7 @@
 // All patient observations go here
 const diagnosticRouter = require('express').Router()
 
-const {client, knex} = require('../db')
+const {knex} = require('../db')
 const {createOutcome} = require('./util')
 const log = require('../logger')
 const DiagnosticReport = require('./classes/DiagnosticReport')
@@ -43,16 +43,13 @@ diagnosticRouter.get('/', async (req, res) => {
 })
 
 diagnosticRouter.get('/all', async (req, res) => {
-	const {rows} = await client.query('SELECT * FROM diagnostic_report')
+	const rows = await knex('diagnostic_report').select()
 	res.json(rows)
 })
 
 diagnosticRouter.get('/:id', async (req, res) => {
 	const {id} = req.params
-	const {rows: [row]} = await client.query({
-		text: 'SELECT * FROM diagnostic_report WHERE report_id = $1',
-		values: [id],
-	})
+	const [row] = await knex('diagnostic_report').select().where({report_id: id})
 	const obs = new DiagnosticReport(row)
 	let resp = obs.fhir()
 	if (req.query.result) {
@@ -65,11 +62,7 @@ diagnosticRouter.get('/:id', async (req, res) => {
 diagnosticRouter.delete('/:id', async (req, res) => {
 	const {id} = req.params
 	log.debug(`attempting to delete ${id} from diagnostic_report`, {file: 'fhir/diagnostic-report.js', func: 'DELETE /:id'})
-	await client.query({
-		name: 'delete-diagnostic-report',
-		text: 'DELETE FROM diagnostic_report WHERE report_id = $1',
-		values: [id],
-	})
+	await knex('diagnostic_report').where({report_id: id}).del()
 	createOutcome(req, res, 200, 'Successfully deleted', {}, 'success')
 })
 
@@ -88,27 +81,24 @@ diagnosticRouter.post('/', async (req, res) => {
 	if (validRequest.length) return createOutcome(req, res, 400, 'Missing data', validRequest)
 	const patID = req.body.patient_id
 	delete req.body.patient_id
-	const observations = Object.keys(req.body)
-		.filter(key => expectedObs.includes(key))
-		.map(key => new Observation(key, req.body[key]))
-	const queries = observations.map(({query}) => query)
+	const observations = await Promise.all(
+		Object.keys(req.body)
+			.filter(key => expectedObs.includes(key))
+			.map(key => new Observation(key, req.body[key]).insert()),
+	)
 
-	const idList = (await Promise.all(queries.map(query => client.query(query))))
-		.map(resp => resp.rows[0])
-		.reduce((acc, cur) => {
-			acc[cur.name] = cur.observation_id
+	const idList = observations
+		.map(obs => obs[0])
+		.reduce((acc, obs) => {
+			acc[obs.name] = obs.observation_id
 			return acc
 		}, {})
-	const now = new Date()
-	const keys = ['last_updated', 'patient_id', ...Object.keys(idList)]
-	const rows = keys.join(', ')
-	const dolla = keys.map((_, idx) => `$${idx + 1}`).join(', ')
-	const query = {
-		name: 'create-report',
-		text: `INSERT INTO diagnostic_report (${rows}) VALUES (${dolla}) RETURNING report_id`,
-		values: [now, patID, ...Object.values(idList)],
-	}
-	const {rows: [row]} = await client.query(query)
+
+	const [row] = await knex('diagnostic_report').insert({
+		...idList,
+		last_updated: new Date(),
+		patient_id: patID,
+	}).returning(['report_id'])
 	return createOutcome(req, res, 200, 'successfully added observation', row, 'success')
 })
 

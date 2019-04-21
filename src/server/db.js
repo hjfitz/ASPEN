@@ -25,7 +25,7 @@ async function checkAdmin() {
 		logger.debug('no admin account found. creating...', {file: 'server/db.js', func: 'checkAdmin()'})
 		try {
 			await knex('practitioner').insert({
-				practitioner_id: 99998,
+				practitioner_id: 999998,
 				name: 'admin',
 				added: new Date(),
 				username: 'admin',

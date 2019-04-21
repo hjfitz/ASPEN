@@ -59,6 +59,16 @@ class Observation {
 		}
 	}
 
+	insert() {
+		return knex('observation')
+			.returning(['observation_id', 'name'])
+			.insert({
+				last_updated: this.updated,
+				name: this.name,
+				value: this.value,
+			})
+	}
+
 	/**
 	 * Format the observation data to fhir data
 	 * @returns {object} fhir formatted observation data

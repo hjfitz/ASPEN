@@ -4,7 +4,7 @@ const OperationOutcome = require('./classes/OperationOutcome')
 const Patient = require('./classes/Patient')
 const Contact = require('./classes/Contact')
 const logger = require('../logger')
-const {client, knex} = require('../db')
+const {knex} = require('../db')
 
 const patientRouter = express.Router()
 
@@ -13,8 +13,8 @@ const log = (level, message, func) => logger.log(level, message, {file: 'logger.
 // debug
 patientRouter.get('/all', async (req, res) => {
 	log('info', 'attempting to retrieve all patient data', 'GET /all')
-	const resp = await client.query('SELECT * FROM patient')
-	res.json(resp.rows)
+	const rows = await knex('patient').select()
+	res.json(rows)
 })
 
 // read
