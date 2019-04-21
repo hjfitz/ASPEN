@@ -5,7 +5,7 @@ const path = require('path')
 // attempt to load .env file
 const requiredVars = ['DATABASE_URL']
 const envLoc = path.join(process.cwd(), '.env')
-const toLog = []
+const toLog = [['debug', 'beginning bootstrap process', {func: 'main', file: 'bin/www.js'}]]
 if (fs.existsSync(envLoc)) {
 	toLog.push(['debug', `attempting to load .env from ${envLoc}`, {func: 'main', file: 'bin/www.js'}])
 	const lines = fs.readFileSync(envLoc).toString().split('\n')
