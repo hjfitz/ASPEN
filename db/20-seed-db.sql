@@ -189,7 +189,7 @@ INSERT INTO medication_usage (
 	medication_frequency
 ) VALUES (
 	2,
-	'paracetamol'
+	'paracetamol',
 	'500mg',
 	'weekly'
 );

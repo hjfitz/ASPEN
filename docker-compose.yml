@@ -24,5 +24,6 @@ services:
       DATABASE_URL: postgresql://fyp:donotposttogit@pg:5432/fyp
     links:
       - pg
+    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; npm start'
     depends_on:
       - pg
