@@ -3,7 +3,7 @@ import isMobile from 'ismobilejs'
 
 import {Input, Select} from '../../Partial'
 
-const MobileImageUpload = props => (
+const DesktopWebcamDisplay = props => (
 	<div className="card">
 		<div className="card-image">
 			<video ref={v => props.setVideo(v)} id="video" onClick={props.playVideo} />
@@ -17,7 +17,7 @@ const MobileImageUpload = props => (
 	</div>
 )
 
-const DesktopWebcamDisplay = props => (
+const MobileImageUpload = props => (
 	<div className="file-field input-field">
 		<div className="btn">
 			<span>Take Photo</span>
@@ -54,9 +54,9 @@ const PatientDemographicInfo = props => (
 					/>
 				</div>
 				<div className="col m6 s12">
-					{!isMobile.any
-						? <MobileImageUpload {...props} />
-						: <DesktopWebcamDisplay setImg={props.setImg} />
+					{isMobile.any
+						? <MobileImageUpload setImg={props.setImg} />
+						: <DesktopWebcamDisplay {...props} />
 					}
 				</div>
 			</div>

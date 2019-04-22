@@ -94,6 +94,7 @@ class AdmitPatient extends Component {
 		this.setImg = this.setImg.bind(this)
 		this.setVideo = this.setVideo.bind(this)
 		this.setCanvas = this.setCanvas.bind(this)
+		this.resizeImage = this.resizeImage.bind(this)
 	}
 
 	/**
@@ -138,9 +139,8 @@ class AdmitPatient extends Component {
 		console.log('[CREATE] Saving image')
 		const dimensions = this.video.getBoundingClientRect()
 		this.canvas.getContext('2d').drawImage(this.video, 0, 0, dimensions.width, dimensions.height)
-		const img = this.canvas.toDataURL('image/png')
-		this.img = img
-		doModal('Success', 'Image saved')
+		const img = this.canvas.toDataURL('image/jpeg')
+		this.resizeImage(img)
 		this.video.pause()
 	}
 
@@ -152,7 +152,9 @@ class AdmitPatient extends Component {
 		try {
 			const {files: [file]} = ev.target
 			const reader = new FileReader()
-			reader.addEventListener('load', () => this.img = reader.result, false)
+			reader.addEventListener('load', () => {
+				this.resizeImage(reader.result)
+			}, false)
 			reader.readAsDataURL(file)
 		} catch (err) {
 			doModal('Error', `There was an error setting the image: ${err}`)
@@ -168,6 +170,27 @@ class AdmitPatient extends Component {
 		this.canvas = ref
 	}
 
+	resizeImage(dataUrl) {
+		const img = new Image()
+		img.src = dataUrl
+		img.onload = async () => {
+			const {width, height} = img
+			const canvas = document.createElement('canvas')
+			const ctx = canvas.getContext('2d')
+			const scalingFactor = width / 400
+			const newWidth = width / scalingFactor
+			const newHeight = height / scalingFactor
+			canvas.height = newHeight
+			canvas.width = newWidth
+			ctx.drawImage(img, 0, 0, newWidth, newHeight)
+			const newDataUrl = canvas.toDataURL('image/jpeg', 0.8)
+			this.img = await fetch(newDataUrl).then(r => r.blob())
+			console.log(dataUrl)
+			console.log(newDataUrl)
+			doModal('Successfully saved image', 'image has been saved and resized')
+		}
+	}
+
 	/**
 	 * yanks all data from form and posts to API
 	 * creates a patient and then an encounter
@@ -176,8 +199,8 @@ class AdmitPatient extends Component {
 		const form = new FormData()
 		if (this.img) {
 			console.log('[CREATE] Appending image')
-			const img = await fetch(this.img).then(r => r.blob())
-			form.append('patient-photo', img)
+			// const img = await fetch(this.img).then(r => r.blob())
+			form.append('patient-photo', this.img)
 		}
 		const labels = [
 			'patient-prefix',
