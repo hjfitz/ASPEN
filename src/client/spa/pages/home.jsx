@@ -50,7 +50,7 @@ const Welcome = () => {
 			</div>
 			<div className="col s12">
 				<div className="row">
-					<div className="col s6 l4">
+					<div className="col s12 m6 l4">
 						<div className="hoverable card little home-card">
 							<Link href="/wards">
 								<div className="card-content">
@@ -60,7 +60,7 @@ const Welcome = () => {
 							</Link>
 						</div>
 					</div>
-					<div className="col s6 l4">
+					<div className="col s12 m6 l4">
 						<div className="hoverable card little home-card">
 							<Link href="/search/patient">
 								<div className="card-content">
@@ -70,7 +70,7 @@ const Welcome = () => {
 							</Link>
 						</div>
 					</div>
-					<div className="col s6 l4">
+					<div className="col s12 m6 l4">
 						<div className="hoverable card little home-card">
 							<Link href="/add/patient">
 								<div className="card-content">
@@ -80,7 +80,7 @@ const Welcome = () => {
 							</Link>
 						</div>
 					</div>
-					<div className="col s6 l4">
+					<div className="col s12 m6 l4">
 						<div className="hoverable card little home-card">
 							<Link href="/add/ward">
 								<div className="card-content">

@@ -46,7 +46,7 @@ class Fab extends Component {
 					</li>
 					<li>
 						<Link href="/search/patient" className="btn-floating yellow darken-3 tooltipped" data-position="left" data-tooltip="Search for a patient">
-							<i className="material-icons">insert_chart</i>
+							<i className="material-icons">search</i>
 						</Link>
 					</li>
 					<li>
