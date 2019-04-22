@@ -34,12 +34,9 @@ patientRouter.get('/', async (req, res) => {
 	const {_query} = req.query
 	// handle searches and Bundle requests for all
 	if (_query) {
-		const rows = await knex('patient')
-			.where('fullname', 'ilike', _query)
-			.orWhere('given', 'ilike', _query)
-			.orWhere('family', 'ilike', _query)
+		const nestedRows = await knex('patient').whereRaw('fullname Ilike ?', [`%${_query}%`])
 		const mapped = await Promise.all(
-			rows.map(row => new Patient({...row, id: row.patient_id}).fhir()),
+			nestedRows.map(row => new Patient({...row, id: row.patient_id}).fhir()),
 		)
 		res.json(mapped)
 		return
