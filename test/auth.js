@@ -74,7 +74,7 @@ describe('authentication', () => {
 		})
 	})
 	describe('login', () => {
-		it('should login with a normal username and password (default admin as described in the document', (done) => {
+		it('should login with a normal username and password', (done) => {
 			const payload = createPayload();
 			(async () => {
 				await authBase.post('/login/create', payload)
