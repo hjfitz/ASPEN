@@ -29,12 +29,15 @@ const MobileImageUpload = props => (
 	</div>
 )
 
+// not on mobile? webcam next to form. else, input at bottom of form
+const colClass = () => (isMobile.any ? 'col s12' : 'col m6 s12')
+
 const PatientDemographicInfo = props => (
 	<div>
 		<h3>Patient Details</h3>
 		<div className="card-panel z-depth-2">
 			<div className="row">
-				<div className="col m6 s12">
+				<div className={colClass()}>
 					<Input id="patient-prefix" label="Title" className="s12" />
 					<Input id="patient-given" label="First Name" className="s12" />
 					<Input id="patient-family" label="Surname" className="s12" />
@@ -53,7 +56,7 @@ const PatientDemographicInfo = props => (
 						className="m12 s12"
 					/>
 				</div>
-				<div className="col m6 s12">
+				<div className={colClass()}>
 					{isMobile.any
 						? <MobileImageUpload setImg={props.setImg} />
 						: <DesktopWebcamDisplay {...props} />

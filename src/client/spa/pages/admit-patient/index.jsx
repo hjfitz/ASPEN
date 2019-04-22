@@ -1,12 +1,13 @@
 import {h, Component} from 'preact'
-import qs from 'qs'
-import {route} from 'preact-router'
+import isMobile from 'ismobilejs'
 import M from 'materialize-css'
 
+// local page imports
 import PatientDemographicInfo from './Patient'
 import PatientHistoryInfo from './History'
 import ContactInfo from './Contact'
 
+// shared lib imports
 import {Loader} from '../../Partial'
 import {fhirBase, doModal, getJwtPayload} from '../../util'
 
@@ -65,7 +66,7 @@ async function createHistory(patient_id) {
 	form.patient_id = patient_id
 	form.sign.practitioner_id = getJwtPayload(localStorage.token).userid
 	try {
-		fhirBase.post('/History', form, {
+		await fhirBase.post('/History', form, {
 			headers: {'content-type': 'application/json'},
 		})
 	} catch (err) {
@@ -101,16 +102,17 @@ class AdmitPatient extends Component {
 	 * Gets all locations from the API and populates state
 	 */
 	async componentDidMount() {
+		console.log(document.querySelectorAll('input'))
 		const resp = await fhirBase.get('/Location?type=Ward')
-		if (resp.data) {
-			this.setState({
-				loaded: true,
-				wards: resp.data.map(ward => ({val: ward.id, text: ward.name})),
-			}, async () => {
-				// the form is showing and webcam is, so populate with webcam
-				const select = document.querySelectorAll('#location_id, #patient-gender, .patient-details-select')
-				M.FormSelect.init(select)
-				try {
+		// no data? do nothing
+		if (!resp.data) return
+
+		// force re-render with FHIR data
+		const wards = resp.data.map(ward => ({val: ward.id, text: ward.name}))
+		this.setState({loaded: true, wards}, async () => {
+			// the form is showing and webcam is, so populate with webcam
+			try {
+				if (!isMobile.any) {
 					const stream = await navigator.mediaDevices.getUserMedia({video: true})
 					this.video.srcObject = stream
 					this.video.onloadedmetadata = this.video.play
@@ -121,14 +123,16 @@ class AdmitPatient extends Component {
 						this.canvas.height = dimensions.height
 						this.canvas.width = dimensions.width
 					})
-				} catch (err) {
-					M.toast({html: 'There was an error initialising the Webcam'})
-					console.error(`Webcam error: ${err}`)
 				}
-				const date = document.querySelectorAll('.datepicker')
-				M.Datepicker.init(date, {autoClose: true})
-			})
-		}
+			} catch (err) {
+				M.toast({html: 'Could not find a webcam'})
+			}
+			// initialise materialize elements
+			const date = document.querySelectorAll('.datepicker')
+			const select = document.querySelectorAll('#location_id, #patient-gender, .patient-details-select')
+			M.FormSelect.init(select)
+			M.Datepicker.init(date, {autoClose: true})
+		})
 	}
 
 	/**
@@ -136,9 +140,8 @@ class AdmitPatient extends Component {
 	 * Saves this to B64, sets state and pauses the stream
 	 */
 	getImg() {
-		console.log('[CREATE] Saving image')
-		const dimensions = this.video.getBoundingClientRect()
-		this.canvas.getContext('2d').drawImage(this.video, 0, 0, dimensions.width, dimensions.height)
+		const {height, width} = this.video.getBoundingClientRect()
+		this.canvas.getContext('2d').drawImage(this.video, 0, 0, width, height)
 		const img = this.canvas.toDataURL('image/jpeg')
 		this.resizeImage(img)
 		this.video.pause()
@@ -185,8 +188,6 @@ class AdmitPatient extends Component {
 			ctx.drawImage(img, 0, 0, newWidth, newHeight)
 			const newDataUrl = canvas.toDataURL('image/jpeg', 0.8)
 			this.img = await fetch(newDataUrl).then(r => r.blob())
-			console.log(dataUrl)
-			console.log(newDataUrl)
 			doModal('Successfully saved image', 'image has been saved and resized')
 		}
 	}
