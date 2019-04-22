@@ -152,6 +152,9 @@ const HistoryReport = (props) => {
 					<img src={props.signature_blob} alt="Signature" />
 				</section>
 			</div>
+			<div className="modal-footer">
+				<a href="#!" className="modal-close waves-effect waves-green btn-flat">Close</a>
+			</div>
 		</div>
 	)
 }
