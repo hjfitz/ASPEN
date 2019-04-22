@@ -2,3 +2,16 @@
 	max-height: 80%;
 	width: 85%;
 }
+
+
+.card.horizontal {
+	display: flex;
+	@media screen and (max-width: 600px) {
+		align-items: center;
+		flex-direction: column;
+
+	}
+	.card-image {
+		max-width: initial!important;
+	}
+}

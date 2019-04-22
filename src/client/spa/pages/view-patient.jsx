@@ -194,13 +194,13 @@ class Patient extends Component {
 									</div>
 								</div>
 								<div className="row">
-									<div className="col s6">
+									<div className="col s12 m6">
 										<h6>Patient Information</h6>
 										<p><b>NEWS: </b>{this.state.news}</p>
 										<p><b>Gender: </b>{patient.gender}</p>
 										<p><b>Ward: </b>{patient.location}</p>
 									</div>
-									<div className="col s6">
+									<div className="col s12 m6">
 
 										<h6>Contact Information</h6>
 										<p><b>Name: </b>{contact.displayName}</p>
