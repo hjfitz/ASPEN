@@ -7,6 +7,7 @@ const getDate = () => format(Date.now(), ' MMM DD, YYYY')
 
 function getDesignation() {
 	const payload = getJwtPayload(localStorage.token)
+	if (!('email' in payload)) return 'guest'
 	if (payload.email.indexOf('@myport.ac.uk') > -1) return 'student'
 	if (payload.email.indexOf('@port.ac.uk') > -1) return 'teacher'
 	return 'unknown'

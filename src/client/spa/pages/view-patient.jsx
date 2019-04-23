@@ -224,7 +224,10 @@ class Patient extends Component {
 					patientName={patient.displayName}
 					reportLoaded={this.state.reportLoaded}
 				/>
-				<VitalCharts refCb={ref => this.newsChart = ref} history={this.state.patientReports.reverse()} />
+				<VitalCharts
+					refCb={ref => this.newsChart = ref}
+					history={this.state.patientReports.reverse()}
+				/>
 			</div>
 		)
 	}

@@ -70,7 +70,6 @@ async function createHistory(patient_id) {
 			headers: {'content-type': 'application/json'},
 		})
 	} catch (err) {
-		console.warn('[patient history]', err)
 		if ('response' in err) {
 			doModal('Error', err.response.data.issue[0].details.text)
 			return
@@ -102,7 +101,6 @@ class AdmitPatient extends Component {
 	 * Gets all locations from the API and populates state
 	 */
 	async componentDidMount() {
-		console.log(document.querySelectorAll('input'))
 		const resp = await fhirBase.get('/Location?type=Ward')
 		// no data? do nothing
 		if (!resp.data) return

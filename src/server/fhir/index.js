@@ -4,7 +4,6 @@ const bodyParser = require('body-parser')
 
 const logger = require('../logger')
 const patientRouter = require('./patient')
-const {connect} = require('../db')
 const diagnosticRouter = require('./diagnostic-report')
 const observationRouter = require('./observation')
 const locationRouter = require('./location')

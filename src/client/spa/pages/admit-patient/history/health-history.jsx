@@ -11,6 +11,8 @@ class HealthHistory extends Component {
 			numOps: 1,
 			numOth: 1,
 		}
+		this.inc = this.inc.bind(this)
+		this.dec = this.dec.bind(this)
 	}
 
 	// selects fall over on inc/dec, re-init
@@ -67,8 +69,8 @@ class HealthHistory extends Component {
 						))}
 					</div>
 					<div className="row">
-						<IncButton onClick={this.inc('numProbs').bind(this)} />
-						<DecButton onClick={this.dec('numProbs').bind(this)} />
+						<IncButton onClick={this.inc('numProbs')} />
+						<DecButton onClick={this.dec('numProbs')} />
 					</div>
 				</div>
 				<div className="col s12">
@@ -84,8 +86,8 @@ class HealthHistory extends Component {
 						))}
 					</div>
 					<div className="row">
-						<IncButton onClick={this.inc('numOps').bind(this)} />
-						<DecButton onClick={this.dec('numOps').bind(this)} />
+						<IncButton onClick={this.inc('numOps')} />
+						<DecButton onClick={this.dec('numOps')} />
 					</div>
 				</div>
 				<div className="input-field col s12">
@@ -101,8 +103,8 @@ class HealthHistory extends Component {
 						))}
 					</div>
 					<div className="row">
-						<IncButton onClick={this.inc('numOth').bind(this)} />
-						<DecButton onClick={this.dec('numOth').bind(this)} />
+						<IncButton onClick={this.inc('numOth')} />
+						<DecButton onClick={this.dec('numOth')} />
 					</div>
 				</div>
 			</div>

@@ -2,6 +2,7 @@
 const historyRouter = require('express').Router()
 const OperationOutcome = require('./classes/OperationOutcome')
 const {knex} = require('../db')
+const logger = require('../logger')
 
 const file = 'fhir/history.js'
 

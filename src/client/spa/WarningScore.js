@@ -49,7 +49,10 @@ module.exports = class WarningScore {
 		this.missingFields = this.requiredFields.filter(field => !(field in report))
 		if (this.missingFields.length === this.requiredFields.length) return
 		if (this.missingFields.length) {
-			doModal('Error with EWS Calculation', `Fields were missing during submission!</p><ul><li class="browser-default">${this.missingFields.join('</li><li>')}`)
+			doModal(
+				'Error with EWS Calculation',
+				`Fields were missing during submission!</p><ul><li class="browser-default">${this.missingFields.join('</li><li>')}`,
+			)
 		}
 	}
 

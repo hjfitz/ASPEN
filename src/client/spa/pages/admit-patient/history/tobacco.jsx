@@ -63,7 +63,7 @@ const TobaccoQuestionnaire = () => (
 			</p>
 		</form>
 		<div className="input-field col s12 tooltipped" data-position="top" data-tooltip="Include Cigarettes, Pipe and Cigars">
-			<h6>If you're currently using tobacco, which are you using?</h6>
+			<h6>If you&#39;re currently using tobacco, which are you using?</h6>
 			<textarea id="tobacco-used" className="materialize-textarea  patient-history-input" data-form-key="tobacco-type-used" />
 		</div>
 		<form className="col s12 patient-history-input" data-form-key="tobacco-nicotine-replace-therapy" data-materialize-type="radio-group" action="">

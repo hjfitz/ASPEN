@@ -1,11 +1,15 @@
+/* eslint-disable max-len */
 import {h} from 'preact'
 import {Link} from 'preact-router'
 
-import {getName, getJwtPayload} from '../util'
+import {getJwtPayload} from '../util'
 
 import '../styles/welcome.scss'
 
-const getGiven = () => getJwtPayload(localStorage.token).given_name || getJwtPayload(localStorage.token).name
+function getGiven() {
+	const payload = getJwtPayload(localStorage.token)
+	return (payload.given_name || payload.name)
+}
 
 /**
  * Welcome page
@@ -64,7 +68,7 @@ const Welcome = () => {
 						<div className="hoverable card little home-card">
 							<Link href="/search/patient">
 								<div className="card-content">
-									<span className="card-title">Search for a Patient's Vital signs</span>
+									<span className="card-title">Search for a Patient&#39;s Vital signs</span>
 									<p>Search by details for a given patient.</p>
 								</div>
 							</Link>

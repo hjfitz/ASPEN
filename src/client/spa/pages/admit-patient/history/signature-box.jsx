@@ -120,7 +120,9 @@ class Signature extends Component {
 							try {
 								this.canvas = c
 								this.ctx = c.getContext('2d')
-							} catch (e) {}
+							} catch (e) {
+								console.warn('[signature-box] could not find canvas')
+							}
 						}}
 						id="sign-off-canvas"
 						style={{width: '100%', border: '1px solid grey'}}
