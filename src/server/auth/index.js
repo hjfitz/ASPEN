@@ -15,6 +15,15 @@ const {knex} = require('../db')
 const sessionSecret = process.env.AUTH_SECRET// = csprng(128, 26)
 const saltRounds = 5 // has a big impact on perf
 
+const lectureLength = 50 * 60
+
+const createPayload = (userid, name, permissions = []) => ({
+	permissions,
+	name,
+	userid,
+	exp: Math.floor(Date.now() / 1000) + lectureLength,
+})
+
 /**
  * Given user details, store them in the database, if they don't already exist
  * This is so that admins can assign wards
@@ -84,19 +93,18 @@ authRouter.get('/auth/callback', async (req, res) => {
 	const payload = Utf8.stringify(Base64.parse(payloadB64))
 	const {email, name, hd, given_name, family_name} = JSON.parse(payload)
 
-	const userData = await handleUser(payload)
+	const {practitioner_id, permissions} = await handleUser(payload)
 	// ? store user if not in database and add basic permissions + include in JWT
-	const fypPayload = {
+
+	const tokenPayload = {
+		...createPayload(practitioner_id, name, permissions),
 		email,
-		userid: userData.practitioner_id,
-		permissions: userData.permissions,
-		name,
 		hd,
 		given_name,
 		family_name,
-		// exp: Math.floor(Date.now() / 1000) + (60 * 60),
 	}
-	const token = jwt.sign(fypPayload, sessionSecret)
+
+	const token = jwt.sign(tokenPayload, sessionSecret)
 
 	// return the user to the homepage
 	// sadly state in google's oauth response is not the previous url as it is with other servers
@@ -136,22 +144,18 @@ authRouter.get('/login/url', (req, res) => {
 authRouter.post('/login', async (req, res) => {
 	const {username, password} = req.body
 	try {
-		const [row] = await knex('practitioner')
-			.select()
-			.where({username, account_type: 'normal'})
+		const [row] = await knex('practitioner').select().where({username, account_type: 'normal'})
 		if (!row) return res.status(400).send('Unable to login: username does not exist!')
 		const passMatch = await bcrypt.compare(password, row.passhash)
 		if (!passMatch) return res.status(400).send('Passwords do not match')
 
+		const {practitioner_id, name, permissions} = row
 
-		const fypPayload = {
-			name: row.name,
-			username: row.username,
-			userid: row.practitioner_id,
-			permissions: row.permissions,
-			// exp: Math.floor(Date.now() / 1000) + (60 * 60),
+		const tokenPayload = {
+			...createPayload(practitioner_id, name, permissions),
+			username,
 		}
-		const token = jwt.sign(fypPayload, sessionSecret)
+		const token = jwt.sign(tokenPayload, sessionSecret)
 
 		return res.send({
 			token,
