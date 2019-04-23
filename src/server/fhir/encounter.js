@@ -9,6 +9,7 @@ const file = 'fhir/encounter.js'
 
 encounterRouter.post('/', async (req, res) => {
 	const decodedToken = decodeJWTPayload(req.headers.token)
+	console.log(req.body)
 	const enc = new Encounter(req.body)
 	if (!decodedToken.permissions.includes('add:patients')) {
 		logger.info('request made with no permissions', {file, func: 'POST /'})

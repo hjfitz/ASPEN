@@ -107,7 +107,8 @@ class Patient extends Component {
 	 * @param {FormData} diagnosticReport fields in <vitals />
 	 */
 	async submitVitals(diagnosticReport) {
-		diagnosticReport.append('patient_id', this.props.patient_id)
+		// diagnosticReport.append('patient_id', this.props.patient_id)
+		diagnosticReport.subject = `Patient/${this.props.patient_id}`
 		try {
 			const {data} = await fhirBase.post('/Diagnostics', diagnosticReport)
 			M.toast({html: data.details.text})

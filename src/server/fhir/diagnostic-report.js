@@ -6,6 +6,7 @@ const {createOutcome} = require('./util')
 const log = require('../logger')
 const DiagnosticReport = require('./classes/DiagnosticReport')
 const Observation = require('./classes/Observation')
+const OperationOutcome = require('./classes/OperationOutcome')
 
 
 // yet documented in swagger
@@ -67,40 +68,29 @@ diagnosticRouter.delete('/:id', async (req, res) => {
 })
 
 diagnosticRouter.post('/', async (req, res) => {
-	const expectedObs = [
-		'respiratory_rate',
-		'oxygen_saturation',
-		'supplemental_oxygen',
-		'body_temperature',
-		'systolic_bp',
-		'heart_rate',
-		'level_of_consciousness',
-		'patient_id',
-	]
-	const validRequest = expectedObs.filter(obs => !(obs in req.body))
-	if (validRequest.length) return createOutcome(req, res, 400, 'Missing data', validRequest)
-	const patID = req.body.patient_id
-	delete req.body.patient_id
+	// make sure that all observations have a value and name
+	const hasAllObservations = req.body.result.filter(observation => ('value' in observation.valueQuantity) && ('text' in observation.code))
+	// no name or value? return 406
+	if (hasAllObservations.length !== req.body.result.length) {
+		const outcome = new OperationOutcome('error', 406, req.url, 'missing observations!', {})
+		return outcome.makeResponse(res)
+	}
+
 	const observations = await Promise.all(
-		Object.keys(req.body)
-			.filter(key => expectedObs.includes(key))
-			.map(key => new Observation(key, req.body[key]).insert()),
+		req.body.result.map(
+			({code, valueQuantity}) => new Observation(code.text, valueQuantity.value).insert(),
+		),
 	)
 
-	const idList = observations
-		.map(obs => obs[0])
-		.reduce((acc, obs) => {
-			acc[obs.name] = obs.observation_id
-			return acc
-		}, {})
+	const idList = {}
+	observations.flat().forEach(({name, observation_id}) => idList[name] = observation_id)
 
 	const [row] = await knex('diagnostic_report').insert({
 		...idList,
-		last_updated: new Date(),
-		patient_id: patID,
+		last_updated: req.body.meta.last_updated,
+		patient_id: req.body.subject.replace('Patient/', ''),
 	}).returning(['report_id'])
 	return createOutcome(req, res, 200, 'successfully added observation', row, 'success')
 })
-
 
 module.exports = diagnosticRouter

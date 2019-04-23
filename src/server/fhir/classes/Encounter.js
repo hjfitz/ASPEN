@@ -16,13 +16,14 @@ class Encounter {
 	 * @param {number} params.location_id location that this encounter took place in
 	 */
 	constructor(params = {}) {
-		this.encounter_id = params.encounter_id
-		this.last_updated = params.last_updated
-		this.class = params.class
-		this.status = params.status
-		this.patient_id = params.patient_id
-		this.location_id = params.location_id
 		this.meta = {file: 'fhir/classes/Encounter.js'}
+		logger.silly(`creating Encounter with params: ${JSON.stringify(params)}`, {...this.meta, func: 'constructor()'})
+		this.encounter_id = params.encounter_id
+		this.last_updated = params.last_updated || params.meta.lastUpdated
+		this.class = params.class.data
+		this.status = params.status
+		this.patient_id = params.patient_id || params.subject
+		this.location_id = params.location_id || params.location[0]
 		this.required = [
 			'class',
 			'status',
@@ -58,6 +59,7 @@ class Encounter {
 	async insert() {
 		this.last_updated = new Date()
 		const missingKeys = this.required.filter(key => !this[key])
+		logger.debug(`unable to add patient. missing keys: ${JSON.stringify(missingKeys)}`, {...this.meta, func: 'insert()'})
 		if (missingKeys.length) return false
 		const insertObj = this.required.reduce((acc, key) => {
 			acc[key] = this[key]

@@ -66,9 +66,7 @@ async function createHistory(patient_id) {
 	form.patient_id = patient_id
 	form.sign.practitioner_id = getJwtPayload(localStorage.token).userid
 	try {
-		await fhirBase.post('/History', form, {
-			headers: {'content-type': 'application/json'},
-		})
+		await fhirBase.post('/History', form)
 	} catch (err) {
 		if ('response' in err) {
 			doModal('Error', err.response.data.issue[0].details.text)
@@ -77,6 +75,8 @@ async function createHistory(patient_id) {
 		doModal('Error', `There is an error with patient creation: ${err}`)
 	}
 }
+
+const capitalize = word => 	word.charAt(0).toUpperCase() + word.slice(1)
 
 class AdmitPatient extends Component {
 	/**
@@ -184,9 +184,9 @@ class AdmitPatient extends Component {
 			canvas.height = newHeight
 			canvas.width = newWidth
 			ctx.drawImage(img, 0, 0, newWidth, newHeight)
-			const newDataUrl = canvas.toDataURL('image/jpeg', 0.8)
-			this.img = await fetch(newDataUrl).then(r => r.blob())
-			doModal('Successfully saved image', 'image has been saved and resized')
+			this.img = canvas.toDataURL('image/jpeg', 0.8)
+			// this.img = await fetch(newDataUrl).then(r => r.blob())
+			doModal('Successfully saved image', 'Image has been saved and resized')
 		}
 	}
 
@@ -195,23 +195,9 @@ class AdmitPatient extends Component {
 	 * creates a patient and then an encounter
 	 */
 	async admit() {
-		const form = new FormData()
-		if (this.img) {
-			console.log('[CREATE] Appending image')
-			// const img = await fetch(this.img).then(r => r.blob())
-			form.append('patient-photo', this.img)
-		}
-		const labels = [
-			'patient-prefix',
-			'patient-given',
-			'patient-family',
-			'patient-gender',
-			'location_id',
-			'contact-prefix',
-			'contact-given',
-			'contact-family',
-			'contact-phone',
-		]
+		const patientLabels = ['patient-prefix', 'patient-given', 'patient-family', 'patient-gender']
+		const contactLabels = ['contact-prefix', 'contact-given', 'contact-family', 'contact-phone']
+		const labels = ['location_id', ...patientLabels, ...contactLabels]
 		const invalid = []
 		const obj = labels.reduce((acc, label) => {
 			const elem = document.getElementById(label)
@@ -229,27 +215,62 @@ class AdmitPatient extends Component {
 		}, {})
 		if (invalid.length) {
 			const err = invalid
-				.map(la => la.replace(/-/g, ' '))
-				.map(la => la.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '))
+				.map(la => la.replace(/-/g, ' ').split(' ').map(capitalize))
 				.map(la => `<li>${la}</li>`)
 				.join('\n')
 			doModal('Error with form!', `Please complete the following fields: <ul>${err}</ul>`)
 			return
 		}
-		obj['patient-fullname'] = `${obj['patient-given']} ${obj['patient-family']}`
-		obj['contact-fullname'] = `${obj['contact-given']} ${obj['contact-family']}`
 
-		Object.keys(obj).forEach(label => form.append(label, obj[label]))
 		try {
-			const resp = await fhirBase.post('/Patient', form)
+			const resp = await fhirBase.post('/Patient', {
+				identifier: [{
+					use: 'usual',
+					system: 'urn:ietf:rfc:3986',
+					value: 'database id',
+					assigner: 'SoN',
+				}],
+				resourceType: 'Patient',
+				active: true,
+				name: [{
+					use: 'usual',
+					text: `${obj['patient-given']} ${obj['patient-family']}`,
+					family: obj['patient-family'],
+					given: obj['patient-given'],
+					prefix: obj['patient-prefix'],
+				}],
+				gender: obj['patient-gender'],
+				photo: this.img,
+				contact: [{
+					name: {
+						use: 'usual',
+						text: `${obj['contact-given']} ${obj['contact-family']}`,
+						family: obj['contact-family'],
+						given: obj['contact-given'],
+						prefix: obj['contact-prefix'],
+					},
+					telecom: [{
+						system: 'phone',
+						value: obj['contact-phone'],
+						use: 'home',
+					}],
+				}],
+			})
 			const {issue: [outcome]} = resp.data
 			if (outcome.code === 200) {
-				const encForm = new FormData()
-				encForm.append('class', 'admission')
-				encForm.append('status', 'finished')
-				encForm.append('patient_id', outcome.diagnostics.patient_id)
-				encForm.append('location_id', obj.location_id)
-				const encResp = await fhirBase.post('/Encounter', encForm)
+				// create encounter form
+				const encResp = await fhirBase.post('/Encounter', {
+					resourceType: 'Encounter',
+					meta: {
+						lastUpdated: new Date(),
+					},
+					status: 'finished',
+					class: {
+						data: 'admission',
+					},
+					subject: outcome.diagnostics.patient_id,
+					location: [obj.location_id],
+				})
 				const histResp = await createHistory(outcome.diagnostics.patient_id)
 				console.log(histResp)
 				doModal('Success', encResp.data.issue[0].details.text)

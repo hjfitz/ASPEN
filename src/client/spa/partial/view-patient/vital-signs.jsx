@@ -99,7 +99,7 @@ class Vitals extends Component {
 		const tabs = document.querySelectorAll('.tabs.tabs-fixed-width.vital-record-view-tabs')
 		const select = document.querySelectorAll('select')
 		if (!this.formInstance) this.formInstance = M.FormSelect.init(select)
-		if (!this.tabInstance) this.tabInstance = M.Tabs.init(tabs)
+		if (!this.tabInstance) this.tabInstance = M.Tabs.getInstance(tabs) || M.Tabs.init(tabs)
 	}
 
 	componentDidUpdate() {
@@ -112,6 +112,7 @@ class Vitals extends Component {
 	componentWillUnmount() {
 		console.log('[VITAL SIGNS] unmounting')
 		try {
+			console.log(this.tabInstance)
 			if (this.formInstance) this.formInstance.map(el => el.destroy())
 			if (this.tabInstance) this.tabInstance.map(el => el.destroy())
 		} catch (err) {
@@ -147,18 +148,69 @@ class Vitals extends Component {
 		}
 
 		// everything must be correct, send it back to the main component
-		const form = new FormData()
-		const inputs = requiredInputs.map(el => document.getElementById(el))
-
-		inputs.forEach(field => form.append(field.id, field.value))
-
+=		const inputs = requiredInputs.map(el => document.getElementById(el))
+		const observations = {}
+		inputs.forEach(field => observations[field.id] = field.value)
+		console.log(observations)
 		const oxygen = document.getElementById('supplemental_oxygen')
 		const usesOxygen = oxygen.checked ? 'yes' : 'no'
-		form.append('supplemental_oxygen', usesOxygen)
+		// form.append('supplemental_oxygen', usesOxygen)
+		const last_updated = new Date()
 
-		await this.props.submit(form)
-		inputs.splice(inputs.length - 1) // remove level of consciousness from cleanup
-		inputs.forEach(input => input.value = '')
+		await this.props.submit({
+			resourceType: 'DiagnosticReport',
+			id: 1,
+			meta: {last_updated},
+			status: 'final',
+			result: [
+				{
+					resourceType: 'Observation',
+					code: {text: 'respiratory_rate'},
+					meta: {last_updated},
+					status: 'final',
+					valueQuantity: {value: observations.respiratory_rate, system: 'http://unitsofmeasure.org', unit: 'breaths/minute', code: '/min'},
+				},
+				{
+					resourceType: 'Observation',
+					code: {text: 'oxygen_saturation'},
+					meta: {last_updated},
+					status: 'final',
+					valueQuantity: {value: observations.oxygen_saturation, system: 'http://unitsofmeasure.org', unit: '%', code: '%'},
+				},
+				{
+					resourceType: 'Observation',
+					code: {text: 'supplemental_oxygen'},
+					meta: {last_updated},
+					status: 'final',
+					valueQuantity: {value: usesOxygen, system: 'http://unitsofmeasure.org', unit: '{yes/no}', code: ''},
+				},
+				{
+					resourceType: 'Observation',
+					code: {text: 'body_temperature'},
+					meta: {last_updated},
+					valueQuantity: {value: observations.body_temperature, system: 'http://unitsofmeasure.org', unit: 'C', code: 'cel'}},
+				{
+					resourceType: 'Observation',
+					code: {text: 'systolic_bp'},
+					meta: {last_updated},
+					valueQuantity: {value: observations.systolic_bp, system: 'http://unitsofmeasure.org', unit: 'mmHg', code: 'mm[Hg]'},
+				},
+				{
+					resourceType: 'Observation',
+					code: {text: 'heart_rate'},
+					meta: {last_updated},
+					valueQuantity: {value: observations.heart_rate, system: 'http://unitsofmeasure.org', unit: 'beats/min', code: '/min'},
+				},
+				{
+					resourceType: 'Observation',
+					code: {text: 'level_of_consciousness'},
+					meta: {last_updated},
+					valueQuantity: {value: observations.level_of_consciousness, system: 'http://unitsofmeasure.org', unit: '{score}', code: ''},
+				},
+			],
+		})
+		// inputs.splice(inputs.length - 1) // remove level of consciousness from cleanup
+		// inputs.forEach(input => input.value = '')
 		M.updateTextFields()
 	}
 

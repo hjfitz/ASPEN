@@ -25,6 +25,8 @@ class Patient {
 	 * @param {string} params.family patient family name (surname)
 	 */
 	constructor(params) {
+		this.meta = {file: 'fhir/classes/Patient.js'}
+		logger.silly(`attempting to make patient: ${JSON.stringify(params)}`, {...this.meta, func: 'constructor'})
 		const {active, id, fullname, given, prefix, gender, last_updated, photo, family} = params
 		this.active = active
 		this.loaded = false
@@ -36,7 +38,6 @@ class Patient {
 		this.last_updated = last_updated
 		this.photo = photo
 		this.family = family
-		this.meta = {file: 'fhir/classes/Patient.js'}
 		this.required = ['active', 'fullname', 'given', 'prefix', 'gender', 'contact_id']
 		this.values = [...this.required, 'family', 'last_updated']
 	}
@@ -79,17 +80,25 @@ class Patient {
 		// create object
 		this.last_updated = new Date()
 		this.active = true
+
+		// create an object consisting of values (from this.values) to put in DB
 		const obj = this.values.reduce((acc, cur) => {
 			acc[cur] = this[cur]
 			return acc
 		}, {})
-		if (this.photo && this.photo.mv) {
+
+		// attempt to write B64 photo
+		if (this.photo) {
 			logger.info('handling image', {...this.meta, func: 'insert()'})
-			const ext = mime.extension(this.photo.mimetype)
+			console.log(this.photo)
+			const mimetype = this.photo.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/)[1]
+			const ext = mime.extension(mimetype)
 			const photo_url = path.join('/patient', `${this.given}-${shortid.generate()}.${ext}`)
 			const newPath = path.join(process.cwd(), photo_url)
+			const base64Data = this.photo.replace(/^data:image\/jpeg;base64,/, '')
+
 			logger.debug(`moved image to ${newPath}`, {...this.meta, func: 'insert()'})
-			this.photo.mv(newPath)
+			fs.writeFileSync(newPath, base64Data, 'base64')
 			obj.photo_url = photo_url
 		}
 		// make query

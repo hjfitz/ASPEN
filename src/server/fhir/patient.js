@@ -60,31 +60,72 @@ patientRouter.get('/', async (req, res) => {
 // create
 patientRouter.post('/', async (req, res) => {
 	const meta = {file: 'fhir/patient.js', func: 'POST /'}
-	const rawPatient = {}
-	const rawContact = {}
-	Object.keys(req.body).forEach((key) => {
-		if (key.indexOf('contact') === 0) rawContact[key.replace('contact-', '')] = req.body[key]
-		if (key.indexOf('patient') === 0) rawPatient[key.replace('patient-', '')] = req.body[key]
+	// const {active, id, fullname, given, prefix, gender, last_updated, photo, family} = params
+
+	const patient = new Patient({
+		active: req.body.active,
+		fullname: req.body.name[0].family,
+		given: req.body.name[0].given,
+		prefix: req.body.name[0].prefix,
+		gender: req.body.gender,
+		last_updated: new Date(),
+		photo: req.body.photo,
+		family: req.body.name[0].family,
 	})
-	const photo = (req.files && req.files['patient-photo']) ? req.files['patient-photo'] : {}
-	const patient = new Patient({...rawPatient, photo, active: true})
-	const contact = new Contact(rawContact)
-	const cResp = await contact.insert()
-	if (!cResp) {
+
+	const contact = new Contact({
+		prefix: req.body.contact[0].name.prefix,
+		fullname: req.body.contact[0].name.family,
+		given: req.body.contact[0].name.given,
+		phone: req.body.contact[0].telecom[0].value,
+		family: req.body.contact[0].name.family,
+	})
+
+	// attempt to insert contact. if that succeeds, insert patient
+	const row = await contact.insert()
+	console.log(row)
+	if (!row) {
+		// couldn't succeed? return bad outcome
 		logger.debug('Unable to create contact', meta)
 		const outcome = new OperationOutcome('error', 406, req.originalUrl, 'Unable to insert contact')
 		return outcome.makeResponse(res)
 	}
+	patient.contact_id = row.contact_id
 	logger.debug('created contact', meta)
-	patient.contact_id = cResp.contact_id
-	const pResp = await patient.insert()
-	if (!pResp) {
-		const outcome = new OperationOutcome('error', 406, req.originalUrl, 'Unable to insert patient')
-		return outcome.makeResponse(res)
-	}
-	const outcome = new OperationOutcome('success', 200, req.originalUrl, 'success', pResp)
+	const patientRow = await patient.insert()
+	const outcome = patientRow
+		? new OperationOutcome('success', 200, req.originalUrl, 'success', patientRow)
+		: new OperationOutcome('error', 406, req.originalUrl, 'Unable to insert patient')
 	return outcome.makeResponse(res)
 })
+
+// patientRouter.post('/', async (req, res) => {
+// 	const meta = {file: 'fhir/patient.js', func: 'POST /'}
+// 	const rawPatient = {}
+// 	const rawContact = {}
+// 	Object.keys(req.body).forEach((key) => {
+// 		if (key.indexOf('contact') === 0) rawContact[key.replace('contact-', '')] = req.body[key]
+// 		if (key.indexOf('patient') === 0) rawPatient[key.replace('patient-', '')] = req.body[key]
+// 	})
+// 	const photo = (req.files && req.files['patient-photo']) ? req.files['patient-photo'] : {}
+// 	const patient = new Patient({...rawPatient, photo, active: true})
+// 	const contact = new Contact(rawContact)
+// 	const cResp = await contact.insert()
+// 	if (!cResp) {
+// 		logger.debug('Unable to create contact', meta)
+// 		const outcome = new OperationOutcome('error', 406, req.originalUrl, 'Unable to insert contact')
+// 		return outcome.makeResponse(res)
+// 	}
+// 	logger.debug('created contact', meta)
+// 	patient.contact_id = cResp.contact_id
+// 	const pResp = await patient.insert()
+// 	if (!pResp) {
+// 		const outcome = new OperationOutcome('error', 406, req.originalUrl, 'Unable to insert patient')
+// 		return outcome.makeResponse(res)
+// 	}
+// 	const outcome = new OperationOutcome('success', 200, req.originalUrl, 'success', pResp)
+// 	return outcome.makeResponse(res)
+// })
 
 // update
 patientRouter.put('/:id', async (req, res) => {

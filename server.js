@@ -23,6 +23,7 @@ app.use(helmet())
 
 // accept json and url params
 app.use(parser.json())
+app.use(parser.json({type: 'application/fhir+json'}))
 app.use(parser.urlencoded({extended: true}))
 
 // statically server public files
