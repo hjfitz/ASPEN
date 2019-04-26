@@ -2,6 +2,7 @@ const Location = require('./Location')
 const Patient = require('./Patient')
 const {knex} = require('../../db')
 const logger = require('../../logger')
+const FHIRBase = require('./FHIRBase')
 
 class Encounter {
 	/**
@@ -16,6 +17,7 @@ class Encounter {
 	 * @param {number} params.location_id location that this encounter took place in
 	 */
 	constructor(params = {}) {
+		super(params)
 		this.encounter_id = params.encounter_id
 		this.last_updated = params.last_updated
 		this.class = params.class
@@ -128,7 +130,7 @@ class Encounter {
 		if (include.location) {
 			const unwrappedLoc = new Location({id: this.location_id})
 			await unwrappedLoc.populate()
-			location = unwrappedLoc.getFhir()
+			location = unwrappedLoc.fhir()
 		}
 
 		return {

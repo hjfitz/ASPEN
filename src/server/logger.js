@@ -8,7 +8,8 @@ const {combine, timestamp, printf, colorize} = format
 const level = 'silly'
 const getFileTimestamp = () => dFormat(new Date(), 'DD-MMM-YYYY')
 
-
+// format the logger so that it prints the level in colour
+// adds a timestamp
 const logFormat = combine(
 	colorize(),
 	timestamp(),
@@ -19,6 +20,9 @@ const logFormat = combine(
 const logLoc = path.join(process.cwd(), 'logs')
 if (!fs.existsSync(logLoc)) fs.mkdirSync(logLoc)
 
+// enable the logger to save errors to one file
+// normal logs to another
+// and post to stdout
 const logger = createLogger({
 	level,
 	format: logFormat,
@@ -29,7 +33,8 @@ const logger = createLogger({
 	],
 })
 
-logger.log('info', `Creating logfile with name ${getFileTimestamp()}`, {
+// let the user know that logging has started
+logger.info(`Creating logfile with name ${getFileTimestamp()}`, {
 	file: 'logger.js',
 	func: 'create',
 })

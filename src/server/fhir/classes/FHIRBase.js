@@ -1,7 +1,8 @@
+/* eslint-disable class-methods-use-this */
 class FHIRBase {
 	populate() {}
 
-	create() {}
+	insert() {}
 
 	update() {}
 
