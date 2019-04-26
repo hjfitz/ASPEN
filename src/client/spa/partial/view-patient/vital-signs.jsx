@@ -102,6 +102,11 @@ class Vitals extends Component {
 		if (!this.tabInstance) this.tabInstance = M.Tabs.init(tabs)
 	}
 
+	/**
+	 * the main router sets state, which propogates an update here
+	 * this causes a re-render which kills select instances
+	 * re-build the select
+	 */
 	componentDidUpdate() {
 		console.log('[VITAL SIGNS] updating')
 		const select = document.querySelectorAll('select')
@@ -109,6 +114,9 @@ class Vitals extends Component {
 		else M.FormSelect.init(select)
 	}
 
+	/**
+	 * on unmount, kill all materialize instances so as to not break the app
+	 */
 	componentWillUnmount() {
 		console.log('[VITAL SIGNS] unmounting')
 		try {
@@ -119,6 +127,12 @@ class Vitals extends Component {
 		}
 	}
 
+	/**
+	 * given the user has pressed 'admit'
+	 * 1. validate all items on the page
+	 * 2a. if not valid, inform the user with coloured boxes and a modal
+	 * 2b. if valid: call props.submitform with the associated vital signs, formatted correctly
+	 */
 	async submitForm() {
 		const requiredInputs = [
 			'respiratory_rate',
