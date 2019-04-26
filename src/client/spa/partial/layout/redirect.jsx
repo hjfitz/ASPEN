@@ -12,6 +12,9 @@ class Redirect extends Component {
 		route(this.props.to, true)
 	}
 
+	/**
+	 * @returns {null}
+	 */
 	render() {
 		return null
 	}

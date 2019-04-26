@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">src/server/fhir/history.js | fyp</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Final year project @portsoc"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="fyp"><meta property="twitter:description" content="Final year project @portsoc"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/hjfitz/fyp"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa">client/spa</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/WarningScore.js~WarningScore.html">WarningScore</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-doModal">doModal</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getJwtPayload">getJwtPayload</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getName">getName</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-noop">noop</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-showLogin">showLogin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-toTitle">toTitle</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-fhirBase">fhirBase</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-pages">client/spa/pages</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/create-ward.jsx~CreateWard.html">CreateWard</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/permissions.jsx~Permissions.html">Permissions</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/search-patients.jsx~SearchPatient.html">SearchPatient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/view-patient.jsx~Patient.html">Patient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/view-ward.jsx~Ward.html">Ward</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/ward-list.jsx~WardList.html">WardList</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Add">Add</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Welcome">Welcome</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-permissionsBase">permissionsBase</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-pages-admit-patient">client/spa/pages/admit-patient</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/History.jsx~CreateHistory.html">CreateHistory</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/index.jsx~AdmitPatient.html">AdmitPatient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Contact">Contact</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-PatientDemographicInfo">PatientDemographicInfo</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-pages-admit-patient-history">client/spa/pages/admit-patient/history</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/Questionnaire.jsx~Questionnaire.html">Questionnaire</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/alcohol.jsx~Alcohol.html">Alcohol</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/drugs.jsx~Drugs.html">Drugs</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/health-history.jsx~HealthHistory.html">HealthHistory</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/medication.jsx~Medication.html">Medication</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/tobacco.jsx~Tobacco.html">Tobacco</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Diet">Diet</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Exercise">Exercise</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-OtherQuestions">OtherQuestions</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SignOff">SignOff</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DecButton">DecButton</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-IncButton">IncButton</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-partial-admit-patient">client/spa/partial/admit-patient</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/admit-patient/signature-box.jsx~Signature.html">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-partial-layout">client/spa/partial/layout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/layout/fab.jsx~Fab.html">Fab</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/layout/login.jsx~Login.html">Login</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/layout/redirect.jsx~Redirect.html">Redirect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Breadcrumbs">Breadcrumbs</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-partial-shared">client/spa/partial/shared</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Input">Input</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Loader">Loader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Modal">Modal</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-partial-view-patient">client/spa/partial/view-patient</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/view-patient/vital-signs.jsx~Vitals.html">Vitals</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/view-patient/vitals-charts.jsx~NewsChart.html">NewsChart</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HistoryReport">HistoryReport</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#server">server</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-router">router</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#server-fhir">server/fhir</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-patientRouter">patientRouter</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#server-fhir-classes">server/fhir/classes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Contact.js~Contact.html">Contact</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/DiagnosticReport.js~DiagnosticReport.html">DiagnosticReport</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Encounter.js~Encounter.html">Encounter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/FHIRBase.js~FHIRBase.html">FHIRBase</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Location.js~Location.html">Location</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Observation.js~Observation.html">Observation</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/OperationOutcome.js~OperationOutcome.html">OperationOutcome</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Patient.js~Patient.html">Patient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Practitioner.js~Practitioner.html">Practitioner</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/server/fhir/history.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/* eslint-disable no-restricted-syntax */
+const historyRouter = require(&apos;express&apos;).Router()
+const OperationOutcome = require(&apos;./classes/OperationOutcome&apos;)
+const {knex} = require(&apos;../db&apos;)
+
+/**
+ * !! File does not follow FHIR specifications
+ * No patient history concept exists yet, so try to keep this file impartial and plain json
+ */
+
+
+historyRouter.get(&apos;/:id&apos;, async (req, res) =&gt; {
+	const [row] = await knex(&apos;patient_history&apos;).select().where({patient_id: req.params.id})
+	if (row) {
+		// aim to change to promise.all
+		const [practitioner] = await knex(&apos;practitioner&apos;).select().where({practitioner_id: row.practitioner_id})
+		const prescriptionLinks = await knex(&apos;history_prescription_medication_usage&apos;).select().where({history_id: row.history_id})
+		const otcLinks = await knex(&apos;history_otc_medication_usage&apos;).select().where({history_id: row.history_id})
+		const drugLinks = await knex(&apos;history_otc_drug_usage&apos;).select().where({history_id: row.history_id})
+		const prescriptions = await Promise.all(prescriptionLinks.map(link =&gt; knex(&apos;medication_usage&apos;).select().where({medication_usage_id: link.medication_usage_id})))
+		const otc = await Promise.all(otcLinks.map(link =&gt; knex(&apos;medication_usage&apos;).select().where({medication_usage_id: link.medication_usage_id})))
+		const recreational = await Promise.all(drugLinks.map(link =&gt; knex(&apos;medication_usage&apos;).select().where({medication_usage_id: link.medication_usage_id})))
+		res.json({...row, practitioner, drugs: {prescriptions, otc, recreational}})
+	} else {
+		const outcome = new OperationOutcome(&apos;error&apos;, 404, req.originalUrl, &apos;unable to find history&apos;)
+		outcome.makeResponse(res)
+	}
+})
+
+historyRouter.post(&apos;/&apos;, async (req, res) =&gt; {
+	try {
+		const historyBody = {
+			// health history
+			childhood_illnesses: JSON.stringify(req.body.health[&apos;childhood-illnesses&apos;]),
+			immunisations: JSON.stringify(req.body.health.immunisations),
+			medical_issues: JSON.stringify(req.body.health[&apos;medical-issues&apos;]),
+			surgical_operations: JSON.stringify(req.body.health.operations),
+			other_hospitalisations: JSON.stringify(req.body.health.hispitalisations),
+			// medications. otc and prescription meds are in mtm so omitted from this body
+			allergies: JSON.stringify(req.body.medication.allergies),
+			// exercise information
+			exercise_frequency: req.body.exercise.frequency,
+			// dietary information
+			dieting: req.body.diet.dieting,
+			difficulties_eating: req.body.diet[&apos;difficulties-eating&apos;],
+			meals_daily: parseInt(req.body.diet[&apos;meals-eaten&apos;], 10),
+			// alcoholism questions
+			drinks_alcohol: req.body.alcohol[&apos;does-drink&apos;] || null,
+			alcohol_type: req.body.alcohol.type || null,
+			alcoholic_drinks_weekly: req.body.alcoholfreq || null,
+			alcohol_concern: req.body.alcohol.concern || null,
+			alcohol_consider_stopping: req.body.alcohol[&apos;consider-stopping&apos;] || null,
+			// tobacco questions
+			tobacco_used_past_5_years: req.body.tobacco[&apos;used-prior&apos;],
+			tobacco_last_smoked: req.body.tobacco[&apos;last-use&apos;],
+			tobacco_type: req.body.tobacco[&apos;type-used&apos;],
+			currently_uses_tobacco: req.body.tobacco[&apos;current-use&apos;],
+			currently_uses_tobacco_repalcement: req.body.tobacco[&apos;nicotine-replace-therapy&apos;],
+			tobacco_replacement_type: req.body.tobacco[&apos;nicotine-replacement-types&apos;],
+			// drugs question - type and freq mtm
+			uses_recreational_drugs: req.body.drug[&apos;currently-use&apos;],
+			used_recreational_with_needle: req.body.drug.injected,
+			// other questions
+			mental_health_history: req.body.other[&apos;mental-health-wellbeing&apos;],
+			social_history: req.body.other[&apos;social-history&apos;],
+			family_history: req.body.other[&apos;family-history&apos;],
+			relevant_history: req.body.other[&apos;relevant-history&apos;],
+			// sign off
+			patient_id: req.body.patient_id,
+			practitioner_id: req.body.sign.practitioner_id,
+			date: new Date(req.body.sign.date),
+			practitioner_designation: req.body.sign.designation,
+			signature_blob: req.body.sign.image,
+		}
+		// console.log(req.body)
+		const [history_id] = await knex(&apos;patient_history&apos;).insert(historyBody).returning(&apos;history_id&apos;)
+		// console.log({row})
+		if (req.body.medication.prescription.length) {
+			for await (const prescription of req.body.medication.prescription) {
+				console.log({prescription})
+				const body = {
+					medication_name: prescription.name,
+					medication_dose: prescription.dose,
+					medication_frequency: prescription.freq,
+				}
+				console.log(body)
+				// add data to table
+				const [medication_usage_id] = await knex(&apos;medication_usage&apos;).insert(body).returning(&apos;medication_usage_id&apos;)
+				// create mtm relation
+				await knex(&apos;history_prescription_medication_usage&apos;).insert({
+					medication_usage_id,
+					history_id,
+				})
+			}
+		}
+		if (req.body.medication.otc.length) {
+			for await (const otc of req.body.medication.otc) {
+				console.log({otc})
+				const body = {
+					medication_name: otc.name,
+					medication_dose: otc.dose,
+					medication_frequency: otc.freq,
+				}
+				// create drug entry
+				const [medication_usage_id] = await knex(&apos;medication_usage&apos;).insert(body).returning(&apos;medication_usage_id&apos;)
+				// create mtm relation
+				await knex(&apos;history_otc_medication_usage&apos;).insert({
+					medication_usage_id,
+					history_id,
+				})
+			}
+		}
+		if (req.body.drug[&apos;use-frequency&apos;] &amp;&amp; req.body.drug[&apos;use-frequency&apos;].length) {
+			for await (const drug of req.body.drug[&apos;use-frequency&apos;]) {
+				console.log({drug})
+				const body = {
+					medication_name: drug.name,
+					medication_dose: drug.dose,
+					medication_frequency: drug.freq,
+				}
+				// create drug entry
+				const [medication_usage_id] = await knex(&apos;medication_usage&apos;).insert(body).returning(&apos;medication_usage_id&apos;)
+				// create mtm relation
+				await knex(&apos;history_otc_drug_usage&apos;).insert({
+					medication_usage_id,
+					history_id,
+				})
+			}
+		}
+		// const results = Object.keys(queries).reduce((acc, cur) =&gt; {})
+		// const resp = await knex(&apos;patient_history&apos;).insert(req.body)
+		const outcome = new OperationOutcome(&apos;success&apos;, 200, req.url, &apos;Successfully added history&apos;, {})
+		return outcome.makeResponse(res)
+	} catch (err) {
+		console.log(err)
+		const outcome = new OperationOutcome(&apos;error&apos;, 500, req.url, err)
+		return outcome.makeResponse(res)
+	}
+})
+
+module.exports = historyRouter
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

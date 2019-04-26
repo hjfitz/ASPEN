@@ -2,6 +2,10 @@ import {h} from 'preact'
 
 import {Input} from '../../Partial'
 
+/**
+ * basic contact info form
+ * @returns {preact.VNode}
+ */
 const Contact = () => (
 	<div>
 		<h3>Contact Details</h3>

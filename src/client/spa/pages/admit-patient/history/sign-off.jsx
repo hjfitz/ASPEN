@@ -3,8 +3,14 @@ import format from 'date-fns/format'
 import {getName} from '../../../util'
 import {SignatureBox} from '../../../Partial'
 
+/**
+ * @returns {string} format the date correctly
+ */
 const getDate = () => format(Date.now(), ' MMM DD, YYYY')
 
+/**
+ * @returns {preact.VNode}
+ */
 const SignOff = () => (
 	<div className="row">
 		<h4>Sign-off</h4>

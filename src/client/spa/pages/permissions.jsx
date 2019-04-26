@@ -8,6 +8,7 @@ import {fhirBase} from '../util'
 
 import '../styles/permissions.scss'
 
+// permissions base, similar to FHIR base, but with a different content-type
 export const permissionsBase = Axios.create({
 	baseURL: '/',
 	headers: {
@@ -52,6 +53,9 @@ class Permissions extends Component {
 		this.setPractitioner = this.setPractitioner.bind(this)
 	}
 
+	/**
+	 * get practitioner and encounter information from server. update state for lists
+	 */
 	async componentDidMount() {
 		const [{data: practitioners}, {data: patients}] = await Promise.all([
 			fhirBase.get('/Practitioner'),
@@ -67,6 +71,12 @@ class Permissions extends Component {
 		})
 	}
 
+	/**
+	 * create a function that:
+		* pull all data (patient relationships and permissions) from server
+		* stores this data in state
+	 * @param {number} id practitioner ID (database PK)
+	 */
 	setPractitioner(id) {
 		return async () => {
 			// fetch union table from permissions API
@@ -85,7 +95,19 @@ class Permissions extends Component {
 		}
 	}
 
+	/**
+	 * take the selected practitioner (set in state)
+	 * and a function that creates/removes a row with practitioner id and patient ID
+	 * in practitionerpatients table
+	 * @param {number} patientID patient ID to group
+	 * @param {boolean} grouped whether the practitioner and patient are grouped
+	 */
 	makeGrouping(patientID, grouped = false) {
+		/**
+		 * Attempt to POST to /permissions/destroy or /permission/create
+		 * depending on whether patient is already grouped
+		 * grouped data stored in state, from /permissions/relationships/:id
+		 */
 		return async () => {
 			if (!this.state.selectedPractitioner) return
 			const baseUrl = grouped ? 'destroy' : 'create'
@@ -104,6 +126,11 @@ class Permissions extends Component {
 		}
 	}
 
+	/**
+	 * attempt to add or remove a practitioner permission
+	 * post this to /permissions/toggle as well as practitioner id, permission and their permission set
+	 * @param {string} perm permission to add/remove
+	 */
 	togglePermission(perm) {
 		return async () => {
 			try {
@@ -128,6 +155,10 @@ class Permissions extends Component {
 	}
 
 
+	/**
+	 * render a list of practitioners
+	 * @returns {preact.VNode[]}
+	 */
 	renderPractitioners() {
 		return this.state.practitioners.entry.map(practitioner => (
 			<li
@@ -141,6 +172,10 @@ class Permissions extends Component {
 		))
 	}
 
+	/**
+	 * render patient list
+	 * @returns {preact.VNode[]}
+	 */
 	renderPatients() {
 		return this.state.patients.map(patient => (
 			<li
@@ -154,6 +189,10 @@ class Permissions extends Component {
 		))
 	}
 
+	/**
+	 * render a permission list based off of component state
+	 * @returns {preact.VNode[]}
+	 */
 	renderPermissions() {
 		const perms = this.state.practitionerPermissions
 		return this.permissions.map(perm => (
@@ -168,6 +207,11 @@ class Permissions extends Component {
 		))
 	}
 
+	/**
+	 * render patient permissions page.
+	 * render loader is no patient information loaded yet
+	 * @returns {preact.VNode}
+	 */
 	render() {
 		if (!this.state.loaded) return <Loader />
 		return (

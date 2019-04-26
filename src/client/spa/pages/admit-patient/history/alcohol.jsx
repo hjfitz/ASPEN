@@ -3,6 +3,9 @@ import Questionnaire from './Questionnaire'
 
 
 class Alcohol extends Questionnaire {
+	/**
+	 * @returns {Preact.VNode}
+	 */
 	render() {
 		return (
 			<div className="row">
@@ -32,6 +35,9 @@ class Alcohol extends Questionnaire {
 	}
 }
 
+/**
+ * @returns {preact.VNode}
+ */
 const AlcoholQuestionnaire = () => (
 	<div>
 		<div className="col s12">

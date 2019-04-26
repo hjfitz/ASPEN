@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">src/server/fhir/index.js | fyp</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Final year project @portsoc"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="fyp"><meta property="twitter:description" content="Final year project @portsoc"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/hjfitz/fyp"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa">client/spa</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/WarningScore.js~WarningScore.html">WarningScore</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-doModal">doModal</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getJwtPayload">getJwtPayload</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getName">getName</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-noop">noop</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-showLogin">showLogin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-toTitle">toTitle</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-fhirBase">fhirBase</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-pages">client/spa/pages</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/create-ward.jsx~CreateWard.html">CreateWard</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/permissions.jsx~Permissions.html">Permissions</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/search-patients.jsx~SearchPatient.html">SearchPatient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/view-patient.jsx~Patient.html">Patient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/view-ward.jsx~Ward.html">Ward</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/ward-list.jsx~WardList.html">WardList</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Add">Add</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Welcome">Welcome</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-permissionsBase">permissionsBase</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-pages-admit-patient">client/spa/pages/admit-patient</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/History.jsx~CreateHistory.html">CreateHistory</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/index.jsx~AdmitPatient.html">AdmitPatient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Contact">Contact</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-PatientDemographicInfo">PatientDemographicInfo</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-pages-admit-patient-history">client/spa/pages/admit-patient/history</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/Questionnaire.jsx~Questionnaire.html">Questionnaire</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/alcohol.jsx~Alcohol.html">Alcohol</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/drugs.jsx~Drugs.html">Drugs</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/health-history.jsx~HealthHistory.html">HealthHistory</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/medication.jsx~Medication.html">Medication</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/tobacco.jsx~Tobacco.html">Tobacco</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Diet">Diet</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Exercise">Exercise</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-OtherQuestions">OtherQuestions</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SignOff">SignOff</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DecButton">DecButton</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-IncButton">IncButton</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-partial-admit-patient">client/spa/partial/admit-patient</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/admit-patient/signature-box.jsx~Signature.html">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-partial-layout">client/spa/partial/layout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/layout/fab.jsx~Fab.html">Fab</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/layout/login.jsx~Login.html">Login</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/layout/redirect.jsx~Redirect.html">Redirect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Breadcrumbs">Breadcrumbs</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-partial-shared">client/spa/partial/shared</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Input">Input</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Loader">Loader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Modal">Modal</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-partial-view-patient">client/spa/partial/view-patient</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/view-patient/vital-signs.jsx~Vitals.html">Vitals</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/view-patient/vitals-charts.jsx~NewsChart.html">NewsChart</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HistoryReport">HistoryReport</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#server">server</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-router">router</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#server-fhir">server/fhir</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-patientRouter">patientRouter</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#server-fhir-classes">server/fhir/classes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Contact.js~Contact.html">Contact</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/DiagnosticReport.js~DiagnosticReport.html">DiagnosticReport</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Encounter.js~Encounter.html">Encounter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/FHIRBase.js~FHIRBase.html">FHIRBase</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Location.js~Location.html">Location</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Observation.js~Observation.html">Observation</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/OperationOutcome.js~OperationOutcome.html">OperationOutcome</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Patient.js~Patient.html">Patient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Practitioner.js~Practitioner.html">Practitioner</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/server/fhir/index.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const router = require(&apos;express&apos;).Router()
+const fileUpload = require(&apos;express-fileupload&apos;)
+const bodyParser = require(&apos;body-parser&apos;)
+
+const logger = require(&apos;../logger&apos;)
+const patientRouter = require(&apos;./patient&apos;)
+const {connect} = require(&apos;../db&apos;)
+const diagnosticRouter = require(&apos;./diagnostic-report&apos;)
+const observationRouter = require(&apos;./observation&apos;)
+const locationRouter = require(&apos;./location&apos;)
+const encounterRouter = require(&apos;./encounter&apos;)
+const historyRouter = require(&apos;./history&apos;)
+const practitionerRouter = require(&apos;./practitioner&apos;)
+const {createOutcome} = require(&apos;./util&apos;)
+
+const meta = {file: &apos;fhir/index.js&apos;}
+
+// https://www.hl7.org/fhir/http.html#mime-type
+router.use(async (req, res, next) =&gt; {
+	res.setHeader(&apos;content-type&apos;, &apos;application/fhir+json&apos;)
+	const {_format} = req.query
+	const {accept, &apos;content-type&apos;: type} = req.headers
+
+	// ensure that the user is specifying to use fhir json
+	const correctFormat = (_format &amp;&amp; _format !== &apos;application/fhir+json&apos;)
+
+	// ensure that the user can parse fhir json
+	const correctHeaders = accept.split(&apos; &apos;).includes(&apos;application/fhir+json&apos;)
+
+	// ensure that the user is not sending a form as these are unsupported
+	const correctContent = (type !== &apos;application/x-www-form-urlencoded&apos;)
+
+	// quick error checking
+	if (correctFormat) {
+		logger.warn(`_format incorrect! ${_format}`, {...meta, func: &apos;validation mw&apos;})
+		return createOutcome(req, res, 406, `Your _format, ${_format} is not accepted on this server`)
+	}
+	if (!correctHeaders) {
+		logger.warn(`headers incorrect: ${accept}`, {...meta, func: &apos;validation mw&apos;})
+		return createOutcome(req, res, 406, `accept headers wrong. You sent ${accept}, but only &quot;application/fhir+json is supported`)
+	}
+	if (!correctContent) {
+		logger.warn(&apos;bad content-type (application/x-www-form-urlencoded&apos;, {...meta, func: &apos;validation mw&apos;})
+		return createOutcome(req, res, 406, &apos;application/x-www-form-urlencoded is not accepted here&apos;, {}, &apos;error&apos;)
+	}
+	logger.silly(&apos;good request&apos;, {...meta, func: &apos;validation mw&apos;})
+	try {
+		await connect()
+	} catch (err) {
+		logger.error(`error connecting to db: ${err}`, {...meta, func: &apos;validation mw&apos;})
+	}
+	return next()
+})
+
+// ensure that forms can be read and files can be uploaded (patient ID)
+router.use(fileUpload({limits: {fileSize: 50 * 1024 * 1024}}))
+router.use(bodyParser.urlencoded({extended: false}))
+
+// all FHIR routes. note: all sit on /fhir
+router.use(&apos;/Observation&apos;, observationRouter)
+router.use(&apos;/Diagnostics&apos;, diagnosticRouter)
+router.use(&apos;/Encounter&apos;, encounterRouter)
+router.use(&apos;/Location&apos;, locationRouter)
+router.use(&apos;/Patient&apos;, patientRouter)
+router.use(&apos;/History&apos;, historyRouter)
+router.use(&apos;/Practitioner&apos;, practitionerRouter)
+
+// error handler - leave at base of fhir router
+router.use((req, res, next, err) =&gt; {
+	const {code, issue} = err
+	createOutcome(req, res, code, issue)
+})
+
+module.exports = router
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

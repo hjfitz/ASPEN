@@ -4,16 +4,29 @@ import {Loader} from '../Partial'
 import {fhirBase} from '../util'
 
 class WardList extends Component {
+	/**
+	 * Ward listing component
+	 * @param {preact.props} props component properties
+	 */
 	constructor(props) {
 		super(props)
 		this.state = {wardList: [], loaded: false}
 	}
 
+	/**
+	 * on mount, get all wards and update state so createWardList renders something
+	 */
 	async componentDidMount() {
 		const {data: wardList} = await fhirBase.get('/Location?type=Ward')
 		this.setState({wardList, loaded: true})
 	}
 
+	/**
+	 * take this.state.wardList (updated from FHIR API in componentDidMount())
+	 * render a ward list based off of this
+	 * DOM tree should be: a > img+span+p
+	 * @returns {preact.VNode}
+	 */
 	createWardList() {
 		const mappedWards = this.state.wardList.map(ward => (
 			<Link href={`/wards/${ward.id}`} className="collection-item avatar">
@@ -25,6 +38,10 @@ class WardList extends Component {
 		return <div className="collection">{mappedWards}</div>
 	}
 
+	/**
+	 * render the ward listing
+	 * @returns {preact.VNode}
+	 */
 	render() {
 		if (!this.state.loaded) return <Loader />
 		return (

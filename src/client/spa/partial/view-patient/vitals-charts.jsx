@@ -21,13 +21,22 @@ class NewsChart extends Component {
 		this.handleNewsChart = this.handleNewsChart.bind(this)
 	}
 
+	/**
+	 * on component mount, create charts
+	 */
 	componentDidMount() {
 		this.handleVitalsChart()
 		this.handleNewsChart()
 	}
 
+	/**
+	 * given vital signs (from props)
+	 * get all numeric values and place in to a dataset
+	 * place these on a graph
+	 */
 	handleVitalsChart() {
 		const {history} = this.props
+		// take all observation dates and format them to 03:30pm, 26th Apr 2019
 		const labels = history.map(obs => format(obs.date, 'hh:mma, Do MMM YYYY'))
 		// take from [{resp: 11, temp: 12}, {resp: 11, temp: 13}]
 		// change to {resp: [11, 11], temp: [12, 13]}
@@ -62,6 +71,12 @@ class NewsChart extends Component {
 		})
 	}
 
+	/**
+	 * given vital signs (from props)
+	 * get create a WarningScore object for each
+	 * map this in to the calculated NEWS
+	 * place these on a graph
+	 */
 	handleNewsChart() {
 		const {history} = this.props
 		const labels = history.map(obs => format(obs.date, 'hh:mma, Do MMM YYYY'))
@@ -86,6 +101,11 @@ class NewsChart extends Component {
 		})
 	}
 
+	/**
+	 *
+	 * @param {preact.ComponentProps} props
+	 * @returns {preact.VNode}
+	 */
 	render(props) {
 		return (
 			<div ref={n => props.refCb(n)} id="modal1" className="modal news-chart-modal">

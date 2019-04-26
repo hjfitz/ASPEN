@@ -34,12 +34,14 @@ locRouter.post('/', async (req, res) => {
 
 locRouter.get('/', async (req, res) => {
 	const {type} = req.query
+	// ensure that requests specify location type
 	if (!type) {
 		const outcome = new OperationOutcome('warn', 404, req.originalUrl, 'Incorrect query param')
 		return outcome.makeResponse(res)
 	}
+	// pull from database
 	const resp = await knex('location').select().where({type})
-	const payload = resp.map(entry => new Location({id: entry.location_id, ...entry}).getFhir())
+	const payload = resp.map(entry => new Location({id: entry.location_id, ...entry}).fhir())
 	return res.json(payload)
 })
 
@@ -53,7 +55,7 @@ locRouter.get('/:id', async (req, res) => {
 
 	// create a location with the database data, format it correctly
 	const location = new Location(row)
-	res.json(location.getFhir())
+	res.json(location.fhir())
 })
 
 locRouter.delete('/:id', async (req, res) => {

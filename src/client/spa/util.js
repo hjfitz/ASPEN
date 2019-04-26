@@ -22,6 +22,9 @@ export const getName = () => getJwtPayload(localStorage.token).name
  */
 export function noop() {}
 
+/**
+ * display a login modal
+ */
 export function showLogin() {
 	localStorage.removeItem('token')
 	const modal = document.querySelector('.modal.login-modal')
@@ -29,6 +32,9 @@ export function showLogin() {
 	inst.open()
 }
 
+/**
+ * fhir layer for requests
+ */
 export const fhirBase = axios.create({
 	baseURL: '/fhir',
 	timeout: 1500,
@@ -69,9 +75,9 @@ export function doModal(header, body) {
 	instance.open()
 }
 
+/**
+ * capitalise a string: harry -> Harry
+ * @param {string} str input to capitalise
+ * @returns {string} capitalised string
+ */
 export const toTitle = str => str.charAt(0).toUpperCase() + str.slice(1)
-
-// shitty enums
-export const MINUTE = 1000 * 60
-export const HALF_HOUR = MINUTE * 30
-export const HOUR = MINUTE * 60

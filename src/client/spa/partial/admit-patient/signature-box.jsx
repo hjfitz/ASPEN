@@ -1,9 +1,18 @@
 import {h, Component} from 'preact'
 
+/**
+ * given a container, return a function that checks returns a function to get a property value
+ * @param {HTMLElemement} container Containter to get a style and parse int to
+ */
 const getStyle = container => prop => parseInt(getComputedStyle(container, null)
 	.getPropertyValue(prop)
 	.replace('px', ''), 10)
 
+/**
+ * Given a touch event, get the X and Y, and simulate a mousemove event
+ * Simulate button 1: this is the click button
+ * @param {Event} e event to simulate as a mouseclick
+ */
 function emulateTouch(e) {
 	e.preventDefault()
 	const touch = e.touches[0]
@@ -15,6 +24,10 @@ function emulateTouch(e) {
 	document.dispatchEvent(mouseEvent)
 }
 
+/**
+ * simulate mouseup on touchstop
+ * @returns {Boolean}
+ */
 function dispatchMouseUp() {
 	return document.dispatchEvent(new MouseEvent('mouseup', {}))
 }
@@ -29,6 +42,10 @@ class Signature extends Component {
 		this.setTouchPosition = this.setTouchPosition.bind(this)
 	}
 
+	/**
+	 * on mount, add event listeners for mousemove
+	 * add event listeners for touch events that simulate mousemove events
+	 */
 	componentDidMount() {
 		// set up event listeners
 		document.addEventListener('mousemove', this.draw)
@@ -44,6 +61,9 @@ class Signature extends Component {
 		this.canvas.addEventListener('touchmove', emulateTouch)
 	}
 
+	/**
+	 * on unmount, remove all event listeners
+	 */
 	componentWillUnmount() {
 		document.removeEventListener('mousemove', this.draw)
 		document.removeEventListener('mousedown', this.setPosition)
@@ -62,6 +82,10 @@ class Signature extends Component {
 		return this.setPosition(ev.touches[0])
 	}
 
+	/**
+	 * Given an event, take the mouse coords and update the mouse position in this component
+	 * @param {Event} ev
+	 */
 	setPosition(ev) {
 		// no need to set state as component doesn't need to render again
 		this.pos = {
@@ -70,6 +94,9 @@ class Signature extends Component {
 		}
 	}
 
+	/**
+	 * resize the canvas to fill available space on every draw()
+	 */
 	setCanvasDimensions() {
 		if (!this.setWidth) {
 			const getProp = getStyle(this.content)
@@ -85,6 +112,13 @@ class Signature extends Component {
 		}
 	}
 
+	/**
+	 * on a mousemove event, move a virtual pointer on a canvas
+	 * update this position with the event
+	 * move the virtual pointer to the new place
+	 * stroke a line between the beginning and end
+	 * @param {Event} ev mousemove event
+	 */
 	draw(ev) {
 		const {ctx} = this
 		// mouse left button must be pressed
@@ -105,11 +139,18 @@ class Signature extends Component {
 		ctx.stroke() // draw it!
 	}
 
+	/**
+	 * clear the signature on the canvas
+	 * @param {Event} ev Click event
+	 */
 	reset(ev) {
 		ev.preventDefault()
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 	}
 
+	/**
+	 * @returns {preact.VNode}
+	 */
 	render() {
 		return (
 			<div className="card z-depth-0">

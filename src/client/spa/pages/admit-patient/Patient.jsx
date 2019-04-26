@@ -3,6 +3,11 @@ import isMobile from 'ismobilejs'
 
 import {Input, Select} from '../../Partial'
 
+/**
+ * basic form for patient demographic submission
+ * @param {preact.ComponentProps} props comopnent props
+ * @returns {preact.VNode}
+ */
 const PatientDemographicInfo = props => (
 	<div>
 

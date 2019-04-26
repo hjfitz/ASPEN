@@ -1,15 +1,19 @@
 import {h} from 'preact'
 import {Link} from 'preact-router'
 
-import {getName, getJwtPayload} from '../util'
+import {getJwtPayload} from '../util'
 
 import '../styles/welcome.scss'
 
+/**
+ * get the given name (or name) from JWT
+ * @returns {Boolean}
+ */
 const getGiven = () => getJwtPayload(localStorage.token).given_name || getJwtPayload(localStorage.token).name
 
 /**
  * Welcome page
- * @return {VNode} Welcome page
+ * @return {preact.VNode} Welcome page
  */
 const Welcome = () => {
 	const {permissions} = getJwtPayload(localStorage.getItem('token'))

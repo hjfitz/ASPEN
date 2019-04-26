@@ -2,6 +2,7 @@ const Location = require('./Location')
 const Patient = require('./Patient')
 const {knex} = require('../../db')
 const logger = require('../../logger')
+const FHIRBase = require('./FHIRBase')
 
 class Encounter {
 	/**
@@ -128,7 +129,7 @@ class Encounter {
 		if (include.location) {
 			const unwrappedLoc = new Location({id: this.location_id})
 			await unwrappedLoc.populate()
-			location = unwrappedLoc.getFhir()
+			location = unwrappedLoc.fhir()
 		}
 
 		return {
