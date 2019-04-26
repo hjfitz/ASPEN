@@ -148,7 +148,7 @@ class Vitals extends Component {
 		}
 
 		// everything must be correct, send it back to the main component
-=		const inputs = requiredInputs.map(el => document.getElementById(el))
+		const inputs = requiredInputs.map(el => document.getElementById(el))
 		const observations = {}
 		inputs.forEach(field => observations[field.id] = field.value)
 		console.log(observations)
