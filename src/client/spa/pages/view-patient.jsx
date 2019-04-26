@@ -136,6 +136,12 @@ class Patient extends Component {
 		if (sev === 'success') window.history.back()
 	}
 
+	/**
+	 * get history data and then update state
+	 * once state is updated, can be passed to history component as props via re-render
+	 * after this, pop-up the modal
+	 * @param {Event} ev click
+	 */
 	async popupHistory(ev) {
 		ev.preventDefault()
 		const {patient_id} = this.props
@@ -154,11 +160,20 @@ class Patient extends Component {
 		})
 	}
 
+	/**
+	 * invoked on click of A-E
+	 * placeholder until invoked
+	 * @param {Event} ev Click event
+	 */
 	async popupAE(ev) {
 		ev.preventDefault()
 		console.log(this)
 	}
 
+	/**
+	 * pop up a modal and update tabs
+	 * @param {Event} ev click event
+	 */
 	popupWarningScoreHistory(ev) {
 		ev.preventDefault()
 		const instance = M.Modal.getInstance(this.newsChart) || M.Modal.init(this.newsChart, {
@@ -173,7 +188,7 @@ class Patient extends Component {
 
 	/**
 	 * Render our patient info
-	 * @returns {VNode} patient information or loading icon
+	 * @returns {preact.VNode} patient information or loading icon
 	 */
 	render() {
 		if (!this.state.loaded) return <Loader />
