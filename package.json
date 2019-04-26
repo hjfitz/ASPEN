@@ -14,7 +14,7 @@
     "build:watch": "webpack --mode=development --watch",
     "build:prod": "webpack --mode=production",
     "lint": "eslint src/**/*.js{x,}",
-    "build:docs": "jsdoc -c jsdoc.config.js",
+    "build:docs": "esdoc",
     "build:docs:all": "yarn build:docs ./server.js ./bin/www.js ./src/**/**/*.js"
   },
   "engines": {
@@ -67,6 +67,11 @@
     "babel-loader": "^8.0.4",
     "contentful-sdk-jsdoc": "^2.2.0",
     "css-loader": "^2.0.0",
+    "esdoc": "^1.1.0",
+    "esdoc-ecmascript-proposal-plugin": "^1.0.0",
+    "esdoc-jsx-plugin": "^1.0.0",
+    "esdoc-node": "^1.0.4",
+    "esdoc-standard-plugin": "^1.0.0",
     "eslint": "^5.9.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.14.0",

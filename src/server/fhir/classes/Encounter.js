@@ -17,7 +17,6 @@ class Encounter {
 	 * @param {number} params.location_id location that this encounter took place in
 	 */
 	constructor(params = {}) {
-		super(params)
 		this.encounter_id = params.encounter_id
 		this.last_updated = params.last_updated
 		this.class = params.class

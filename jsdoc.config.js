@@ -1,5 +1,5 @@
 module.exports = {
-	recurseDepth: 15,
+	recurseDepth: 20,
 	source: {
 		include: [
 			'./server.js',

@@ -1,81 +1,123 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="utf-8">
-    <title>Home - Documentation</title>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl">
+  <title data-ice="title">Home | fyp</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Final year project @portsoc"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="fyp"><meta property="twitter:description" content="Final year project @portsoc"></head>
+<body class="layout-container" data-ice="rootContainer">
 
-    <script src="scripts/hljs/highlight.min.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/hljs.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
-</head>
-<body>
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/hjfitz/fyp"><img width="20px" src="./image/github.png"></a></header>
 
-<input type="checkbox" id="nav-trigger" class="nav-trigger" />
-<label for="nav-trigger" class="navicon-button x">
-  <div class="navicon"></div>
-</label>
-
-<label for="nav-trigger" class="overlay"></label>
-
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AdmitPatient.html">AdmitPatient</a><ul class='methods'><li data-type='method'><a href="AdmitPatient.html#admit">admit</a></li><li data-type='method'><a href="AdmitPatient.html#componentDidMount">componentDidMount</a></li><li data-type='method'><a href="AdmitPatient.html#getImg">getImg</a></li><li data-type='method'><a href="AdmitPatient.html#render">render</a></li><li data-type='method'><a href="AdmitPatient.html#setImg">setImg</a></li></ul></li><li><a href="App.html">App</a><ul class='methods'><li data-type='method'><a href="App.html#componentDidMount">componentDidMount</a></li><li data-type='method'><a href="App.html#onChange">onChange</a></li><li data-type='method'><a href="App.html#render">render</a></li></ul></li><li><a href="global.html#Contact">Contact</a><ul class='methods'><li data-type='method'><a href="global.html#Contact#insert">insert</a></li><li data-type='method'><a href="global.html#Contact#populate">populate</a></li></ul></li><li><a href="CreateWard.html">CreateWard</a><ul class='methods'><li data-type='method'><a href="CreateWard.html#.validateForms">validateForms</a></li><li data-type='method'><a href="CreateWard.html#componentDidMount">componentDidMount</a></li><li data-type='method'><a href="CreateWard.html#makeWard">makeWard</a></li><li data-type='method'><a href="CreateWard.html#render">render</a></li></ul></li><li><a href="DiagnosticReport.html">DiagnosticReport</a><ul class='methods'><li data-type='method'><a href="DiagnosticReport.html#fhir">fhir</a></li><li data-type='method'><a href="DiagnosticReport.html#fhirLinked">fhirLinked</a></li></ul></li><li><a href="Encounter.html">Encounter</a><ul class='methods'><li data-type='method'><a href="Encounter.html#delete">delete</a></li><li data-type='method'><a href="Encounter.html#fhir">fhir</a></li><li data-type='method'><a href="Encounter.html#insert">insert</a></li><li data-type='method'><a href="Encounter.html#populate">populate</a></li><li data-type='method'><a href="Encounter.html#update">update</a></li></ul></li><li><a href="Location.html">Location</a><ul class='methods'><li data-type='method'><a href="Location.html#.lookup">lookup</a></li><li data-type='method'><a href="Location.html#fhir">fhir</a></li><li data-type='method'><a href="Location.html#populate">populate</a></li></ul></li><li><a href="module.exports.html">exports</a></li><li><a href="NEWSError.html">NEWSError</a></li><li><a href="Observation.html">Observation</a><ul class='methods'><li data-type='method'><a href="Observation.html#fhir">fhir</a></li></ul></li><li><a href="OperationOutcome.html">OperationOutcome</a><ul class='methods'><li data-type='method'><a href="OperationOutcome.html#makeResponse">makeResponse</a></li></ul></li><li><a href="Patient.html">Patient</a><ul class='methods'><li data-type='method'><a href="Patient.html#componentDidMount">componentDidMount</a></li><li data-type='method'><a href="Patient.html#delete">delete</a></li><li data-type='method'><a href="Patient.html#delete">delete</a></li><li data-type='method'><a href="Patient.html#fhir">fhir</a></li><li data-type='method'><a href="Patient.html#insert">insert</a></li><li data-type='method'><a href="Patient.html#populate">populate</a></li><li data-type='method'><a href="Patient.html#popupAE">popupAE</a></li><li data-type='method'><a href="Patient.html#popupHistory">popupHistory</a></li><li data-type='method'><a href="Patient.html#popupWarningScoreHistory">popupWarningScoreHistory</a></li><li data-type='method'><a href="Patient.html#render">render</a></li><li data-type='method'><a href="Patient.html#submitVitals">submitVitals</a></li><li data-type='method'><a href="Patient.html#update">update</a></li></ul></li><li><a href="Questionnaire.html">Questionnaire</a><ul class='methods'><li data-type='method'><a href="Questionnaire.html#toggleQuestionnaire">toggleQuestionnaire</a></li></ul></li><li><a href="Redirect.html">Redirect</a><ul class='methods'><li data-type='method'><a href="Redirect.html#componentWillMount">componentWillMount</a></li><li data-type='method'><a href="Redirect.html#render">render</a></li></ul></li><li><a href="SearchPatient.html">SearchPatient</a><ul class='methods'><li data-type='method'><a href="SearchPatient.html#componentWillUnmount">componentWillUnmount</a></li><li data-type='method'><a href="SearchPatient.html#render">render</a></li><li data-type='method'><a href="SearchPatient.html#renderPatients">renderPatients</a></li><li data-type='method'><a href="SearchPatient.html#search">search</a></li></ul></li><li><a href="Ward.html">Ward</a><ul class='methods'><li data-type='method'><a href="Ward.html#componentDidMount">componentDidMount</a></li><li data-type='method'><a href="Ward.html#render">render</a></li><li data-type='method'><a href="Ward.html#renderPatients">renderPatients</a></li></ul></li><li><a href="WardList.html">WardList</a><ul class='methods'><li data-type='method'><a href="WardList.html#componentDidMount">componentDidMount</a></li><li data-type='method'><a href="WardList.html#createWardList">createWardList</a></li><li data-type='method'><a href="WardList.html#render">render</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#AlcoholQuestionnaire">AlcoholQuestionnaire</a></li><li><a href="global.html#Breadcrumbs">Breadcrumbs</a></li><li><a href="global.html#calculate">calculate</a></li><li><a href="global.html#checkPass">checkPass</a></li><li><a href="global.html#createOutcome">createOutcome</a></li><li><a href="global.html#DecButton">DecButton</a></li><li><a href="global.html#decodeJWTPayload">decodeJWTPayload</a></li><li><a href="global.html#Diet">Diet</a></li><li><a href="global.html#dispatchMouseUp">dispatchMouseUp</a></li><li><a href="global.html#doModal">doModal</a></li><li><a href="global.html#DrugTable">DrugTable</a></li><li><a href="global.html#emulateTouch">emulateTouch</a></li><li><a href="global.html#Exercise">Exercise</a></li><li><a href="global.html#fhirBase">fhirBase</a></li><li><a href="global.html#formatDate">formatDate</a></li><li><a href="global.html#getCurrentUrl">getCurrentUrl</a></li><li><a href="global.html#getDate">getDate</a></li><li><a href="global.html#getGiven">getGiven</a></li><li><a href="global.html#getJwtPayload">getJwtPayload</a></li><li><a href="global.html#getPatientReport">getPatientReport</a></li><li><a href="global.html#getStyle">getStyle</a></li><li><a href="global.html#handleUser">handleUser</a></li><li><a href="global.html#HistoryReport">HistoryReport</a></li><li><a href="global.html#IncButton">IncButton</a></li><li><a href="global.html#Input">Input</a></li><li><a href="global.html#lengthPolicy">lengthPolicy</a></li><li><a href="global.html#Loader">Loader</a></li><li><a href="global.html#Modal">Modal</a></li><li><a href="global.html#noop">noop</a></li><li><a href="global.html#normalisePatientInfo">normalisePatientInfo</a></li><li><a href="global.html#normalisePatientReports">normalisePatientReports</a></li><li><a href="global.html#OtherQuestions">OtherQuestions</a></li><li><a href="global.html#PatientDemographicInfo">PatientDemographicInfo</a></li><li><a href="global.html#score">score</a></li><li><a href="global.html#scoreBP">scoreBP</a></li><li><a href="global.html#scoreCons">scoreCons</a></li><li><a href="global.html#scoreHeart">scoreHeart</a></li><li><a href="global.html#scoreOxy">scoreOxy</a></li><li><a href="global.html#scoreResp">scoreResp</a></li><li><a href="global.html#scoreSuppOxy">scoreSuppOxy</a></li><li><a href="global.html#scoreTemp">scoreTemp</a></li><li><a href="global.html#Select">Select</a></li><li><a href="global.html#showLogin">showLogin</a></li><li><a href="global.html#SignOff">SignOff</a></li><li><a href="global.html#toTitle">toTitle</a></li><li><a href="global.html#Welcome">Welcome</a></li></ul>
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa">client/spa</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/WarningScore.js~WarningScore.html">WarningScore</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-doModal">doModal</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getJwtPayload">getJwtPayload</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getName">getName</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-noop">noop</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-showLogin">showLogin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-toTitle">toTitle</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-fhirBase">fhirBase</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-pages">client/spa/pages</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/create-ward.jsx~CreateWard.html">CreateWard</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/permissions.jsx~Permissions.html">Permissions</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/search-patients.jsx~SearchPatient.html">SearchPatient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/view-patient.jsx~Patient.html">Patient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/view-ward.jsx~Ward.html">Ward</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/ward-list.jsx~WardList.html">WardList</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Add">Add</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Welcome">Welcome</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-permissionsBase">permissionsBase</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-pages-admit-patient">client/spa/pages/admit-patient</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/History.jsx~CreateHistory.html">CreateHistory</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/index.jsx~AdmitPatient.html">AdmitPatient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Contact">Contact</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-PatientDemographicInfo">PatientDemographicInfo</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-pages-admit-patient-history">client/spa/pages/admit-patient/history</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/Questionnaire.jsx~Questionnaire.html">Questionnaire</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/alcohol.jsx~Alcohol.html">Alcohol</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/drugs.jsx~Drugs.html">Drugs</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/health-history.jsx~HealthHistory.html">HealthHistory</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/medication.jsx~Medication.html">Medication</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/tobacco.jsx~Tobacco.html">Tobacco</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Diet">Diet</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Exercise">Exercise</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-OtherQuestions">OtherQuestions</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SignOff">SignOff</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DecButton">DecButton</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-IncButton">IncButton</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-partial-admit-patient">client/spa/partial/admit-patient</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/admit-patient/signature-box.jsx~Signature.html">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-partial-layout">client/spa/partial/layout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/layout/fab.jsx~Fab.html">Fab</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/layout/login.jsx~Login.html">Login</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/layout/redirect.jsx~Redirect.html">Redirect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Breadcrumbs">Breadcrumbs</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-partial-shared">client/spa/partial/shared</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Input">Input</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Loader">Loader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Modal">Modal</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-partial-view-patient">client/spa/partial/view-patient</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/view-patient/vital-signs.jsx~Vitals.html">Vitals</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/view-patient/vitals-charts.jsx~NewsChart.html">NewsChart</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HistoryReport">HistoryReport</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#server">server</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-router">router</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#server-fhir">server/fhir</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-patientRouter">patientRouter</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#server-fhir-classes">server/fhir/classes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Contact.js~Contact.html">Contact</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/DiagnosticReport.js~DiagnosticReport.html">DiagnosticReport</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Encounter.js~Encounter.html">Encounter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/FHIRBase.js~FHIRBase.html">FHIRBase</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Location.js~Location.html">Location</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Observation.js~Observation.html">Observation</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/OperationOutcome.js~OperationOutcome.html">OperationOutcome</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Patient.js~Patient.html">Patient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Practitioner.js~Practitioner.html">Practitioner</a></span></span></li>
+</ul>
+</div>
 </nav>
 
-<div id="main">
-    
-
-    
-
-
-
-    
-
-
-
-
-
-
-
-
-
-    
-
-
-    <section class="readme">
-        <article><h1>FYP</h1><blockquote>
+<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="fyp">FYP</h1><blockquote>
 <p>FHIR server with UI to record patient vital signs</p>
 </blockquote>
-<h2>Prerequisites</h2><ul>
+<h2 id="prerequisites">Prerequisites</h2><ul>
 <li>Node.js ^11.x.x</li>
 <li>yarn ^1.12.x</li>
 <li>postgres ^10.6</li>
 <li>Database setup according to <code>db/schema.psql</code></li>
 </ul>
-<h2>Setup</h2><ol>
+<h2 id="setup">Setup</h2><ol>
 <li>Install dependencies: <code>yarn</code></li>
 <li>Setup environment: <code>mv .env-sample .env</code></li>
 <li>Setup the database: <code>yarn create:db</code></li>
 <li>Build the bundle: <code>yarn build:prod</code></li>
 <li>Run! <code>node bin/www</code></li>
-</ol></article>
-    </section>
-
-
-
-
-
-
+</ol>
+</div>
 </div>
 
-<br class="clear">
-
-<footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Apr 26 2019 15:33:49 GMT+0100 (British Summer Time) using the <a href="https://github.com/contentful/contentful-sdk-jsdoc">contentful-sdk-jsdoc</a> theme.
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
 </footer>
 
-<script>hljs.initHighlightingOnLoad();</script>
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
 </body>
 </html>
