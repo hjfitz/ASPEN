@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>server/fhir/classes/Encounter.js - Documentation</title>
+    <title>client/spa/WarningScore.js - Documentation</title>
 
     <script src="scripts/hljs/highlight.min.js"></script>
     <!--[if lt IE 9]>
@@ -26,7 +26,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">server/fhir/classes/Encounter.js</h1>
+    <h1 class="page-title">client/spa/WarningScore.js</h1>
     
 
     
@@ -36,157 +36,174 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const Location = require('./Location')
-const Patient = require('./Patient')
-const {knex} = require('../../db')
-const logger = require('../../logger')
-const FHIRBase = require('./FHIRBase')
+            <pre class="prettyprint source linenums"><code>import {doModal} from './util'
 
-class Encounter {
+class NEWSError extends Error {
 	/**
-	 * Wrapper for all fhir encounters
-	 * @param {Object} params params used to create Enounter
-	 * @param {number} params.encounter_id ID this encounter corresponds to in DB
-	 * @param {Date} params.last_updated when this was updated last
-	 * @param {string} params.class the type of encounter (generally admission)
-	 * @param {string} params.status the status of the encounter
-	 * 								(also usually finished as the patient has been admitted)
-	 * @param {number} params.patient_id patient that this encounter corresponds to
-	 * @param {number} params.location_id location that this encounter took place in
+	 * Error wrapper for NEWS object
+	 * @param {string} message Error message
+	 * @param {string[]} missing missing vital signs
 	 */
-	constructor(params = {}) {
-		super(params)
-		this.encounter_id = params.encounter_id
-		this.last_updated = params.last_updated
-		this.class = params.class
-		this.status = params.status
-		this.patient_id = params.patient_id
-		this.location_id = params.location_id
-		this.meta = {file: 'fhir/classes/Encounter.js'}
-		this.required = [
-			'class',
-			'status',
-			'patient_id',
-			'location_id',
-			'last_updated',
-		]
-	}
-
-	/**
-	 * Populate the object by ID
-	 * @return {Promise&lt;boolean>} Able to populate or not
-	 */
-	async populate() {
-		const {encounter_id} = this
-		// use a try-catch so that if there is nothing by ID
-		// err is thrown and we can catch/return false
-		try {
-			const [resp] = await knex('encounter').select().where('encounter_id', encounter_id)
-			Object.keys(resp).forEach(key => this[key] = resp[key])
-			return true
-		} catch (err) {
-			logger.error('Unable to populate enconter', {...this.meta, func: 'populate()'})
-			logger.error(err, {...this.meta, func: 'populate()'})
-			return false
-		}
-	}
-
-	/**
-	 * Adds object params to database
-	 * @returns {Promise&lt;boolean>} Added to database or not
-	 */
-	async insert() {
-		this.last_updated = new Date()
-		const missingKeys = this.required.filter(key => !this[key])
-		if (missingKeys.length) return false
-		const insertObj = this.required.reduce((acc, key) => {
-			acc[key] = this[key]
-			return acc
-		}, {})
-		try {
-			logger.silly(JSON.stringify(insertObj), {...this.meta, func: 'insert()'})
-			await knex('encounter').insert(insertObj)
-			return true
-		} catch (err) {
-			logger.error('Unable to insert enconter', {...this.meta, func: 'insert()'})
-			logger.error(err, {...this.meta, func: 'insert()'})
-			return false
-		}
-	}
-
-	/**
-	 * Update database based on object params
-	 * @returns {Promise&lt;boolean>} updated or not
-	 */
-	async update() {
-		const exists = this.required.filter(key => this[key])
-		const cannotUpdate = exists.length === this.required.length
-		if (cannotUpdate) return false
-		const obj = this.required.reduce((acc, cur) => {
-			if (this[cur]) acc[cur] = this[cur]
-			return acc
-		}, {})
-		obj.last_updated = new Date()
-		this.last_updated = obj.last_updated
-		try {
-			await knex('encounter').update(obj)
-			return true
-		} catch (err) {
-			logger.error('Unable to update enconter', {...this.meta, func: 'update()'})
-			logger.error(err, {...this.meta, func: 'update()'})
-			return false
-		}
-	}
-
-	/**
-	 * delete based on this.encounter_id
-	 * @return {Promise&lt;boolean>} deleted or not
-	 */
-	async delete() {
-		try {
-			await knex('encounter').delete().where('encounter_id', this.encounter_id)
-			return true
-		} catch (err) {
-			logger.error('Unable to delete enconter', {...this.meta, func: 'delete()'})
-			logger.error(err, {...this.meta, func: 'delete()'})
-			return false
-		}
-	}
-
-	/**
-	 * format to fhir spec
-	 * @return {object} fhir formatted object
-	 */
-	async fhir(include) {
-		let patient = {reference: `Patient/${this.patient_id}`}
-		let location = {reference: `Location/${this.location_id}`}
-		if (include.patient) {
-			const unwrappedPat = new Patient({id: this.patient_id})
-			await unwrappedPat.populate()
-			patient = await unwrappedPat.fhir()
-		}
-		if (include.location) {
-			const unwrappedLoc = new Location({id: this.location_id})
-			await unwrappedLoc.populate()
-			location = unwrappedLoc.fhir()
-		}
-
-		return {
-			resourceType: 'Encounter',
-			meta: {
-				lastUpdated: new Date(this.last_updated),
-			},
-			status: this.status,
-			class: {
-				data: this.class,
-			},
-			subject: patient,
-			location: [location],
-		}
+	constructor(message, missing) {
+		super(message)
+		this.name = 'NEWSError'
+		this.missing = missing
 	}
 }
 
-module.exports = Encounter
+/**
+ * ! TODO thorough testing
+ */
+export default class WarningScore {
+	/**
+	 * Warning score wrapper for patient info
+	 * @param {object} report formatted diagnostic report
+	 * @param {number} report.respiratory_rate
+	 * @param {number} report.oxygen_saturation
+	 * @param {number} report.heart_rate
+	 * @param {number} report.body_temperature
+	 * @param {number} report.systolic_bp
+	 * @param {string} report.level_of_consciousness
+	 * @param {string} report.supplemental_oxygen (on/off)
+	 */
+	constructor(report = {}) {
+		// can't generate a proper EWS without these
+		this.requiredFields = [
+			'respiratory_rate',
+			'oxygen_saturation',
+			'heart_rate',
+			'body_temperature',
+			'systolic_bp',
+			'level_of_consciousness',
+		]
+		this.respRate = report.respiratory_rate
+		this.oxySat = report.oxygen_saturation
+		this.heartRate = report.heart_rate
+		this.bodyTemp = report.body_temperature
+		this.systolicBP = report.systolic_bp
+		this.conscLevel = report.level_of_consciousness
+		this.suppOxygen = report.supplemental_oxygen
+		this.missingFields = this.requiredFields.filter(field => !(field in report))
+		if (this.missingFields.length === this.requiredFields.length) return
+		if (this.missingFields.length) {
+			doModal('Error with EWS Calculation', `Fields were missing during submission!&lt;/p>&lt;ul>&lt;li class="browser-default">${this.missingFields.join('&lt;/li>&lt;li>')}`)
+		}
+	}
+
+	/**
+	 * returns object with invididually scored elements (for use in chart)
+	 * @return {object} each part of a patient warning score individually scored
+	 */
+	calculate() {
+		if (this.missingFields.length) {
+			return {score: 0}
+		}
+		return {
+			resp: this.scoreResp(),
+			oxySat: this.scoreOxy(),
+			heartRate: this.scoreHeart(),
+			bodyTemp: this.scoreTemp(),
+			systolicBP: this.scoreBP(),
+			conscLevel: this.scoreCons(),
+			suppOxygen: this.scoreSuppOxy(),
+		}
+	}
+
+	/**
+	 * returns the NEWS for the given set of vital signs
+	 * @returns {number} patient NEWS
+	 */
+	score() {
+		const scores = this.calculate()
+		console.table(scores)
+		const vals = Object.values(scores)
+		const highest = vals.sort().reverse()
+		return highest[0]
+	}
+
+	/**
+	 * Create an EWS for respiratory rate
+	 * @returns {number}
+	 */
+	scoreResp() {
+		const rate = parseFloat(this.respRate, 10)
+		if (rate >= 12 &amp;&amp; rate &lt;= 20) return 0
+		if (rate >= 9 &amp;&amp; rate &lt;= 11) return 1
+		if (rate >= 21 &amp;&amp; rate &lt;= 24) return 2
+		if (rate &lt;= 8 || rate >= 25) return 3
+		throw new NEWSError(`Unable to calculate NEWS: respiratory rate incorrect (${rate})`)
+	}
+
+	/**
+	 * Create EWS for patient oxygen saturation
+	 * @returns {number}
+	 */
+	scoreOxy() {
+		const sat = parseFloat(this.oxySat, 10)
+		if (sat >= 96) return 0
+		if (sat >= 94) return 1
+		if (sat >= 92) return 2
+		if (sat &lt;= 91) return 3
+		throw new NEWSError(`Unable to calculate NEWS: oxygen saturation incorrect (${sat})`)
+	}
+
+	/**
+	 * Create EWS for patient heart rate
+	 * @returns {number}
+	 */
+	scoreHeart() {
+		const rate = parseFloat(this.heartRate, 10)
+		if (rate &lt;= 40 || rate >= 131) return 3
+		if (rate >= 111 &amp;&amp; rate &lt;= 130) return 2
+		if ((rate >= 41 &amp;&amp; rate &lt;= 50) || (rate >= 91 &amp;&amp; rate &lt;= 110)) return 1
+		if (rate >= 51 &amp;&amp; rate &lt;= 90) return 0
+		throw new NEWSError(`Unable to calculate NEWS: heart rate incorrect (${rate})`)
+	}
+
+	/**
+	 * Create EWS for patient body temperature
+	 * @returns {number}
+	 */
+	scoreTemp() {
+		const temp = parseFloat(this.bodyTemp, 10)
+		if (temp &lt;= 35) return 3
+		if (temp >= 39.1) return 2
+		if ((temp >= 35.1 &amp;&amp; temp &lt;= 36) || (temp >= 38.1 &amp;&amp; temp &lt;= 39)) return 1
+		if (temp >= 36.1 &amp;&amp; temp &lt;= 38) return 0
+		throw new NEWSError(`Unable to calculate NEWS: body temperature incorrect (${temp})`)
+	}
+
+	/**
+	 * Create EWS for patient blood pressure
+	 * @returns {number}
+	 */
+	scoreBP() {
+		const bp = parseFloat(this.systolicBP, 10)
+		if (bp &lt;= 90 || bp >= 220) return 3
+		if (bp >= 91 &amp;&amp; bp &lt;= 100) return 2
+		if (bp >= 101 &amp;&amp; bp &lt;= 110) return 1
+		if (bp >= 111 &amp;&amp; bp &lt;= 219) return 0
+		throw new NEWSError(`Unable to calculate NEWS: BP incorrect (${bp})`)
+	}
+
+	/**
+	 * Create EWS for patient consciousness level
+	 * @returns {number}
+	 */
+	scoreCons() {
+		if (this.conscLevel === 'A') return 0
+		return 3
+	}
+
+	/**
+	 * Create EWS for patient on supplemental oxygen
+	 * @returns {number}
+	 */
+	scoreSuppOxy() {
+		if (this.suppOxygen === 'on') return 2
+		return 0
+	}
+}
 </code></pre>
         </article>
     </section>

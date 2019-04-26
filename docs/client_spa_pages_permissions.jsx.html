@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>server/fhir/classes/Encounter.js - Documentation</title>
+    <title>client/spa/pages/permissions.jsx - Documentation</title>
 
     <script src="scripts/hljs/highlight.min.js"></script>
     <!--[if lt IE 9]>
@@ -26,7 +26,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">server/fhir/classes/Encounter.js</h1>
+    <h1 class="page-title">client/spa/pages/permissions.jsx</h1>
     
 
     
@@ -36,157 +36,244 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const Location = require('./Location')
-const Patient = require('./Patient')
-const {knex} = require('../../db')
-const logger = require('../../logger')
-const FHIRBase = require('./FHIRBase')
+            <pre class="prettyprint source linenums"><code>import {h, Component} from 'preact'
+import cloneDeep from 'lodash/cloneDeep'
+import M from 'materialize-css'
+import Axios from 'axios'
 
-class Encounter {
-	/**
-	 * Wrapper for all fhir encounters
-	 * @param {Object} params params used to create Enounter
-	 * @param {number} params.encounter_id ID this encounter corresponds to in DB
-	 * @param {Date} params.last_updated when this was updated last
-	 * @param {string} params.class the type of encounter (generally admission)
-	 * @param {string} params.status the status of the encounter
-	 * 								(also usually finished as the patient has been admitted)
-	 * @param {number} params.patient_id patient that this encounter corresponds to
-	 * @param {number} params.location_id location that this encounter took place in
-	 */
-	constructor(params = {}) {
-		super(params)
-		this.encounter_id = params.encounter_id
-		this.last_updated = params.last_updated
-		this.class = params.class
-		this.status = params.status
-		this.patient_id = params.patient_id
-		this.location_id = params.location_id
-		this.meta = {file: 'fhir/classes/Encounter.js'}
-		this.required = [
-			'class',
-			'status',
-			'patient_id',
-			'location_id',
-			'last_updated',
+import {Loader} from '../Partial'
+import {fhirBase} from '../util'
+
+import '../styles/permissions.scss'
+
+// permissions base, similar to FHIR base, but with a different content-type
+export const permissionsBase = Axios.create({
+	baseURL: '/',
+	headers: {
+		accept: 'application/json',
+		'content-type': 'application/json',
+	},
+})
+
+// apply a new token for every request as logging in natively will use old token
+permissionsBase.interceptors.request.use((config) => {
+	if (localStorage.getItem('token')) {
+		config.headers.token = localStorage.getItem('token')
+	}
+	return config
+})
+
+
+class Permissions extends Component {
+	constructor() {
+		super()
+		this.state = {
+			practitioners: [], // practitioner list from API (Bundle resourceType)
+			patients: [], // patient list by encounter from API
+			selectedPractitioner: null,
+			practitionerPermissions: [],
+			loaded: false,
+		}
+		this.permissions = [
+			{ident: 'view:allpatients', desc: 'View all patients without any need for assignment'},
+			{ident: 'edit:permissions', desc: 'Edit permissions of any practitioner'},
+			{ident: 'delete:patients', desc: 'Delete any patient'},
+			{ident: 'add:patients', desc: 'Admit a patient'},
+			{ident: 'add:wards', desc: 'Create a new ward'},
+			{ident: 'add:vitals', desc: 'Add vital signs readings'},
+			{ident: 'add:user', desc: 'Add a new user (for non-google login'},
+			{ident: 'edit:link', desc: 'Change the link between practitioners and patients'},
 		]
+		this.renderPermissions = this.renderPermissions.bind(this)
+		this.togglePermission = this.togglePermission.bind(this)
+		// bind setPractitioner so the returned arrow func has `this` bound to instance of Permissions
+		// ensures that if a child component is used, the correct state is updated
+		this.setPractitioner = this.setPractitioner.bind(this)
 	}
 
 	/**
-	 * Populate the object by ID
-	 * @return {Promise&lt;boolean>} Able to populate or not
+	 * get practitioner and encounter information from server. update state for lists
 	 */
-	async populate() {
-		const {encounter_id} = this
-		// use a try-catch so that if there is nothing by ID
-		// err is thrown and we can catch/return false
-		try {
-			const [resp] = await knex('encounter').select().where('encounter_id', encounter_id)
-			Object.keys(resp).forEach(key => this[key] = resp[key])
-			return true
-		} catch (err) {
-			logger.error('Unable to populate enconter', {...this.meta, func: 'populate()'})
-			logger.error(err, {...this.meta, func: 'populate()'})
-			return false
-		}
+	async componentDidMount() {
+		const [{data: practitioners}, {data: patients}] = await Promise.all([
+			fhirBase.get('/Practitioner'),
+			fhirBase.get('/Encounter/?class=admission&amp;_include=Encounter:patient;location'),
+		])
+		this.setState({
+			practitioners,
+			patients,
+			selectedPractitioner: null,
+			// deep clone because the method will be acting on the objects underneath
+			oldPatients: cloneDeep(patients),
+			loaded: true,
+		})
 	}
 
 	/**
-	 * Adds object params to database
-	 * @returns {Promise&lt;boolean>} Added to database or not
+	 * create a function that:
+		* pull all data (patient relationships and permissions) from server
+		* stores this data in state
+	 * @param {number} id practitioner ID (database PK)
 	 */
-	async insert() {
-		this.last_updated = new Date()
-		const missingKeys = this.required.filter(key => !this[key])
-		if (missingKeys.length) return false
-		const insertObj = this.required.reduce((acc, key) => {
-			acc[key] = this[key]
-			return acc
-		}, {})
-		try {
-			logger.silly(JSON.stringify(insertObj), {...this.meta, func: 'insert()'})
-			await knex('encounter').insert(insertObj)
-			return true
-		} catch (err) {
-			logger.error('Unable to insert enconter', {...this.meta, func: 'insert()'})
-			logger.error(err, {...this.meta, func: 'insert()'})
-			return false
-		}
-	}
-
-	/**
-	 * Update database based on object params
-	 * @returns {Promise&lt;boolean>} updated or not
-	 */
-	async update() {
-		const exists = this.required.filter(key => this[key])
-		const cannotUpdate = exists.length === this.required.length
-		if (cannotUpdate) return false
-		const obj = this.required.reduce((acc, cur) => {
-			if (this[cur]) acc[cur] = this[cur]
-			return acc
-		}, {})
-		obj.last_updated = new Date()
-		this.last_updated = obj.last_updated
-		try {
-			await knex('encounter').update(obj)
-			return true
-		} catch (err) {
-			logger.error('Unable to update enconter', {...this.meta, func: 'update()'})
-			logger.error(err, {...this.meta, func: 'update()'})
-			return false
+	setPractitioner(id) {
+		return async () => {
+			// fetch union table from permissions API
+			// sadly FHIR has poor support for permissions
+			const [{data}, {data: {permissions}}] = await Promise.all([
+				permissionsBase.get(`/permissions/relationships/${id}`),
+				permissionsBase.get(`/permissions/view/${id}`),
+			])
+			const patientIDs = data.map(datum => datum.patient_id)
+			const patients = cloneDeep(this.state.oldPatients)
+			// elems in matches are objects and thus handlded by ref
+			// they can be given a 'grouped' attr
+			const matches = patients.filter(patient => patientIDs.includes(patient.subject.id))
+			matches.map(match => match.grouped = true)
+			this.setState({selectedPractitioner: id, patients, practitionerPermissions: permissions})
 		}
 	}
 
 	/**
-	 * delete based on this.encounter_id
-	 * @return {Promise&lt;boolean>} deleted or not
+	 * take the selected practitioner (set in state)
+	 * and a function that creates/removes a row with practitioner id and patient ID
+	 * in practitionerpatients table
+	 * @param {number} patientID patient ID to group
+	 * @param {boolean} grouped whether the practitioner and patient are grouped
 	 */
-	async delete() {
-		try {
-			await knex('encounter').delete().where('encounter_id', this.encounter_id)
-			return true
-		} catch (err) {
-			logger.error('Unable to delete enconter', {...this.meta, func: 'delete()'})
-			logger.error(err, {...this.meta, func: 'delete()'})
-			return false
+	makeGrouping(patientID, grouped = false) {
+		/**
+		 * Attempt to POST to /permissions/destroy or /permission/create
+		 * depending on whether patient is already grouped
+		 * grouped data stored in state, from /permissions/relationships/:id
+		 */
+		return async () => {
+			if (!this.state.selectedPractitioner) return
+			const baseUrl = grouped ? 'destroy' : 'create'
+			try {
+				await permissionsBase.post(`/permissions/${baseUrl}`, {
+					patientID,
+					practitionerID: this.state.selectedPractitioner,
+				})
+				const oldID = this.state.selectedPractitioner
+				await this.componentDidMount()
+				await this.setPractitioner(oldID)()
+				M.toast({html: 'Successfully updated patient and practitioner'})
+			} catch (err) {
+				M.toast({html: 'You do not have access to do this!'})
+			}
 		}
 	}
 
 	/**
-	 * format to fhir spec
-	 * @return {object} fhir formatted object
+	 * attempt to add or remove a practitioner permission
+	 * post this to /permissions/toggle as well as practitioner id, permission and their permission set
+	 * @param {string} perm permission to add/remove
 	 */
-	async fhir(include) {
-		let patient = {reference: `Patient/${this.patient_id}`}
-		let location = {reference: `Location/${this.location_id}`}
-		if (include.patient) {
-			const unwrappedPat = new Patient({id: this.patient_id})
-			await unwrappedPat.populate()
-			patient = await unwrappedPat.fhir()
+	togglePermission(perm) {
+		return async () => {
+			try {
+				console.log({
+					practitionerID: this.state.selectedPractitioner,
+					permission: perm,
+					set: this.state.practitionerPermissions,
+				})
+				const resp = await permissionsBase.post('/permissions/toggle', {
+					practitionerID: this.state.selectedPractitioner,
+					permission: perm,
+					set: this.state.practitionerPermissions,
+				})
+				console.log(resp)
+				this.setState({practitionerPermissions: resp.data.permissions}, () => {
+					M.toast({html: `Successfully changed ${perm}`})
+				})
+			} catch (err) {
+				M.toast({html: 'You do not have permission to do this!'})
+			}
 		}
-		if (include.location) {
-			const unwrappedLoc = new Location({id: this.location_id})
-			await unwrappedLoc.populate()
-			location = unwrappedLoc.fhir()
-		}
+	}
 
-		return {
-			resourceType: 'Encounter',
-			meta: {
-				lastUpdated: new Date(this.last_updated),
-			},
-			status: this.status,
-			class: {
-				data: this.class,
-			},
-			subject: patient,
-			location: [location],
-		}
+
+	/**
+	 * render a list of practitioners
+	 * @returns {preact.VNode[]}
+	 */
+	renderPractitioners() {
+		return this.state.practitioners.entry.map(practitioner => (
+			&lt;li
+				onClick={this.setPractitioner(practitioner.id)}
+				key={practitioner.telecom[0].value}
+				className={`collection-item hover practitioner ${this.state.selectedPractitioner === practitioner.id ? 'selected' : ''}`}
+			>
+				&lt;span className="title">&lt;b>Name:&lt;/b> {practitioner.name[0].given[0]}&lt;/span>
+				&lt;p>&lt;b>Username:&lt;/b> {practitioner.telecom[0].value}&lt;/p>
+			&lt;/li>
+		))
+	}
+
+	/**
+	 * render patient list
+	 * @returns {preact.VNode[]}
+	 */
+	renderPatients() {
+		return this.state.patients.map(patient => (
+			&lt;li
+				key={patient.subject.id}
+				className={`collection-item hover patient ${patient.grouped ? 'selected' : ''}`}
+				onClick={this.makeGrouping(patient.subject.id, patient.grouped)}
+			>
+				&lt;span className="title">&lt;b>Name:&lt;/b> {patient.subject.name[0].text}&lt;/span>
+				&lt;p>&lt;b>Ward:&lt;/b> {patient.location[0].name}&lt;/p>
+			&lt;/li>
+		))
+	}
+
+	/**
+	 * render a permission list based off of component state
+	 * @returns {preact.VNode[]}
+	 */
+	renderPermissions() {
+		const perms = this.state.practitionerPermissions
+		return this.permissions.map(perm => (
+			&lt;li
+				key={perm.ident}
+				className={`collection-item hover ${perms.includes(perm.ident) ? 'selected' : ''}`}
+				onClick={this.togglePermission(perm.ident)}
+			>
+				&lt;span className="title">&lt;b>Permission: &lt;/b>{perm.ident}&lt;/span>
+				&lt;p>&lt;b>Description: &lt;/b>{perm.desc}&lt;/p>
+			&lt;/li>
+		))
+	}
+
+	/**
+	 * render patient permissions page.
+	 * render loader is no patient information loaded yet
+	 * @returns {preact.VNode}
+	 */
+	render() {
+		if (!this.state.loaded) return &lt;Loader />
+		return (
+			&lt;div className="row permissions-table">
+				&lt;div className="col s6">
+					&lt;h2>Users&lt;/h2>
+					&lt;ul className="collection">{this.renderPractitioners()}&lt;/ul>
+				&lt;/div>
+				&lt;div className="col s6">
+					&lt;div className="row">
+						&lt;h2>Patients&lt;/h2>
+						&lt;ul className="collection">{this.renderPatients()}&lt;/ul>
+					&lt;/div>
+					&lt;div className="row">
+						&lt;h2>Edit permissions&lt;/h2>
+						&lt;ul className="collection">{this.renderPermissions()}&lt;/ul>
+					&lt;/div>
+				&lt;/div>
+			&lt;/div>
+		)
 	}
 }
 
-module.exports = Encounter
+export default Permissions
 </code></pre>
         </article>
     </section>

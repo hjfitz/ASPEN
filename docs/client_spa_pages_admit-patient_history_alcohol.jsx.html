@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>server/fhir/classes/Encounter.js - Documentation</title>
+    <title>client/spa/pages/admit-patient/history/alcohol.jsx - Documentation</title>
 
     <script src="scripts/hljs/highlight.min.js"></script>
     <!--[if lt IE 9]>
@@ -26,7 +26,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">server/fhir/classes/Encounter.js</h1>
+    <h1 class="page-title">client/spa/pages/admit-patient/history/alcohol.jsx</h1>
     
 
     
@@ -36,157 +36,94 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const Location = require('./Location')
-const Patient = require('./Patient')
-const {knex} = require('../../db')
-const logger = require('../../logger')
-const FHIRBase = require('./FHIRBase')
+            <pre class="prettyprint source linenums"><code>import {h} from 'preact'
+import Questionnaire from './Questionnaire'
 
-class Encounter {
+
+class Alcohol extends Questionnaire {
 	/**
-	 * Wrapper for all fhir encounters
-	 * @param {Object} params params used to create Enounter
-	 * @param {number} params.encounter_id ID this encounter corresponds to in DB
-	 * @param {Date} params.last_updated when this was updated last
-	 * @param {string} params.class the type of encounter (generally admission)
-	 * @param {string} params.status the status of the encounter
-	 * 								(also usually finished as the patient has been admitted)
-	 * @param {number} params.patient_id patient that this encounter corresponds to
-	 * @param {number} params.location_id location that this encounter took place in
+	 * @returns {Preact.VNode}
 	 */
-	constructor(params = {}) {
-		super(params)
-		this.encounter_id = params.encounter_id
-		this.last_updated = params.last_updated
-		this.class = params.class
-		this.status = params.status
-		this.patient_id = params.patient_id
-		this.location_id = params.location_id
-		this.meta = {file: 'fhir/classes/Encounter.js'}
-		this.required = [
-			'class',
-			'status',
-			'patient_id',
-			'location_id',
-			'last_updated',
-		]
-	}
-
-	/**
-	 * Populate the object by ID
-	 * @return {Promise&lt;boolean>} Able to populate or not
-	 */
-	async populate() {
-		const {encounter_id} = this
-		// use a try-catch so that if there is nothing by ID
-		// err is thrown and we can catch/return false
-		try {
-			const [resp] = await knex('encounter').select().where('encounter_id', encounter_id)
-			Object.keys(resp).forEach(key => this[key] = resp[key])
-			return true
-		} catch (err) {
-			logger.error('Unable to populate enconter', {...this.meta, func: 'populate()'})
-			logger.error(err, {...this.meta, func: 'populate()'})
-			return false
-		}
-	}
-
-	/**
-	 * Adds object params to database
-	 * @returns {Promise&lt;boolean>} Added to database or not
-	 */
-	async insert() {
-		this.last_updated = new Date()
-		const missingKeys = this.required.filter(key => !this[key])
-		if (missingKeys.length) return false
-		const insertObj = this.required.reduce((acc, key) => {
-			acc[key] = this[key]
-			return acc
-		}, {})
-		try {
-			logger.silly(JSON.stringify(insertObj), {...this.meta, func: 'insert()'})
-			await knex('encounter').insert(insertObj)
-			return true
-		} catch (err) {
-			logger.error('Unable to insert enconter', {...this.meta, func: 'insert()'})
-			logger.error(err, {...this.meta, func: 'insert()'})
-			return false
-		}
-	}
-
-	/**
-	 * Update database based on object params
-	 * @returns {Promise&lt;boolean>} updated or not
-	 */
-	async update() {
-		const exists = this.required.filter(key => this[key])
-		const cannotUpdate = exists.length === this.required.length
-		if (cannotUpdate) return false
-		const obj = this.required.reduce((acc, cur) => {
-			if (this[cur]) acc[cur] = this[cur]
-			return acc
-		}, {})
-		obj.last_updated = new Date()
-		this.last_updated = obj.last_updated
-		try {
-			await knex('encounter').update(obj)
-			return true
-		} catch (err) {
-			logger.error('Unable to update enconter', {...this.meta, func: 'update()'})
-			logger.error(err, {...this.meta, func: 'update()'})
-			return false
-		}
-	}
-
-	/**
-	 * delete based on this.encounter_id
-	 * @return {Promise&lt;boolean>} deleted or not
-	 */
-	async delete() {
-		try {
-			await knex('encounter').delete().where('encounter_id', this.encounter_id)
-			return true
-		} catch (err) {
-			logger.error('Unable to delete enconter', {...this.meta, func: 'delete()'})
-			logger.error(err, {...this.meta, func: 'delete()'})
-			return false
-		}
-	}
-
-	/**
-	 * format to fhir spec
-	 * @return {object} fhir formatted object
-	 */
-	async fhir(include) {
-		let patient = {reference: `Patient/${this.patient_id}`}
-		let location = {reference: `Location/${this.location_id}`}
-		if (include.patient) {
-			const unwrappedPat = new Patient({id: this.patient_id})
-			await unwrappedPat.populate()
-			patient = await unwrappedPat.fhir()
-		}
-		if (include.location) {
-			const unwrappedLoc = new Location({id: this.location_id})
-			await unwrappedLoc.populate()
-			location = unwrappedLoc.fhir()
-		}
-
-		return {
-			resourceType: 'Encounter',
-			meta: {
-				lastUpdated: new Date(this.last_updated),
-			},
-			status: this.status,
-			class: {
-				data: this.class,
-			},
-			subject: patient,
-			location: [location],
-		}
+	render() {
+		return (
+			&lt;div className="row">
+				&lt;div className="col s12">
+					&lt;h4>Alcohol Use&lt;/h4>
+					&lt;div className="row">
+						&lt;form className="col s12 patient-history-input" data-form-key="alcohol-does-drink" data-materialize-type="radio-group" action="">
+							&lt;h5>Do you drink alcohol?&lt;/h5>
+							&lt;p>
+								&lt;label>
+									&lt;input className="with-gap" name="group1" value="yes" type="radio" />
+									&lt;span onClick={this.toggleQuestionnaire(true).bind(this)}>Yes&lt;/span>
+								&lt;/label>
+							&lt;/p>
+							&lt;p>
+								&lt;label>
+									&lt;input className="with-gap" name="group1" value="no" type="radio" checked />
+									&lt;span onClick={this.toggleQuestionnaire().bind(this)}>No&lt;/span>
+								&lt;/label>
+							&lt;/p>
+						&lt;/form>
+					&lt;/div>
+					{this.state.showQuestionnaire ? &lt;AlcoholQuestionnaire /> : ''}
+				&lt;/div>
+			&lt;/div>
+		)
 	}
 }
 
-module.exports = Encounter
+/**
+ * @returns {preact.VNode}
+ */
+const AlcoholQuestionnaire = () => (
+	&lt;div>
+		&lt;div className="col s12">
+			&lt;div className="row">
+				&lt;div className="col s12">
+					&lt;h5>What kind?&lt;/h5>
+					&lt;input id="alcohol-type" type="text" className="validate patient-history-input" data-form-key="alcohol-type" />
+				&lt;/div>
+				&lt;div className="input-field col s12">
+					&lt;h5>How many drinks do you consume a week?&lt;/h5>
+					&lt;input id="alcohol-num" type="number" className="validate patient-history-input" data-form-key="alcohol-freq" value={1} />
+				&lt;/div>
+			&lt;/div>
+		&lt;/div>
+		&lt;form className="col s12 patient-history-input" data-form-key="alcohol-concern" data-materialize-type="radio-group" action="">
+			&lt;h5>Are you concerned about how much you drink?&lt;/h5>
+			&lt;p>
+				&lt;label>
+					&lt;input className="with-gap" name="group1" type="radio" value="yes" />
+					&lt;span>Yes&lt;/span>
+				&lt;/label>
+			&lt;/p>
+			&lt;p>
+				&lt;label>
+					&lt;input className="with-gap" name="group1" type="radio" value="no" checked />
+					&lt;span>No&lt;/span>
+				&lt;/label>
+			&lt;/p>
+		&lt;/form>
+		&lt;form className="col s12 patient-history-input" data-form-key="alcohol-consider-stopping" data-materialize-type="radio-group" action="">
+			&lt;h5>Have you considered stopping?&lt;/h5>
+			&lt;p>
+				&lt;label>
+					&lt;input className="with-gap" name="group1" type="radio" value="yes" />
+					&lt;span>Yes&lt;/span>
+				&lt;/label>
+			&lt;/p>
+			&lt;p>
+				&lt;label>
+					&lt;input className="with-gap" name="group1" type="radio" value="no" checked />
+					&lt;span>No&lt;/span>
+				&lt;/label>
+			&lt;/p>
+		&lt;/form>
+	&lt;/div>
+)
+
+export default Alcohol
 </code></pre>
         </article>
     </section>

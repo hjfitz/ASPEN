@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>server/fhir/classes/Encounter.js - Documentation</title>
+    <title>client/spa/index.jsx - Documentation</title>
 
     <script src="scripts/hljs/highlight.min.js"></script>
     <!--[if lt IE 9]>
@@ -26,7 +26,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">server/fhir/classes/Encounter.js</h1>
+    <h1 class="page-title">client/spa/index.jsx</h1>
     
 
     
@@ -36,157 +36,107 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const Location = require('./Location')
-const Patient = require('./Patient')
-const {knex} = require('../../db')
-const logger = require('../../logger')
-const FHIRBase = require('./FHIRBase')
+            <pre class="prettyprint source linenums"><code>import {h, render, Component} from 'preact'
+import {Router} from 'preact-router'
 
-class Encounter {
+import {getJwtPayload, showLogin} from './util'
+
+import {Fab, Breadcrumb, Redirect, Modal, Login} from './Partial'
+
+import {
+	SearchPatient,
+	AdmitPatient,
+	ViewPatient,
+	Permissions,
+	CreateWard,
+	WardList,
+	Home,
+	ViewWard,
+	Add,
+} from './Pages'
+
+import 'materialize-css/sass/materialize.scss'
+import './styles/router.scss'
+
+class App extends Component {
 	/**
-	 * Wrapper for all fhir encounters
-	 * @param {Object} params params used to create Enounter
-	 * @param {number} params.encounter_id ID this encounter corresponds to in DB
-	 * @param {Date} params.last_updated when this was updated last
-	 * @param {string} params.class the type of encounter (generally admission)
-	 * @param {string} params.status the status of the encounter
-	 * 								(also usually finished as the patient has been admitted)
-	 * @param {number} params.patient_id patient that this encounter corresponds to
-	 * @param {number} params.location_id location that this encounter took place in
+	 * Main application layer. Top of component tree
+	 * @param {object} props component properties (unused)
 	 */
-	constructor(params = {}) {
-		super(params)
-		this.encounter_id = params.encounter_id
-		this.last_updated = params.last_updated
-		this.class = params.class
-		this.status = params.status
-		this.patient_id = params.patient_id
-		this.location_id = params.location_id
-		this.meta = {file: 'fhir/classes/Encounter.js'}
-		this.required = [
-			'class',
-			'status',
-			'patient_id',
-			'location_id',
-			'last_updated',
-		]
+	constructor(props) {
+		super(props)
+		this.state = {location: window.location.pathname}
+		this.onChange = this.onChange.bind(this)
+		this.login = &lt;Login />
+		this.showPopup = showLogin
 	}
 
 	/**
-	 * Populate the object by ID
-	 * @return {Promise&lt;boolean>} Able to populate or not
+	 * Attempt to save the JWT (saved from Google OAuth flow)
+	 * verify the new one, or the old one saved in localStorage
 	 */
-	async populate() {
-		const {encounter_id} = this
-		// use a try-catch so that if there is nothing by ID
-		// err is thrown and we can catch/return false
-		try {
-			const [resp] = await knex('encounter').select().where('encounter_id', encounter_id)
-			Object.keys(resp).forEach(key => this[key] = resp[key])
-			return true
-		} catch (err) {
-			logger.error('Unable to populate enconter', {...this.meta, func: 'populate()'})
-			logger.error(err, {...this.meta, func: 'populate()'})
-			return false
+	componentDidMount() {
+		// 1. get token (if exists) from url and store it
+		const location = new URL(window.location)
+		const jwt = location.searchParams.get('token')
+		if (jwt) {
+			console.log('storing JWT')
+			localStorage.setItem('token', jwt)
 		}
+
+		// 2. ensure that there is a token in storage
+		const toCheck = jwt || localStorage.getItem('token')
+		if (!toCheck) return this.showPopup()
+
+		// 3. if token in storage, ensure it is fresh
+		const {exp} = getJwtPayload(toCheck)
+		if ((exp * 1000) &lt; Date.now()) return this.showPopup()
+
+		return true // keep eslint happy
 	}
 
 	/**
-	 * Adds object params to database
-	 * @returns {Promise&lt;boolean>} Added to database or not
+	 * An on change event for whenever the router changes
+	 * Reset the state to re-render the application - used for props in the breadcrumbs
+	 * @param {Event} ev change event
 	 */
-	async insert() {
-		this.last_updated = new Date()
-		const missingKeys = this.required.filter(key => !this[key])
-		if (missingKeys.length) return false
-		const insertObj = this.required.reduce((acc, key) => {
-			acc[key] = this[key]
-			return acc
-		}, {})
-		try {
-			logger.silly(JSON.stringify(insertObj), {...this.meta, func: 'insert()'})
-			await knex('encounter').insert(insertObj)
-			return true
-		} catch (err) {
-			logger.error('Unable to insert enconter', {...this.meta, func: 'insert()'})
-			logger.error(err, {...this.meta, func: 'insert()'})
-			return false
-		}
+	onChange(ev) {
+		this.setState({location: ev.url})
 	}
 
 	/**
-	 * Update database based on object params
-	 * @returns {Promise&lt;boolean>} updated or not
+	 * Render the application
+	 * @returns {preact.VNode} Application UI
 	 */
-	async update() {
-		const exists = this.required.filter(key => this[key])
-		const cannotUpdate = exists.length === this.required.length
-		if (cannotUpdate) return false
-		const obj = this.required.reduce((acc, cur) => {
-			if (this[cur]) acc[cur] = this[cur]
-			return acc
-		}, {})
-		obj.last_updated = new Date()
-		this.last_updated = obj.last_updated
-		try {
-			await knex('encounter').update(obj)
-			return true
-		} catch (err) {
-			logger.error('Unable to update enconter', {...this.meta, func: 'update()'})
-			logger.error(err, {...this.meta, func: 'update()'})
-			return false
-		}
-	}
-
-	/**
-	 * delete based on this.encounter_id
-	 * @return {Promise&lt;boolean>} deleted or not
-	 */
-	async delete() {
-		try {
-			await knex('encounter').delete().where('encounter_id', this.encounter_id)
-			return true
-		} catch (err) {
-			logger.error('Unable to delete enconter', {...this.meta, func: 'delete()'})
-			logger.error(err, {...this.meta, func: 'delete()'})
-			return false
-		}
-	}
-
-	/**
-	 * format to fhir spec
-	 * @return {object} fhir formatted object
-	 */
-	async fhir(include) {
-		let patient = {reference: `Patient/${this.patient_id}`}
-		let location = {reference: `Location/${this.location_id}`}
-		if (include.patient) {
-			const unwrappedPat = new Patient({id: this.patient_id})
-			await unwrappedPat.populate()
-			patient = await unwrappedPat.fhir()
-		}
-		if (include.location) {
-			const unwrappedLoc = new Location({id: this.location_id})
-			await unwrappedLoc.populate()
-			location = unwrappedLoc.fhir()
-		}
-
-		return {
-			resourceType: 'Encounter',
-			meta: {
-				lastUpdated: new Date(this.last_updated),
-			},
-			status: this.status,
-			class: {
-				data: this.class,
-			},
-			subject: patient,
-			location: [location],
-		}
+	render() {
+		return (
+			&lt;div className="container">
+				&lt;Breadcrumb location={this.state.location} />
+				&lt;Router onChange={this.onChange}>
+					&lt;Home path="/" />
+					&lt;WardList path="/wards" />
+					&lt;ViewWard path="/wards/:ward_id" />
+					&lt;Permissions path="/permissions" />
+					&lt;Add path="/add" />
+					&lt;CreateWard path="/add/ward" />
+					&lt;AdmitPatient path="/add/patient" />
+					&lt;SearchPatient path="/search/patient" />
+					&lt;Redirect path="/patient" to="/search/patient" />
+					&lt;ViewPatient path="/patient/:patient_id" />
+				&lt;/Router>
+				&lt;Fab />
+				&lt;Modal />
+				{this.login}
+			&lt;/div>
+		)
 	}
 }
 
-module.exports = Encounter
+// in public/index.html, render the app in &lt;div preact-root>&lt;/div>
+render(&lt;App />, document.querySelector('[preact-root]'))
+
+// hook in to react dev tools
+require('preact/debug')
 </code></pre>
         </article>
     </section>

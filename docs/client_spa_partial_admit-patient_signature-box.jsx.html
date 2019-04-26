@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>server/fhir/classes/Encounter.js - Documentation</title>
+    <title>client/spa/partial/admit-patient/signature-box.jsx - Documentation</title>
 
     <script src="scripts/hljs/highlight.min.js"></script>
     <!--[if lt IE 9]>
@@ -26,7 +26,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">server/fhir/classes/Encounter.js</h1>
+    <h1 class="page-title">client/spa/partial/admit-patient/signature-box.jsx</h1>
     
 
     
@@ -36,157 +36,184 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const Location = require('./Location')
-const Patient = require('./Patient')
-const {knex} = require('../../db')
-const logger = require('../../logger')
-const FHIRBase = require('./FHIRBase')
+            <pre class="prettyprint source linenums"><code>import {h, Component} from 'preact'
 
-class Encounter {
-	/**
-	 * Wrapper for all fhir encounters
-	 * @param {Object} params params used to create Enounter
-	 * @param {number} params.encounter_id ID this encounter corresponds to in DB
-	 * @param {Date} params.last_updated when this was updated last
-	 * @param {string} params.class the type of encounter (generally admission)
-	 * @param {string} params.status the status of the encounter
-	 * 								(also usually finished as the patient has been admitted)
-	 * @param {number} params.patient_id patient that this encounter corresponds to
-	 * @param {number} params.location_id location that this encounter took place in
-	 */
-	constructor(params = {}) {
-		super(params)
-		this.encounter_id = params.encounter_id
-		this.last_updated = params.last_updated
-		this.class = params.class
-		this.status = params.status
-		this.patient_id = params.patient_id
-		this.location_id = params.location_id
-		this.meta = {file: 'fhir/classes/Encounter.js'}
-		this.required = [
-			'class',
-			'status',
-			'patient_id',
-			'location_id',
-			'last_updated',
-		]
+/**
+ * given a container, return a function that checks returns a function to get a property value
+ * @param {HTMLElemement} container Containter to get a style and parse int to
+ */
+const getStyle = container => prop => parseInt(getComputedStyle(container, null)
+	.getPropertyValue(prop)
+	.replace('px', ''), 10)
+
+/**
+ * Given a touch event, get the X and Y, and simulate a mousemove event
+ * Simulate button 1: this is the click button
+ * @param {Event} e event to simulate as a mouseclick
+ */
+function emulateTouch(e) {
+	e.preventDefault()
+	const touch = e.touches[0]
+	const mouseEvent = new MouseEvent('mousemove', {
+		clientX: touch.clientX,
+		clientY: touch.clientY,
+		buttons: 1,
+	})
+	document.dispatchEvent(mouseEvent)
+}
+
+/**
+ * simulate mouseup on touchstop
+ * @returns {Boolean}
+ */
+function dispatchMouseUp() {
+	return document.dispatchEvent(new MouseEvent('mouseup', {}))
+}
+
+
+class Signature extends Component {
+	constructor() {
+		super()
+		this.pos = {x: 0, y: 0}
+		this.draw = this.draw.bind(this)
+		this.setPosition = this.setPosition.bind(this)
+		this.setTouchPosition = this.setTouchPosition.bind(this)
 	}
 
 	/**
-	 * Populate the object by ID
-	 * @return {Promise&lt;boolean>} Able to populate or not
+	 * on mount, add event listeners for mousemove
+	 * add event listeners for touch events that simulate mousemove events
 	 */
-	async populate() {
-		const {encounter_id} = this
-		// use a try-catch so that if there is nothing by ID
-		// err is thrown and we can catch/return false
-		try {
-			const [resp] = await knex('encounter').select().where('encounter_id', encounter_id)
-			Object.keys(resp).forEach(key => this[key] = resp[key])
-			return true
-		} catch (err) {
-			logger.error('Unable to populate enconter', {...this.meta, func: 'populate()'})
-			logger.error(err, {...this.meta, func: 'populate()'})
-			return false
-		}
+	componentDidMount() {
+		// set up event listeners
+		document.addEventListener('mousemove', this.draw)
+		document.addEventListener('mousedown', this.setPosition)
+		document.addEventListener('mouseEnter', this.setPosition)
+
+		/**
+		 * spoof mouse events using touch events to
+		 * so that a phone user can make a signature
+		 */
+		this.canvas.addEventListener('touchstart', this.setTouchPosition)
+		this.canvas.addEventListener('touchend', dispatchMouseUp)
+		this.canvas.addEventListener('touchmove', emulateTouch)
 	}
 
 	/**
-	 * Adds object params to database
-	 * @returns {Promise&lt;boolean>} Added to database or not
+	 * on unmount, remove all event listeners
 	 */
-	async insert() {
-		this.last_updated = new Date()
-		const missingKeys = this.required.filter(key => !this[key])
-		if (missingKeys.length) return false
-		const insertObj = this.required.reduce((acc, key) => {
-			acc[key] = this[key]
-			return acc
-		}, {})
-		try {
-			logger.silly(JSON.stringify(insertObj), {...this.meta, func: 'insert()'})
-			await knex('encounter').insert(insertObj)
-			return true
-		} catch (err) {
-			logger.error('Unable to insert enconter', {...this.meta, func: 'insert()'})
-			logger.error(err, {...this.meta, func: 'insert()'})
-			return false
-		}
+	componentWillUnmount() {
+		document.removeEventListener('mousemove', this.draw)
+		document.removeEventListener('mousedown', this.setPosition)
+		document.removeEventListener('mouseEnter', this.setPosition)
+
+		/**
+		 * spoof mouse events using touch events to
+		 * so that a phone user can make a signature
+		 */
+		this.canvas.removeEventListener('touchstart', this.setTouchPosition)
+		this.canvas.removeEventListener('touchend', dispatchMouseUp)
+		this.canvas.removeEventListener('touchmove', emulateTouch)
+	}
+
+	setTouchPosition(ev) {
+		return this.setPosition(ev.touches[0])
 	}
 
 	/**
-	 * Update database based on object params
-	 * @returns {Promise&lt;boolean>} updated or not
+	 * Given an event, take the mouse coords and update the mouse position in this component
+	 * @param {Event} ev
 	 */
-	async update() {
-		const exists = this.required.filter(key => this[key])
-		const cannotUpdate = exists.length === this.required.length
-		if (cannotUpdate) return false
-		const obj = this.required.reduce((acc, cur) => {
-			if (this[cur]) acc[cur] = this[cur]
-			return acc
-		}, {})
-		obj.last_updated = new Date()
-		this.last_updated = obj.last_updated
-		try {
-			await knex('encounter').update(obj)
-			return true
-		} catch (err) {
-			logger.error('Unable to update enconter', {...this.meta, func: 'update()'})
-			logger.error(err, {...this.meta, func: 'update()'})
-			return false
+	setPosition(ev) {
+		// no need to set state as component doesn't need to render again
+		this.pos = {
+			x: ev.clientX - this.canvas.getBoundingClientRect().left,
+			y: ev.clientY - this.canvas.getBoundingClientRect().top,
 		}
 	}
 
 	/**
-	 * delete based on this.encounter_id
-	 * @return {Promise&lt;boolean>} deleted or not
+	 * resize the canvas to fill available space on every draw()
 	 */
-	async delete() {
-		try {
-			await knex('encounter').delete().where('encounter_id', this.encounter_id)
-			return true
-		} catch (err) {
-			logger.error('Unable to delete enconter', {...this.meta, func: 'delete()'})
-			logger.error(err, {...this.meta, func: 'delete()'})
-			return false
+	setCanvasDimensions() {
+		if (!this.setWidth) {
+			const getProp = getStyle(this.content)
+			const padLeft = getProp('padding-left')
+			const padRight = getProp('padding-right')
+			const horzPad = padLeft + padRight
+
+			const {width} = this.content.getBoundingClientRect()
+			const {height} = this.canvas.getBoundingClientRect()
+			this.canvas.height = height
+			this.canvas.width = (width - horzPad)
+			this.setWidth = true
 		}
 	}
 
 	/**
-	 * format to fhir spec
-	 * @return {object} fhir formatted object
+	 * on a mousemove event, move a virtual pointer on a canvas
+	 * update this position with the event
+	 * move the virtual pointer to the new place
+	 * stroke a line between the beginning and end
+	 * @param {Event} ev mousemove event
 	 */
-	async fhir(include) {
-		let patient = {reference: `Patient/${this.patient_id}`}
-		let location = {reference: `Location/${this.location_id}`}
-		if (include.patient) {
-			const unwrappedPat = new Patient({id: this.patient_id})
-			await unwrappedPat.populate()
-			patient = await unwrappedPat.fhir()
-		}
-		if (include.location) {
-			const unwrappedLoc = new Location({id: this.location_id})
-			await unwrappedLoc.populate()
-			location = unwrappedLoc.fhir()
-		}
+	draw(ev) {
+		const {ctx} = this
+		// mouse left button must be pressed
 
-		return {
-			resourceType: 'Encounter',
-			meta: {
-				lastUpdated: new Date(this.last_updated),
-			},
-			status: this.status,
-			class: {
-				data: this.class,
-			},
-			subject: patient,
-			location: [location],
-		}
+		if (ev.buttons !== 1) return
+		this.setCanvasDimensions()
+
+		ctx.beginPath() // begin
+
+		ctx.lineWidth = 5
+		ctx.lineCap = 'round'
+		ctx.strokeStyle = '#000'
+
+		ctx.moveTo(this.pos.x, this.pos.y) // from
+		this.setPosition(ev)
+		ctx.lineTo(this.pos.x, this.pos.y) // to
+
+		ctx.stroke() // draw it!
+	}
+
+	/**
+	 * clear the signature on the canvas
+	 * @param {Event} ev Click event
+	 */
+	reset(ev) {
+		ev.preventDefault()
+		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+	}
+
+	/**
+	 * @returns {preact.VNode}
+	 */
+	render() {
+		return (
+			&lt;div className="card z-depth-0">
+				&lt;div className="card-content" ref={c => this.content = c}>
+					&lt;span className="card-title">Sign below&lt;/span>
+					&lt;canvas
+						ref={(c) => {
+							try {
+								this.canvas = c
+								this.ctx = c.getContext('2d')
+							} catch (e) {}
+						}}
+						id="sign-off-canvas"
+						style={{width: '100%', border: '1px solid grey'}}
+					/>
+				&lt;/div>
+				&lt;div className="card-action">
+					&lt;a href="" className="teal-text text-lighten-1" onClick={this.reset.bind(this)}>Reset&lt;/a>
+				&lt;/div>
+			&lt;/div>
+		)
 	}
 }
 
-module.exports = Encounter
+export default Signature
 </code></pre>
         </article>
     </section>

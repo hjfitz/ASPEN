@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>server/fhir/classes/Encounter.js - Documentation</title>
+    <title>client/spa/partial/view-patient/history-report.jsx - Documentation</title>
 
     <script src="scripts/hljs/highlight.min.js"></script>
     <!--[if lt IE 9]>
@@ -26,7 +26,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">server/fhir/classes/Encounter.js</h1>
+    <h1 class="page-title">client/spa/partial/view-patient/history-report.jsx</h1>
     
 
     
@@ -36,157 +36,180 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const Location = require('./Location')
-const Patient = require('./Patient')
-const {knex} = require('../../db')
-const logger = require('../../logger')
-const FHIRBase = require('./FHIRBase')
+            <pre class="prettyprint source linenums"><code>import {h} from 'preact'
+import format from 'date-fns/format'
 
-class Encounter {
-	/**
-	 * Wrapper for all fhir encounters
-	 * @param {Object} params params used to create Enounter
-	 * @param {number} params.encounter_id ID this encounter corresponds to in DB
-	 * @param {Date} params.last_updated when this was updated last
-	 * @param {string} params.class the type of encounter (generally admission)
-	 * @param {string} params.status the status of the encounter
-	 * 								(also usually finished as the patient has been admitted)
-	 * @param {number} params.patient_id patient that this encounter corresponds to
-	 * @param {number} params.location_id location that this encounter took place in
-	 */
-	constructor(params = {}) {
-		super(params)
-		this.encounter_id = params.encounter_id
-		this.last_updated = params.last_updated
-		this.class = params.class
-		this.status = params.status
-		this.patient_id = params.patient_id
-		this.location_id = params.location_id
-		this.meta = {file: 'fhir/classes/Encounter.js'}
-		this.required = [
-			'class',
-			'status',
-			'patient_id',
-			'location_id',
-			'last_updated',
-		]
+import '../../styles/history-report.scss'
+
+/**
+ * format date as MM DD, YYYY
+ * 12 08, 1995
+ * @param {string} date date to format
+ */
+const formatDate = date => format(new Date(date), ' MMM DD, YYYY')
+
+/**
+ * format a drug table
+ * @param {preact.ComponentProps} props component props
+ * @param {any[]} props.drugs drug list
+ */
+const DrugTable = props => (
+	&lt;table>
+		&lt;thead>
+			&lt;tr>
+				&lt;th>Name&lt;/th>
+				&lt;th>Dose&lt;/th>
+				&lt;th>Frequency&lt;/th>
+			&lt;/tr>
+		&lt;/thead>
+		&lt;tbody>
+			{props.drugs.map(drug => (
+				&lt;tr>
+					&lt;td>{drug.medication_name}&lt;/td>
+					&lt;td>{drug.medication_dose}&lt;/td>
+					&lt;td>{drug.medication_frequency}&lt;/td>
+				&lt;/tr>
+			))}
+		&lt;/tbody>
+	&lt;/table>
+)
+
+/**
+ *
+ * @param {preact.ComponentProps} props
+ * @returns {preact.VNode}
+ */
+const HistoryReport = (props) => {
+	if (!props.reportLoaded) {
+		return (
+			&lt;div id="modal1" className="modal history-report-modal">
+				&lt;div className="modal-content" />
+			&lt;/div>
+		)
 	}
 
-	/**
-	 * Populate the object by ID
-	 * @return {Promise&lt;boolean>} Able to populate or not
-	 */
-	async populate() {
-		const {encounter_id} = this
-		// use a try-catch so that if there is nothing by ID
-		// err is thrown and we can catch/return false
-		try {
-			const [resp] = await knex('encounter').select().where('encounter_id', encounter_id)
-			Object.keys(resp).forEach(key => this[key] = resp[key])
-			return true
-		} catch (err) {
-			logger.error('Unable to populate enconter', {...this.meta, func: 'populate()'})
-			logger.error(err, {...this.meta, func: 'populate()'})
-			return false
-		}
-	}
-
-	/**
-	 * Adds object params to database
-	 * @returns {Promise&lt;boolean>} Added to database or not
-	 */
-	async insert() {
-		this.last_updated = new Date()
-		const missingKeys = this.required.filter(key => !this[key])
-		if (missingKeys.length) return false
-		const insertObj = this.required.reduce((acc, key) => {
-			acc[key] = this[key]
-			return acc
-		}, {})
-		try {
-			logger.silly(JSON.stringify(insertObj), {...this.meta, func: 'insert()'})
-			await knex('encounter').insert(insertObj)
-			return true
-		} catch (err) {
-			logger.error('Unable to insert enconter', {...this.meta, func: 'insert()'})
-			logger.error(err, {...this.meta, func: 'insert()'})
-			return false
-		}
-	}
-
-	/**
-	 * Update database based on object params
-	 * @returns {Promise&lt;boolean>} updated or not
-	 */
-	async update() {
-		const exists = this.required.filter(key => this[key])
-		const cannotUpdate = exists.length === this.required.length
-		if (cannotUpdate) return false
-		const obj = this.required.reduce((acc, cur) => {
-			if (this[cur]) acc[cur] = this[cur]
-			return acc
-		}, {})
-		obj.last_updated = new Date()
-		this.last_updated = obj.last_updated
-		try {
-			await knex('encounter').update(obj)
-			return true
-		} catch (err) {
-			logger.error('Unable to update enconter', {...this.meta, func: 'update()'})
-			logger.error(err, {...this.meta, func: 'update()'})
-			return false
-		}
-	}
-
-	/**
-	 * delete based on this.encounter_id
-	 * @return {Promise&lt;boolean>} deleted or not
-	 */
-	async delete() {
-		try {
-			await knex('encounter').delete().where('encounter_id', this.encounter_id)
-			return true
-		} catch (err) {
-			logger.error('Unable to delete enconter', {...this.meta, func: 'delete()'})
-			logger.error(err, {...this.meta, func: 'delete()'})
-			return false
-		}
-	}
-
-	/**
-	 * format to fhir spec
-	 * @return {object} fhir formatted object
-	 */
-	async fhir(include) {
-		let patient = {reference: `Patient/${this.patient_id}`}
-		let location = {reference: `Location/${this.location_id}`}
-		if (include.patient) {
-			const unwrappedPat = new Patient({id: this.patient_id})
-			await unwrappedPat.populate()
-			patient = await unwrappedPat.fhir()
-		}
-		if (include.location) {
-			const unwrappedLoc = new Location({id: this.location_id})
-			await unwrappedLoc.populate()
-			location = unwrappedLoc.fhir()
-		}
-
-		return {
-			resourceType: 'Encounter',
-			meta: {
-				lastUpdated: new Date(this.last_updated),
-			},
-			status: this.status,
-			class: {
-				data: this.class,
-			},
-			subject: patient,
-			location: [location],
-		}
-	}
+	console.log(props)
+	const prescriptionDrugs = props.drugs.prescriptions[0].filter(drug => drug.medication_name)
+	const otcDrugs = props.drugs.otc[0].filter(drug => drug.medication_name)
+	const recreationalDrugs = (props.drugs.recreational[0] || []).filter(drug => drug.medication_name)
+	// console.log({otcDrugs, recreationalDrugs, prescriptionDrugs})
+	console.log(otcDrugs)
+	return (
+		&lt;div id="modal1" className="modal history-report-modal">
+			&lt;div className="modal-content">
+				&lt;h3>History: {props.patientName}&lt;/h3>
+				&lt;div className="divider" />
+				&lt;section>
+					&lt;h4>Personal Health History&lt;/h4>
+					&lt;p>&lt;b>Childhood illnesses:&lt;/b>&lt;/p>
+					&lt;ul className="browser-default">
+						{(props.childhood_illnesses || []).map(illness => (&lt;li>{illness}&lt;/li>))}
+					&lt;/ul>
+					&lt;p>&lt;b>Immunisations:&lt;/b>&lt;/p>
+					&lt;ul className="browser-default">
+						{(props.immunisations || []).map(immun => (&lt;li>{immun}&lt;/li>))}
+					&lt;/ul>
+					&lt;p>&lt;b>Medical Problems:&lt;/b>&lt;/p>
+					&lt;ul className="browser-default">
+						{(props.medical_issues || []).map(immun => (&lt;li>{immun}&lt;/li>))}
+					&lt;/ul>
+					&lt;p>&lt;b>Surgical Operations:&lt;/b>&lt;/p>
+					&lt;ul className="browser-default">
+						{(props.surgical_operations || []).map(immun => (&lt;li>{immun}&lt;/li>))}
+					&lt;/ul>
+					&lt;p>&lt;b>Other Hospitalisations:&lt;/b>&lt;/p>
+					&lt;ul className="browser-default">
+						{(props.other_hospitalisations || []).map(immun => (
+							&lt;li>{immun}&lt;/li>
+						))}
+					&lt;/ul>
+				&lt;/section>
+				&lt;div className="divider" />
+				&lt;section>
+					&lt;h4>Medication&lt;/h4>
+					&lt;p>&lt;b>Prescribed Medication: &lt;/b>&lt;/p>
+					{prescriptionDrugs.length ? &lt;DrugTable drugs={prescriptionDrugs} /> : ''}
+					&lt;p>&lt;b>OTC Medication: &lt;/b>&lt;/p>
+					{otcDrugs.length ? &lt;DrugTable drugs={otcDrugs} /> : ''}
+					&lt;p>&lt;b>Allergies: &lt;/b>{props.medication_allergies}&lt;/p>
+					&lt;div className="divider" />
+					&lt;h4>Health Habits and Personal Safety&lt;/h4>
+				&lt;/section>
+				&lt;section>
+					&lt;h5>Exercise&lt;/h5>
+					&lt;p>&lt;b>Frequency: &lt;/b>{props.exercise_frequency}&lt;/p>
+				&lt;/section>
+				&lt;section>
+					&lt;h5>Diet&lt;/h5>
+					&lt;p>&lt;b>Dieting: &lt;/b>{props.dieting ? 'yes' : 'no'}&lt;/p>
+					&lt;p>&lt;b>Meals eaten daily: &lt;/b>{props.meals_daily}&lt;/p>
+					&lt;p>&lt;b>Difficulty Eating: &lt;/b>{props.difficulties_eating ? 'yes' : 'no'}&lt;/p>
+				&lt;/section>
+				&lt;section>
+					&lt;h5>Alcohol&lt;/h5>
+					&lt;p>&lt;b>Drinks alcohol: &lt;/b>{props.drink_alcohol ? 'yes' : 'no'}&lt;/p>
+					{props.drink_alcohol
+						? (
+							&lt;div>
+								&lt;p>&lt;b>Kind of alcohol: &lt;/b>{props.health_habits_alcohol_type === '' ? 'Not Specified' : props.health_habits_alcohol_type}&lt;/p>
+								&lt;p>&lt;b>Drinks per week: &lt;/b>{props.health_habits_alcohol_num}&lt;/p>
+								&lt;p>&lt;b>Concerned about alcohol intake: &lt;/b>{props.health_habits_drink_alcohol_concern}&lt;/p>
+								&lt;p>&lt;b>Considered stopping: &lt;/b>{props.health_habits_drink_alcohol_consider_stopping}&lt;/p>
+							&lt;/div>
+						)
+						: ''}
+				&lt;/section>
+				&lt;section>
+					&lt;h5>Tobacco&lt;/h5>
+					&lt;p>&lt;b>Used tobacco in past 5 years: &lt;/b>{props.tobacco_last_smoked ? 'yes' : 'no'}&lt;/p>
+					{props.tobacco_last_smoked
+						? (
+							&lt;div>
+								&lt;p>&lt;b>Currently using Tobacco:&lt;/b>{props.currently_uses_tobacco}&lt;/p>
+								&lt;pre>Types of Tobacco used: {props.tobacco_type}&lt;/pre>
+								&lt;p>&lt;b>Nicotine replacement therapy in use: &lt;/b>{props.currently_uses_tobacco_repalcement}&lt;/p>
+								&lt;p>&lt;b>Nicotine replacement therapy types: &lt;/b>{props.tobacco_replacement_type === '' ? 'Not specified' : props.tobacco_replacement_type}&lt;/p>
+							&lt;/div>
+						)
+						: ''}
+				&lt;/section>
+				&lt;section>
+					&lt;h5>Drugs&lt;/h5>
+					&lt;p>&lt;b>Currently using recreational drugs/substances: &lt;/b>{props.uses_recreational_drugs ? 'yes' : 'no'}&lt;/p>
+					{props.uses_recreational_drugs ? (
+						&lt;div>
+							{recreationalDrugs.length ? &lt;DrugTable drugs={recreationalDrugs} /> : ''}
+							&lt;p>&lt;b>Ever injecthealth_habits_patient_ever_injected_drugsed recreational drugs with a needle: &lt;/b>{props.used_recreational_with_needle ? 'yes' : 'no'}&lt;/p>
+						&lt;/div>
+					) : ''}
+				&lt;/section>
+				&lt;div className="divider" />
+				&lt;section>
+					&lt;h4>Other Questions&lt;/h4>
+					&lt;h5>Mental Health and Wellbeing&lt;/h5>
+					&lt;pre>{props.mental_health_history}&lt;/pre>
+					&lt;h5>Social History&lt;/h5>
+					&lt;pre>{props.social_history}&lt;/pre>
+					&lt;h5>Family History&lt;/h5>
+					&lt;pre>{props.family_history}&lt;/pre>
+					&lt;h5>Other Relevant History&lt;/h5>
+					&lt;pre>{props.relevant_history}&lt;/pre>
+				&lt;/section>
+				&lt;div className="divider" />
+				&lt;section>
+					&lt;h4>Sign-off&lt;/h4>
+					&lt;p>&lt;b>Compiled at: &lt;/b>{formatDate(props.date)}&lt;/p>
+					&lt;p>&lt;b>Compiled by: &lt;/b>{props.practitioner.name}&lt;/p>
+					&lt;p>&lt;b>Designation: &lt;/b>{props.practitioner_designation}&lt;/p>
+					&lt;p>&lt;b>Signature:&lt;/b>&lt;/p>
+					&lt;img src={props.signature_blob} alt="Signature" />
+				&lt;/section>
+			&lt;/div>
+		&lt;/div>
+	)
 }
 
-module.exports = Encounter
+export default HistoryReport
 </code></pre>
         </article>
     </section>

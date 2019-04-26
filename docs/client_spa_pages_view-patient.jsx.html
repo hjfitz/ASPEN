@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>server/fhir/classes/Encounter.js - Documentation</title>
+    <title>client/spa/pages/view-patient.jsx - Documentation</title>
 
     <script src="scripts/hljs/highlight.min.js"></script>
     <!--[if lt IE 9]>
@@ -26,7 +26,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">server/fhir/classes/Encounter.js</h1>
+    <h1 class="page-title">client/spa/pages/view-patient.jsx</h1>
     
 
     
@@ -36,157 +36,254 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const Location = require('./Location')
-const Patient = require('./Patient')
-const {knex} = require('../../db')
-const logger = require('../../logger')
-const FHIRBase = require('./FHIRBase')
+            <pre class="prettyprint source linenums"><code>import {h, Component} from 'preact'
+import M from 'materialize-css'
+import {Loader, Vitals, HistoryReport, VitalCharts} from '../Partial'
+import {fhirBase, doModal, toTitle} from '../util'
+import WarningScore from '../WarningScore'
 
-class Encounter {
-	/**
-	 * Wrapper for all fhir encounters
-	 * @param {Object} params params used to create Enounter
-	 * @param {number} params.encounter_id ID this encounter corresponds to in DB
-	 * @param {Date} params.last_updated when this was updated last
-	 * @param {string} params.class the type of encounter (generally admission)
-	 * @param {string} params.status the status of the encounter
-	 * 								(also usually finished as the patient has been admitted)
-	 * @param {number} params.patient_id patient that this encounter corresponds to
-	 * @param {number} params.location_id location that this encounter took place in
-	 */
-	constructor(params = {}) {
-		super(params)
-		this.encounter_id = params.encounter_id
-		this.last_updated = params.last_updated
-		this.class = params.class
-		this.status = params.status
-		this.patient_id = params.patient_id
-		this.location_id = params.location_id
-		this.meta = {file: 'fhir/classes/Encounter.js'}
-		this.required = [
-			'class',
-			'status',
-			'patient_id',
-			'location_id',
-			'last_updated',
-		]
-	}
+import '../styles/view-patient.scss'
+/**
+ * Normalise api response for ease of manipulation in this component
+ * @param {object} fhirResponse API response
+ * @returns {object} normalised fhir response
+ */
+const normalisePatientInfo = (fhirResponse) => {
+	const {
+		contact: [contact],
+		photo: [photo],
+		name: [name],
+		id,
+		gender,
+		reference,
+	} = fhirResponse
+	return ({
+		patient: {
+			displayName: `${name.prefix} ${name.text}`,
+			photo: photo ? photo.url : '',
+			id,
+			gender,
+			location: reference,
+		},
+		contact: {
+			displayName: `${contact.name.prefix} ${contact.name.text}`,
+			number: contact.telecom[0].value,
+		},
 
-	/**
-	 * Populate the object by ID
-	 * @return {Promise&lt;boolean>} Able to populate or not
-	 */
-	async populate() {
-		const {encounter_id} = this
-		// use a try-catch so that if there is nothing by ID
-		// err is thrown and we can catch/return false
-		try {
-			const [resp] = await knex('encounter').select().where('encounter_id', encounter_id)
-			Object.keys(resp).forEach(key => this[key] = resp[key])
-			return true
-		} catch (err) {
-			logger.error('Unable to populate enconter', {...this.meta, func: 'populate()'})
-			logger.error(err, {...this.meta, func: 'populate()'})
-			return false
-		}
-	}
+	})
+}
 
-	/**
-	 * Adds object params to database
-	 * @returns {Promise&lt;boolean>} Added to database or not
-	 */
-	async insert() {
-		this.last_updated = new Date()
-		const missingKeys = this.required.filter(key => !this[key])
-		if (missingKeys.length) return false
-		const insertObj = this.required.reduce((acc, key) => {
-			acc[key] = this[key]
+/**
+ * makes the fhir response easier to work with
+ * @param {object[]} patReport Patient diagnostic report fro fhir api
+ * @returns {object[]} formatted object: [{oxygen_saturation: 11, body_temp: 37 ...}]
+ */
+const normalisePatientReports = patReport => patReport
+	.map(report => ({
+		...report.result.reduce((acc, cur) => {
+			acc[cur.code.text] = cur.valueQuantity.value
 			return acc
-		}, {})
-		try {
-			logger.silly(JSON.stringify(insertObj), {...this.meta, func: 'insert()'})
-			await knex('encounter').insert(insertObj)
-			return true
-		} catch (err) {
-			logger.error('Unable to insert enconter', {...this.meta, func: 'insert()'})
-			logger.error(err, {...this.meta, func: 'insert()'})
-			return false
-		}
-	}
+		}, {}),
+		date: new Date(report.meta.lastUpdated)}
+	))
 
+
+/**
+ * Hit /Diagnostics for list of 10 most recent patient reports
+ * @param {number} id patient ID
+ * @param {number} pageNo which page number to visit
+ * @returns {AxiosPromise&lt;any>} request to API
+ */
+const getPatientReport = (id, pageNo = 0) => fhirBase.get(
+	`Diagnostics?patient=${id}`
+	+ '&amp;result=true'
+	+ '&amp;_count=10'
+	+ `&amp;pageNo=${pageNo}`,
+)
+
+class Patient extends Component {
 	/**
-	 * Update database based on object params
-	 * @returns {Promise&lt;boolean>} updated or not
+	 * Patient information component
+	 * @param {object} props component props
 	 */
-	async update() {
-		const exists = this.required.filter(key => this[key])
-		const cannotUpdate = exists.length === this.required.length
-		if (cannotUpdate) return false
-		const obj = this.required.reduce((acc, cur) => {
-			if (this[cur]) acc[cur] = this[cur]
-			return acc
-		}, {})
-		obj.last_updated = new Date()
-		this.last_updated = obj.last_updated
+	constructor(props) {
+		super(props)
+		this.state = {
+			loaded: false,
+			patientInfo: null,
+			pageNo: 0,
+			report: {},
+			reportLoaded: false,
+		}
+		this.submitVitals = this.submitVitals.bind(this)
+	}
+
+	/**
+	 * fetch patient data from /Encounter on form load
+	 */
+	async componentDidMount() {
+		const {patient_id: id} = this.props
+		const [{data}, {data: patientReport}] = await Promise.all([
+			fhirBase.get(`Encounter?class=admission&amp;patient_id=${id}&amp;_include=Encounter:patient`),
+			getPatientReport(id, this.state.pageNo),
+		])
+
+		const patientInfo = normalisePatientInfo({...data[0].subject, ...data[0].location[0]})
+		const patientReports = normalisePatientReports(patientReport) // comes pre-sorted from API
+		const ews = new WarningScore(patientReports[0])
+		this.setState({
+			patientInfo,
+			loaded: true,
+			patientReports,
+			news: ews.score(),
+		})
+	}
+
+
+	/**
+	 * Submit data to API and repopulate vital chart
+	 * @param {FormData} diagnosticReport fields in &lt;vitals />
+	 */
+	async submitVitals(diagnosticReport) {
+		diagnosticReport.append('patient_id', this.props.patient_id)
 		try {
-			await knex('encounter').update(obj)
-			return true
+			const {data} = await fhirBase.post('/Diagnostics', diagnosticReport)
+			M.toast({html: data.details.text})
+			const {data: patientReport} = await getPatientReport(this.props.patient_id, this.state.pageNo)
+			const patientReports = normalisePatientReports(patientReport)
+			const ews = new WarningScore(patientReports[0])
+			this.setState({
+				loaded: true,
+				patientInfo: this.state.patientInfo,
+				patientReports,
+				news: ews.score(),
+			})
 		} catch (err) {
-			logger.error('Unable to update enconter', {...this.meta, func: 'update()'})
-			logger.error(err, {...this.meta, func: 'update()'})
-			return false
+			console.error(err.response)
+			doModal('Error', `There was an error submitting this report:&lt;/p>&lt;p>${err}&lt;/p>`)
 		}
 	}
 
 	/**
-	 * delete based on this.encounter_id
-	 * @return {Promise&lt;boolean>} deleted or not
+	 * ? Keep an eye on `history.back`, see if it malfunctions
 	 */
 	async delete() {
-		try {
-			await knex('encounter').delete().where('encounter_id', this.encounter_id)
-			return true
-		} catch (err) {
-			logger.error('Unable to delete enconter', {...this.meta, func: 'delete()'})
-			logger.error(err, {...this.meta, func: 'delete()'})
-			return false
-		}
+		const {data} = await fhirBase.delete(`/Patient/${this.props.patient_id}`)
+		const sev = data.issue[0].severity
+		doModal(toTitle(sev), data.issue[0].details.text)
+		if (sev === 'success') window.history.back()
 	}
 
 	/**
-	 * format to fhir spec
-	 * @return {object} fhir formatted object
+	 * get history data and then update state
+	 * once state is updated, can be passed to history component as props via re-render
+	 * after this, pop-up the modal
+	 * @param {Event} ev click
 	 */
-	async fhir(include) {
-		let patient = {reference: `Patient/${this.patient_id}`}
-		let location = {reference: `Location/${this.location_id}`}
-		if (include.patient) {
-			const unwrappedPat = new Patient({id: this.patient_id})
-			await unwrappedPat.populate()
-			patient = await unwrappedPat.fhir()
-		}
-		if (include.location) {
-			const unwrappedLoc = new Location({id: this.location_id})
-			await unwrappedLoc.populate()
-			location = unwrappedLoc.fhir()
-		}
+	async popupHistory(ev) {
+		ev.preventDefault()
+		const {patient_id} = this.props
+		const {data: report} = await fhirBase.get(`/History/${patient_id}`)
+		this.setState({
+			loaded: this.state.loaded,
+			patientInfo: this.state.patientInfo,
+			patientReports: this.state.patientReports,
+			news: this.state.news,
+			report,
+			reportLoaded: true,
+		}, () => {
+			const repModal = document.querySelector('.modal.history-report-modal')
+			const instance = M.Modal.getInstance(repModal) || M.Modal.init(repModal)
+			instance.open()
+		})
+	}
 
-		return {
-			resourceType: 'Encounter',
-			meta: {
-				lastUpdated: new Date(this.last_updated),
+	/**
+	 * invoked on click of A-E
+	 * placeholder until invoked
+	 * @param {Event} ev Click event
+	 */
+	async popupAE(ev) {
+		ev.preventDefault()
+		console.log(this)
+	}
+
+	/**
+	 * pop up a modal and update tabs
+	 * @param {Event} ev click event
+	 */
+	popupWarningScoreHistory(ev) {
+		ev.preventDefault()
+		const instance = M.Modal.getInstance(this.newsChart) || M.Modal.init(this.newsChart, {
+			onOpenEnd() {
+				const tabs = document.querySelector('.tabs.chart-tabs')
+				M.Tabs.init(tabs)
+				console.log('opening tabs')
 			},
-			status: this.status,
-			class: {
-				data: this.class,
-			},
-			subject: patient,
-			location: [location],
-		}
+		})
+		instance.open()
+	}
+
+	/**
+	 * Render our patient info
+	 * @returns {preact.VNode} patient information or loading icon
+	 */
+	render() {
+		if (!this.state.loaded) return &lt;Loader />
+		const {patient, contact} = this.state.patientInfo
+		return (
+			&lt;div className="row">
+				&lt;div className="col s12">
+					&lt;div className="card horizontal patient-view">
+						&lt;div className="card-image">
+							&lt;img alt={patient.displayName} src={patient.photo || '/img/patient-placeholder.webp'} />
+						&lt;/div>
+						&lt;div className="card-stacked">
+							&lt;div className="card-content">
+								&lt;i className="material-icons right clickable" onClick={this.delete.bind(this)}>close&lt;/i>
+								&lt;div className="row">
+									&lt;div className="col s12">
+										&lt;span className="card-title">{patient.displayName}&lt;/span>
+									&lt;/div>
+								&lt;/div>
+								&lt;div className="row">
+									&lt;div className="col s6">
+										&lt;h6>Patient Information&lt;/h6>
+										&lt;p>&lt;b>NEWS: &lt;/b>{this.state.news}&lt;/p>
+										&lt;p>&lt;b>Gender: &lt;/b>{patient.gender}&lt;/p>
+										&lt;p>&lt;b>Ward: &lt;/b>{patient.location}&lt;/p>
+									&lt;/div>
+									&lt;div className="col s6">
+
+										&lt;h6>Contact Information&lt;/h6>
+										&lt;p>&lt;b>Name: &lt;/b>{contact.displayName}&lt;/p>
+										&lt;p>&lt;b>Number: &lt;/b>{contact.number}&lt;/p>
+									&lt;/div>
+								&lt;/div>
+							&lt;/div>
+							&lt;div className="card-action">
+								&lt;a className="teal-text text-darken-1" onClick={this.popupHistory.bind(this)}>History&lt;/a>
+								&lt;a className="teal-text text-darken-1" onClick={this.popupAE.bind(this)}>A-E Report&lt;/a>
+								&lt;a className="teal-text text-darken-1" onClick={this.popupWarningScoreHistory.bind(this)}>Vitals Chart&lt;/a>
+							&lt;/div>
+						&lt;/div>
+					&lt;/div>
+				&lt;/div>
+				&lt;div className="col s12">
+					&lt;Vitals submit={this.submitVitals} history={this.state.patientReports} />
+				&lt;/div>
+				&lt;HistoryReport
+					{...this.state.report}
+					patientName={patient.displayName}
+					reportLoaded={this.state.reportLoaded}
+				/>
+				&lt;VitalCharts refCb={ref => this.newsChart = ref} history={this.state.patientReports.reverse()} />
+			&lt;/div>
+		)
 	}
 }
 
-module.exports = Encounter
+export default Patient
 </code></pre>
         </article>
     </section>

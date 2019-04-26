@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>server/fhir/classes/Encounter.js - Documentation</title>
+    <title>client/spa/pages/admit-patient/history/health-history.jsx - Documentation</title>
 
     <script src="scripts/hljs/highlight.min.js"></script>
     <!--[if lt IE 9]>
@@ -26,7 +26,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">server/fhir/classes/Encounter.js</h1>
+    <h1 class="page-title">client/spa/pages/admit-patient/history/health-history.jsx</h1>
     
 
     
@@ -36,157 +36,132 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const Location = require('./Location')
-const Patient = require('./Patient')
-const {knex} = require('../../db')
-const logger = require('../../logger')
-const FHIRBase = require('./FHIRBase')
+            <pre class="prettyprint source linenums"><code>import {h, Component} from 'preact'
+import M from 'materialize-css'
 
-class Encounter {
-	/**
-	 * Wrapper for all fhir encounters
-	 * @param {Object} params params used to create Enounter
-	 * @param {number} params.encounter_id ID this encounter corresponds to in DB
-	 * @param {Date} params.last_updated when this was updated last
-	 * @param {string} params.class the type of encounter (generally admission)
-	 * @param {string} params.status the status of the encounter
-	 * 								(also usually finished as the patient has been admitted)
-	 * @param {number} params.patient_id patient that this encounter corresponds to
-	 * @param {number} params.location_id location that this encounter took place in
-	 */
-	constructor(params = {}) {
-		super(params)
-		this.encounter_id = params.encounter_id
-		this.last_updated = params.last_updated
-		this.class = params.class
-		this.status = params.status
-		this.patient_id = params.patient_id
-		this.location_id = params.location_id
-		this.meta = {file: 'fhir/classes/Encounter.js'}
-		this.required = [
-			'class',
-			'status',
-			'patient_id',
-			'location_id',
-			'last_updated',
-		]
-	}
+import {IncButton, DecButton} from './util'
 
-	/**
-	 * Populate the object by ID
-	 * @return {Promise&lt;boolean>} Able to populate or not
-	 */
-	async populate() {
-		const {encounter_id} = this
-		// use a try-catch so that if there is nothing by ID
-		// err is thrown and we can catch/return false
-		try {
-			const [resp] = await knex('encounter').select().where('encounter_id', encounter_id)
-			Object.keys(resp).forEach(key => this[key] = resp[key])
-			return true
-		} catch (err) {
-			logger.error('Unable to populate enconter', {...this.meta, func: 'populate()'})
-			logger.error(err, {...this.meta, func: 'populate()'})
-			return false
+class HealthHistory extends Component {
+	constructor() {
+		super()
+		this.state = {
+			numProbs: 1,
+			numOps: 1,
+			numOth: 1,
 		}
 	}
 
-	/**
-	 * Adds object params to database
-	 * @returns {Promise&lt;boolean>} Added to database or not
-	 */
-	async insert() {
-		this.last_updated = new Date()
-		const missingKeys = this.required.filter(key => !this[key])
-		if (missingKeys.length) return false
-		const insertObj = this.required.reduce((acc, key) => {
-			acc[key] = this[key]
-			return acc
-		}, {})
-		try {
-			logger.silly(JSON.stringify(insertObj), {...this.meta, func: 'insert()'})
-			await knex('encounter').insert(insertObj)
-			return true
-		} catch (err) {
-			logger.error('Unable to insert enconter', {...this.meta, func: 'insert()'})
-			logger.error(err, {...this.meta, func: 'insert()'})
-			return false
-		}
+	// selects fall over on inc/dec, re-init
+	componentDidUpdate() {
+		const select = this.mainContainer.querySelectorAll('select')
+		M.FormSelect.init(select)
 	}
 
 	/**
-	 * Update database based on object params
-	 * @returns {Promise&lt;boolean>} updated or not
+	 * create a function to increase an item in state
+	 * @param {string} type key in state to update
+	 * @returns {Function}
 	 */
-	async update() {
-		const exists = this.required.filter(key => this[key])
-		const cannotUpdate = exists.length === this.required.length
-		if (cannotUpdate) return false
-		const obj = this.required.reduce((acc, cur) => {
-			if (this[cur]) acc[cur] = this[cur]
-			return acc
-		}, {})
-		obj.last_updated = new Date()
-		this.last_updated = obj.last_updated
-		try {
-			await knex('encounter').update(obj)
-			return true
-		} catch (err) {
-			logger.error('Unable to update enconter', {...this.meta, func: 'update()'})
-			logger.error(err, {...this.meta, func: 'update()'})
-			return false
-		}
+	inc(type) {
+		return () => this.setState({[type]: this.state[type] + 1})
 	}
 
 	/**
-	 * delete based on this.encounter_id
-	 * @return {Promise&lt;boolean>} deleted or not
+	 * create a function to decrease an item in state
+	 * @param {string} type key in state to update
+	 * @returns {Function}
 	 */
-	async delete() {
-		try {
-			await knex('encounter').delete().where('encounter_id', this.encounter_id)
-			return true
-		} catch (err) {
-			logger.error('Unable to delete enconter', {...this.meta, func: 'delete()'})
-			logger.error(err, {...this.meta, func: 'delete()'})
-			return false
-		}
+	dec(type) {
+		return () => this.setState({[type]: this.state[type] - 1})
 	}
 
 	/**
-	 * format to fhir spec
-	 * @return {object} fhir formatted object
+	 * @returns {preact.VNode}
 	 */
-	async fhir(include) {
-		let patient = {reference: `Patient/${this.patient_id}`}
-		let location = {reference: `Location/${this.location_id}`}
-		if (include.patient) {
-			const unwrappedPat = new Patient({id: this.patient_id})
-			await unwrappedPat.populate()
-			patient = await unwrappedPat.fhir()
-		}
-		if (include.location) {
-			const unwrappedLoc = new Location({id: this.location_id})
-			await unwrappedLoc.populate()
-			location = unwrappedLoc.fhir()
-		}
-
-		return {
-			resourceType: 'Encounter',
-			meta: {
-				lastUpdated: new Date(this.last_updated),
-			},
-			status: this.status,
-			class: {
-				data: this.class,
-			},
-			subject: patient,
-			location: [location],
-		}
+	render() {
+		return (
+			&lt;div className="row" ref={m => this.mainContainer = m}>
+				&lt;h4>Health History&lt;/h4>
+				&lt;div className="input-field col s12 m6">
+					&lt;select multiple className="patient-details-select patient-history-input" data-form-key="health-childhood-illnesses" data-materialize-type="select">
+						&lt;option value="" disabled selected>Select all that apply&lt;/option>
+						&lt;option value="Measles">Measles&lt;/option>
+						&lt;option value="Mumps">Mumps&lt;/option>
+						&lt;option value="Rubella">Rubella&lt;/option>
+						&lt;option value="Chickenpox">Chickenpox&lt;/option>
+						&lt;option value="Rheumatic Fever">Rheumatic Fever&lt;/option>
+					&lt;/select>
+					&lt;label>Childhood Illnesses&lt;/label>
+				&lt;/div>
+				&lt;div className="input-field col s12 m6">
+					&lt;select multiple className="patient-details-select patient-history-input" data-form-key="health-immunisations" data-materialize-type="select">
+						&lt;option value="" disabled selected>Select all that apply&lt;/option>
+						&lt;option value="Tetanus">Tetanus&lt;/option>
+						&lt;option value="Hepatitis">Hepatitis&lt;/option>
+						&lt;option value="Influenza">Influenza&lt;/option>
+						&lt;option value="MMR">MMR&lt;/option>
+						&lt;option value="Meningitis">Meningitis&lt;/option>
+						&lt;option value="Pneumonia">Pneumonia&lt;/option>
+					&lt;/select>
+					&lt;label>Immunisations&lt;/label>
+				&lt;/div>
+				&lt;div className="col s12">
+					&lt;h6>Medical Issues&lt;/h6>
+					&lt;div className="patient-history-input" data-form-key="health-medical-issues" data-materialize-type="input-group">
+						{Array.from({length: this.state.numProbs}).map((_, idx) => (
+							&lt;div className="row">
+								&lt;div className="col s12 input-field">
+									&lt;input id={`med-issue-name-${idx}`} type="text" className={`validate med-issue-name-${idx}`} />
+									&lt;label htmlFor={`med-issue-name-${idx}`}>Medical Problem&lt;/label>
+								&lt;/div>
+							&lt;/div>
+						))}
+					&lt;/div>
+					&lt;div className="row">
+						&lt;IncButton onClick={this.inc('numProbs').bind(this)} />
+						&lt;DecButton onClick={this.dec('numProbs').bind(this)} />
+					&lt;/div>
+				&lt;/div>
+				&lt;div className="col s12">
+					&lt;h6>Surgical Operations&lt;/h6>
+					&lt;div className="patient-history-input" data-form-key="health-operations" data-materialize-type="input-group">
+						{Array.from({length: this.state.numOps}).map((_, idx) => (
+							&lt;div className="row">
+								&lt;div className="col s12 input-field">
+									&lt;input id={`op-name-${idx}`} type="text" className={`validate med-name-${idx}`} />
+									&lt;label htmlFor={`op-name-${idx}`}>Operation&lt;/label>
+								&lt;/div>
+							&lt;/div>
+						))}
+					&lt;/div>
+					&lt;div className="row">
+						&lt;IncButton onClick={this.inc('numOps').bind(this)} />
+						&lt;DecButton onClick={this.dec('numOps').bind(this)} />
+					&lt;/div>
+				&lt;/div>
+				&lt;div className="input-field col s12">
+					&lt;h6>Other Hospitalisations&lt;/h6>
+					&lt;div className="patient-history-input" data-form-key="health-hospitalisations" data-materialize-type="input-group">
+						{Array.from({length: this.state.numOth}).map((_, idx) => (
+							&lt;div className="row">
+								&lt;div className="col s12 input-field">
+									&lt;input id={`hosp-name-${idx}`} type="text" className={`validate med-name-${idx}`} />
+									&lt;label htmlFor={`hosp-name-${idx}`}>Hospitalisation Reason&lt;/label>
+								&lt;/div>
+							&lt;/div>
+						))}
+					&lt;/div>
+					&lt;div className="row">
+						&lt;IncButton onClick={this.inc('numOth').bind(this)} />
+						&lt;DecButton onClick={this.dec('numOth').bind(this)} />
+					&lt;/div>
+				&lt;/div>
+			&lt;/div>
+		)
 	}
 }
 
-module.exports = Encounter
+export default HealthHistory
 </code></pre>
         </article>
     </section>
