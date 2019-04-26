@@ -14,8 +14,7 @@
     "build:watch": "webpack --mode=development --watch",
     "build:prod": "webpack --mode=production",
     "lint": "eslint src/**/*.js{x,}",
-    "build:docs": "esdoc",
-    "build:docs:all": "yarn build:docs ./server.js ./bin/www.js ./src/**/**/*.js"
+    "build:docs": "esdoc"
   },
   "engines": {
     "node": ">=11.0.0",
@@ -65,7 +64,6 @@
     "@babel/polyfill": "^7.2.5",
     "@babel/preset-env": "^7.2.0",
     "babel-loader": "^8.0.4",
-    "contentful-sdk-jsdoc": "^2.2.0",
     "css-loader": "^2.0.0",
     "esdoc": "^1.1.0",
     "esdoc-ecmascript-proposal-plugin": "^1.0.0",
@@ -77,10 +75,8 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.2",
     "eslint-plugin-react": "^7.11.1",
-    "jsdoc": "^3.5.5",
     "nodemon": "^1.18.9",
     "style-loader": "^0.23.1",
-    "tui-jsdoc-template": "^1.2.2",
     "webpack-build-notifier": "^0.1.30",
     "webpack-cli": "^3.1.2"
   }
