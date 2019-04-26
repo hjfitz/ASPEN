@@ -26,9 +26,9 @@ class Patient extends FHIRBase {
 	 * @param {string} params.family patient family name (surname)
 	 */
 	constructor(params) {
+		super(params)
 		this.meta = {file: 'fhir/classes/Patient.js'}
 		logger.silly(`attempting to make patient: ${JSON.stringify(params)}`, {...this.meta, func: 'constructor'})
-		super(params)
 		const {active, id, fullname, given, prefix, gender, last_updated, photo, family} = params
 		this.active = active
 		this.loaded = false

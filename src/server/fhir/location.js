@@ -42,22 +42,9 @@ locRouter.get('/', async (req, res) => {
 })
 
 locRouter.get('/:id', async (req, res) => {
-<<<<<<< HEAD
 	const location = new Location({id: req.params.id})
 	await location.populate()
 	res.json(location.getFhir())
-=======
-	// prepare and make a query to get data
-	const {rows: [row]} = await client.query({
-		name: 'get-location',
-		text: 'SELECT * FROM location WHERE location_id = $1;',
-		values: [req.params.id],
-	})
-
-	// create a location with the database data, format it correctly
-	const location = new Location(row)
-	res.json(location.fhir())
->>>>>>> develop
 })
 
 locRouter.delete('/:id', async (req, res) => {

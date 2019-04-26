@@ -5,10 +5,8 @@ const {decodeJWTPayload} = require('../auth/token')
 const Encounter = require('./classes/Encounter')
 const OperationOutcome = require('./classes/OperationOutcome')
 
-<<<<<<< HEAD
 const file = 'fhir/encounter.js'
 
-=======
 /**
  * Handle all encoutners:
  * 	required as FHIR offers no logical way to store patients
@@ -17,22 +15,18 @@ const file = 'fhir/encounter.js'
 /**
   * Accept a new ancounter
   */
->>>>>>> develop
 encounterRouter.post('/', async (req, res) => {
 	const decodedToken = decodeJWTPayload(req.headers.token)
 	console.log(req.body)
 	const enc = new Encounter(req.body)
-<<<<<<< HEAD
 	if (!decodedToken.permissions.includes('add:patients')) {
 		logger.info('request made with no permissions', {file, func: 'POST /'})
 		const outcome = new OperationOutcome('error', 403, req.originalUrl, 'you have no access!')
 		outcome.makeResponse(res)
 		return
 	}
-=======
 	// attempt to insert the data.
 	// inserted will be false if req.body does not have the required fields
->>>>>>> develop
 	const inserted = await enc.insert()
 	const outcome = inserted
 		? new OperationOutcome('success', 200, req.originalUrl, 'Successfully added encounter')
@@ -60,27 +54,16 @@ encounterRouter.get('/', async (req, res) => {
 		acc[cur] = true
 		return acc
 	}, {})
-<<<<<<< HEAD
 	logger.info('fetching all encounters', {file, func: 'GET /'})
-=======
 
 	// pull all encounters based on the querystring
->>>>>>> develop
 	const rows = await knex('encounter').select().where(req.query)
 
 	// if no permission to view all:
 	// select all from union table and filter out based on practitonerpatients
 	if (!decodedToken.permissions.includes('view:allpatients')) {
-<<<<<<< HEAD
 		logger.debug(`filtering out patients for user${decodedToken.email}`, {file, func: 'GET /'})
 		const unionTable = await knex('practitionerpatients').select().where({practitioner_id: decodedToken.userid})
-=======
-		const unionTable = await knex('practitionerpatients')
-			.select()
-			.where({practitioner_id: decodedToken.userid})
-
-		// map to patient ID and remove them from the earlier rows set
->>>>>>> develop
 		const patientIDs = unionTable.map(group => group.patient_id)
 
 		// use promise.all to 'concurrently' access the database
@@ -90,16 +73,8 @@ encounterRouter.get('/', async (req, res) => {
 		res.json(mapped)
 		return
 	}
-<<<<<<< HEAD
 	logger.debug(`sending all patients for user${decodedToken.email}`, {file, func: 'GET /'})
 	const mapped = await Promise.all(rows.map(row => new Encounter(row).fhir(toInclude)))
-=======
-
-	// the user has all permissions, populate these and send to user
-	const mapped = await Promise.all(
-		rows.map(row => new Encounter(row).fhir(toInclude)),
-	)
->>>>>>> develop
 	res.json(mapped)
 })
 
