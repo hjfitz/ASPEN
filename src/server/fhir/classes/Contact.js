@@ -24,8 +24,6 @@ class Contact {
 		this.values = [...this.required, 'family']
 	}
 
-	// fhir() {}
-
 	/**
 	 * Populates the contact params based on the database response
 	 * @return {Promise<void>} void
@@ -62,10 +60,6 @@ class Contact {
 			return false
 		}
 	}
-
-	// delete() {}
-
-	// update() {}
 }
 
 module.exports = Contact

@@ -6,14 +6,22 @@ import {getJwtPayload} from '../util'
 
 import '../styles/welcome.scss'
 
+<<<<<<< HEAD
 function getGiven() {
 	const payload = getJwtPayload(localStorage.token)
 	return (payload.given_name || payload.name)
 }
+=======
+/**
+ * get the given name (or name) from JWT
+ * @returns {Boolean}
+ */
+const getGiven = () => getJwtPayload(localStorage.token).given_name || getJwtPayload(localStorage.token).name
+>>>>>>> develop
 
 /**
  * Welcome page
- * @return {VNode} Welcome page
+ * @return {preact.VNode} Welcome page
  */
 const Welcome = () => {
 	const {permissions} = getJwtPayload(localStorage.getItem('token'))

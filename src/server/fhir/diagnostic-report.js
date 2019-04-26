@@ -9,8 +9,9 @@ const Observation = require('./classes/Observation')
 const OperationOutcome = require('./classes/OperationOutcome')
 
 
-// yet documented in swagger
+// return all DiagnosticReports
 diagnosticRouter.get('/', async (req, res) => {
+	// pull query params for db query
 	const {
 		patient: patient_id,	// patient ID
 		result,					// link results (bool)
@@ -18,6 +19,8 @@ diagnosticRouter.get('/', async (req, res) => {
 		page,					// which page of results
 	} = req.query
 	const offset = _count * page
+
+	// pull reports from postgres
 	const rows = await knex('diagnostic_report')
 		.select()
 		.where({patient_id})
@@ -43,19 +46,13 @@ diagnosticRouter.get('/', async (req, res) => {
 	res.json(reports)
 })
 
-diagnosticRouter.get('/all', async (req, res) => {
-	const rows = await knex('diagnostic_report').select()
-	res.json(rows)
-})
-
+// get a specific report
 diagnosticRouter.get('/:id', async (req, res) => {
 	const {id} = req.params
 	const [row] = await knex('diagnostic_report').select().where({report_id: id})
 	const obs = new DiagnosticReport(row)
-	let resp = obs.fhir()
-	if (req.query.result) {
-		resp = await obs.fhirLinked()
-	}
+	// pull linked data if speficied
+	const resp = req.query.result ? await obs.fhirLinked() : obs.fhir()
 	res.json(resp)
 })
 

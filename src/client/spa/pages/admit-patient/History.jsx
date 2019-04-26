@@ -19,10 +19,16 @@ class CreateHistory extends Component {
 		this.state = {}
 	}
 
+	/**
+	 * on mount, initialise the collapsible that is created
+	 */
 	componentDidMount() {
 		M.Collapsible.init(this.collapsible)
 	}
 
+	/**
+	 * @returns {preact.VNode}
+	 */
 	render() {
 		return (
 			<div className="row">

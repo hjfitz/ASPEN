@@ -3,8 +3,12 @@ import format from 'date-fns/format'
 import {getName, getJwtPayload} from '../../../util'
 import SignatureBox from './signature-box'
 
+/**
+ * @returns {string} format the date correctly
+ */
 const getDate = () => format(Date.now(), ' MMM DD, YYYY')
 
+<<<<<<< HEAD
 function getDesignation() {
 	const payload = getJwtPayload(localStorage.token)
 	if (!('email' in payload)) return 'guest'
@@ -13,6 +17,11 @@ function getDesignation() {
 	return 'unknown'
 }
 
+=======
+/**
+ * @returns {preact.VNode}
+ */
+>>>>>>> develop
 const SignOff = () => (
 	<div className="row">
 		<h4>Sign-off</h4>

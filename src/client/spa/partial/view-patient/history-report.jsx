@@ -3,8 +3,18 @@ import format from 'date-fns/format'
 
 import '../../styles/history-report.scss'
 
+/**
+ * format date as MM DD, YYYY
+ * 12 08, 1995
+ * @param {string} date date to format
+ */
 const formatDate = date => format(new Date(date), ' MMM DD, YYYY')
 
+/**
+ * format a drug table
+ * @param {preact.ComponentProps} props component props
+ * @param {any[]} props.drugs drug list
+ */
 const DrugTable = props => (
 	<table>
 		<thead>
@@ -26,6 +36,11 @@ const DrugTable = props => (
 	</table>
 )
 
+/**
+ *
+ * @param {preact.ComponentProps} props
+ * @returns {preact.VNode}
+ */
 const HistoryReport = (props) => {
 	if (!props.reportLoaded) {
 		return (

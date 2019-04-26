@@ -2,7 +2,7 @@
 class FHIRBase {
 	populate() {}
 
-	create() {}
+	insert() {}
 
 	update() {}
 

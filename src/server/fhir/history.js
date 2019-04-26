@@ -6,6 +6,11 @@ const logger = require('../logger')
 
 const file = 'fhir/history.js'
 
+/**
+ * !! File does not follow FHIR specifications
+ * No patient history concept exists yet, so try to keep this file impartial and plain json
+ */
+
 
 historyRouter.get('/:id', async (req, res) => {
 	const [row] = await knex('patient_history').select().where({patient_id: req.params.id})
@@ -125,9 +130,6 @@ historyRouter.post('/', async (req, res) => {
 				})
 			}
 		}
-		// async do all promises
-		// create mtm relations
-
 		// const results = Object.keys(queries).reduce((acc, cur) => {})
 		// const resp = await knex('patient_history').insert(req.body)
 		const outcome = new OperationOutcome('success', 200, req.url, 'Successfully added history', {history_id})

@@ -3,6 +3,7 @@ import isMobile from 'ismobilejs'
 
 import {Input, Select} from '../../Partial'
 
+<<<<<<< HEAD
 const DesktopWebcamDisplay = props => (
 	<div className="card">
 		<div className="card-image">
@@ -32,6 +33,13 @@ const MobileImageUpload = props => (
 // not on mobile? webcam next to form. else, input at bottom of form
 const colClass = () => (isMobile.any ? 'col s12' : 'col m6 s12')
 
+=======
+/**
+ * basic form for patient demographic submission
+ * @param {preact.ComponentProps} props comopnent props
+ * @returns {preact.VNode}
+ */
+>>>>>>> develop
 const PatientDemographicInfo = props => (
 	<div>
 		<h3>Patient Details</h3>

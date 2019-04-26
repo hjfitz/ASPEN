@@ -1,8 +1,9 @@
 const log = require('../../logger')
 const Observation = require('./Observation')
 const {knex} = require('../../db')
+const FHIRBase = require('./FHIRBase')
 
-class DiagnosticReport {
+class DiagnosticReport extends FHIRBase {
 	/**
 	 * Created by getting data from the database: This resource consists of a number of Observations
 	 * @param {object} row database row to format Diagnostic report
@@ -11,10 +12,9 @@ class DiagnosticReport {
 	 * @param {number} row.patient_id The patient for which this report pertains
 	 */
 	constructor(row) {
+		super(row)
 		// merge keys with our own
-		Object.keys(row).forEach((key) => {
-			this[key] = row[key]
-		})
+		Object.keys(row).forEach(key => this[key] = row[key])
 	}
 
 	/**
