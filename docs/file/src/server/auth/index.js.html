@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">src/server/auth/index.js | fyp</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Final year project @portsoc"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="fyp"><meta property="twitter:description" content="Final year project @portsoc"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/hjfitz/fyp"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa">client/spa</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/WarningScore.js~WarningScore.html">WarningScore</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-doModal">doModal</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getJwtPayload">getJwtPayload</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getName">getName</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-noop">noop</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-showLogin">showLogin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-toTitle">toTitle</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-fhirBase">fhirBase</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-pages">client/spa/pages</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/create-ward.jsx~CreateWard.html">CreateWard</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/permissions.jsx~Permissions.html">Permissions</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/search-patients.jsx~SearchPatient.html">SearchPatient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/view-patient.jsx~Patient.html">Patient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/view-ward.jsx~Ward.html">Ward</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/ward-list.jsx~WardList.html">WardList</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Add">Add</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Welcome">Welcome</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-permissionsBase">permissionsBase</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-pages-admit-patient">client/spa/pages/admit-patient</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/History.jsx~CreateHistory.html">CreateHistory</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/index.jsx~AdmitPatient.html">AdmitPatient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Contact">Contact</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-PatientDemographicInfo">PatientDemographicInfo</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-pages-admit-patient-history">client/spa/pages/admit-patient/history</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/Questionnaire.jsx~Questionnaire.html">Questionnaire</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/alcohol.jsx~Alcohol.html">Alcohol</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/drugs.jsx~Drugs.html">Drugs</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/health-history.jsx~HealthHistory.html">HealthHistory</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/medication.jsx~Medication.html">Medication</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/tobacco.jsx~Tobacco.html">Tobacco</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Diet">Diet</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Exercise">Exercise</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-OtherQuestions">OtherQuestions</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SignOff">SignOff</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DecButton">DecButton</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-IncButton">IncButton</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-partial-admit-patient">client/spa/partial/admit-patient</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/admit-patient/signature-box.jsx~Signature.html">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-partial-layout">client/spa/partial/layout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/layout/fab.jsx~Fab.html">Fab</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/layout/login.jsx~Login.html">Login</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/layout/redirect.jsx~Redirect.html">Redirect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Breadcrumbs">Breadcrumbs</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-partial-shared">client/spa/partial/shared</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Input">Input</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Loader">Loader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Modal">Modal</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-partial-view-patient">client/spa/partial/view-patient</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/view-patient/vital-signs.jsx~Vitals.html">Vitals</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/view-patient/vitals-charts.jsx~NewsChart.html">NewsChart</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HistoryReport">HistoryReport</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#server">server</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-router">router</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#server-fhir">server/fhir</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-patientRouter">patientRouter</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#server-fhir-classes">server/fhir/classes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Contact.js~Contact.html">Contact</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/DiagnosticReport.js~DiagnosticReport.html">DiagnosticReport</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Encounter.js~Encounter.html">Encounter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/FHIRBase.js~FHIRBase.html">FHIRBase</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Location.js~Location.html">Location</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Observation.js~Observation.html">Observation</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/OperationOutcome.js~OperationOutcome.html">OperationOutcome</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Patient.js~Patient.html">Patient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Practitioner.js~Practitioner.html">Practitioner</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/server/auth/index.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const authRouter = require(&apos;express&apos;).Router()
+const request = require(&apos;request-promise&apos;)
+const queryString = require(&apos;querystring&apos;)
+const Base64 = require(&apos;crypto-js/enc-base64&apos;)
+const Utf8 = require(&apos;crypto-js/enc-utf8&apos;)
+const jwt = require(&apos;jsonwebtoken&apos;)
+const bcrypt = require(&apos;bcrypt&apos;)
+
+const checkPass = require(&apos;./passwords&apos;)
+const logger = require(&apos;../logger&apos;)
+const OperationOutcome = require(&apos;../fhir/classes/OperationOutcome&apos;)
+const {knex} = require(&apos;../db&apos;)
+
+// ! csprng is ideal - but not good for using nodemon in development. fix this later
+const sessionSecret = process.env.AUTH_SECRET// = csprng(128, 26)
+const saltRounds = 5 // has a big impact on perf
+
+/**
+ * Given user details, store them in the database, if they don&apos;t already exist
+ * This is so that admins can assign wards
+ * @param {string} payload unparsed json
+ */
+async function handleUser(payload) {
+	const meta = {file: &apos;auth.js&apos;, func: &apos;handleUser()&apos;}
+	const parsed = JSON.parse(payload)
+	const rows = await knex(&apos;practitioner&apos;)
+		.select()
+		.where({username: parsed.email})
+	if (rows.length) {
+		logger.debug(&apos;user exists. returning&apos;, meta)
+		return rows[0]
+	}
+	logger.debug(&apos;creating new user&apos;, meta)
+	const [resp] = await knex(&apos;practitioner&apos;).insert({
+		name: parsed.name,
+		added: new Date(),
+		username: parsed.email,
+		account_type: &apos;google&apos;,
+		permissions: &apos;[]&apos;,
+	}).returning(&apos;*&apos;)
+	logger.info(`user created with id: ${resp.practitioner_id}`, meta)
+	return resp
+}
+
+/**
+ * Google oauth flow. Environment variables required:
+ *** GOOGLE_CLIENT_ID - Client ID from Google
+ *** GOOGLE_CLIENT_SECRET - Client secret from Google
+ *** GOOGLE_OAUTH_CALLBACK - The FULL URL for google to callback to. This set in app settings
+ *** AUTH_SECRET - some password for the JWT
+ * Implementation from https://developers.google.com/identity/protocols/OAuth2WebServer
+ */
+authRouter.get(&apos;/auth/callback&apos;, async (req, res) =&gt; {
+	const meta = {file: &apos;auth.js&apos;, func: &apos;GET /auth/callback&apos;}
+	logger.info(&apos;recieved request from google&apos;, meta)
+	// code? we must be authing
+	logger.debug(&apos;attempting to login&apos;, meta)
+
+	// Create request body
+	const body = queryString.stringify({
+		code: req.query.code,
+		grant_type: &apos;authorization_code&apos;,
+		client_id: process.env.GOOGLE_CLIENT_ID,
+		client_secret: process.env.GOOGLE_CLIENT_SECRET,
+		redirect_uri: encodeURI(process.env.GOOGLE_OAUTH_CALLBACK),
+	})
+	const opts = {
+		body,
+		method: &apos;POST&apos;,
+		uri: &apos;https://www.googleapis.com/oauth2/v4/token&apos;,
+		headers: {
+			&apos;Content-Length&apos;: body.length,
+			&apos;Content-Type&apos;: &apos;application/x-www-form-urlencoded&apos;,
+		},
+	}
+	// send body to google and wait for AT/ID Token
+	const resp = await request(opts)
+	// can access google ACCESS_TOKEN here
+	const {id_token} = JSON.parse(resp)
+
+	// ID Token is a JWT, extract this and use it in our new JWT
+	// create our own JWT because we know the pass and can verify it
+	const [, payloadB64] = id_token.split(&apos;.&apos;)
+	const payload = Utf8.stringify(Base64.parse(payloadB64))
+	const {email, name, hd, given_name, family_name} = JSON.parse(payload)
+
+	const userData = await handleUser(payload)
+	// store user if not in database and add basic permissions + include in JWT
+	const fypPayload = {
+		email,
+		userid: userData.practitioner_id,
+		permissions: userData.permissions,
+		name,
+		hd,
+		given_name,
+		family_name,
+		exp: Math.floor(Date.now() / 1000) + (60 * 60),
+	}
+	const token = jwt.sign(fypPayload, sessionSecret)
+
+	// return the user to the homepage
+	// sadly state in google&apos;s oauth response is not the previous url as it is with other servers
+	res.redirect(`/?token=${token}`)
+
+	// user has authed: handle their identity
+})
+
+// user gets redirected to /login: create a URL and redirect them to google&apos;s oauth server
+authRouter.get(&apos;/login&apos;, (_, res) =&gt; {
+	// if the user is not making a request with a token
+	// or if we have not sent it to them, redirect to auth
+	const url = &apos;https://accounts.google.com/o/oauth2/v2/auth?&apos;
+		+ &apos;state=state_parameter_passthrough_value&amp;&apos;
+		+ &apos;include_granted_scopes=true&amp;&apos;
+		+ &apos;access_type=offline&amp;&apos;
+		+ `redirect_uri=${encodeURIComponent(process.env.GOOGLE_OAUTH_CALLBACK)}&amp;`
+		+ &apos;response_type=code&amp;&apos;
+		+ `client_id=${process.env.GOOGLE_CLIENT_ID}&amp;`
+		+ `scope=${encodeURIComponent(&apos;profile email openid&apos;)}`
+	res.redirect(url)
+	// return res.redirect(`/login.html?google_redir=${url}`)
+})
+
+authRouter.get(&apos;/login/url&apos;, (req, res) =&gt; {
+	const url = &apos;https://accounts.google.com/o/oauth2/v2/auth?&apos;
+		+ &apos;state=state_parameter_passthrough_value&amp;&apos;
+		+ &apos;include_granted_scopes=true&amp;&apos;
+		+ &apos;access_type=offline&amp;&apos;
+		+ `redirect_uri=${encodeURIComponent(process.env.GOOGLE_OAUTH_CALLBACK)}&amp;`
+		+ &apos;response_type=code&amp;&apos;
+		+ `client_id=${process.env.GOOGLE_CLIENT_ID}&amp;`
+		+ `scope=${encodeURIComponent(&apos;profile email openid&apos;)}`
+	res.send(url)
+})
+
+// recieve login data from user
+authRouter.post(&apos;/login&apos;, async (req, res) =&gt; {
+	const {username, password} = req.body
+	try {
+		// check user in db. exclude google types
+		const [row] = await knex(&apos;practitioner&apos;)
+			.select()
+			.where({username, account_type: &apos;normal&apos;})
+		// no user? inform
+		if (!row) return res.status(400).send(&apos;Unable to login: username does not exist!&apos;)
+
+		// compare the password with the hash stored in db. no match? reject
+		const passMatch = await bcrypt.compare(password, row.passhash)
+		if (!passMatch) return res.status(400).send(&apos;Passwords do not match&apos;)
+
+		// create a JWT with name, username, ID and permissions.
+		// expires in an hour, lecture length
+		const token = jwt.sign({
+			name: row.name,
+			username: row.username,
+			userid: row.practitioner_id,
+			permissions: row.permissions,
+			exp: Math.floor(Date.now() / 1000) + (60 * 60),
+		}, sessionSecret)
+
+		// message is shown in popup
+		return res.json({token, message: `Welcome back, ${row.name}`})
+	} catch (err) {
+		// handle errors with a 500 so the server does not die
+		return res.status(500).send(`Error logging in: ${err}`)
+	}
+})
+
+authRouter.post(&apos;/login/create&apos;, async (req, res) =&gt; {
+	// to create a user, name, username and password is required
+	const required = [&apos;name&apos;, &apos;username&apos;, &apos;password&apos;]
+	// pull from request body
+	const {name, username, password} = req.body
+
+	// check we have all required entries
+	const missing = required.filter(key =&gt; !req.body[key])
+	if (missing.length) return res.status(400).send(`Couldn&apos;t register! Missing: ${missing.join(&apos;, &apos;)}`)
+
+	// check they don&apos;t already exist
+	const rows = await knex(&apos;practitioner&apos;).select().where({username})
+	if (rows.length) return res.status(400).send(&quot;Couldn&apos;t register! Username already exists&quot;)
+
+	// check that password &gt; 10 chars and includes alphanum]
+	const {valid, message} = checkPass(password)
+	if (!valid) return res.status(400).send(`Issue with password: ${message}`)
+
+	try {
+		// calculate a password hash and put in db
+		const passhash = await bcrypt.hash(password, saltRounds)
+		await knex(&apos;practitioner&apos;).insert({
+			name,
+			username,
+			passhash,
+			permissions: &apos;[]&apos;, // knex with JSON rows still means that json must be stringified
+			account_type: &apos;normal&apos;,
+			added: new Date(),
+		})
+		return res.status(200).send(`Successfully registered. Welcome, ${name}`)
+	} catch (err) {
+		return res.status(500).send(`&lt;p&gt;Couldn&apos;t register! Error:&lt;/p&gt;&lt;p&gt;${err}&lt;/p&gt;`)
+	}
+})
+
+// token checking middleware for fhir API
+authRouter.use(&apos;/fhir&apos;, (req, res, next) =&gt; {
+	const meta = {file: &apos;auth.js&apos;, func: &apos;auth middleware&apos;}
+	// extract token from headers
+	const {token} = req.headers
+	logger.debug(`has token: ${!!token}`, meta)
+	logger.silly(`token: ${token}`, meta)
+	// no token? login
+	if (!token) return res.redirect(&apos;/login&apos;)
+	try {
+		// verify token with session secret
+		const valid = jwt.verify(token, sessionSecret)
+		logger.silly(`validated user token. allowing them through, ${JSON.stringify(valid)}`, meta)
+		return next()
+	} catch (err) {
+		// error verifying token? redirect to login
+		logger.debug(&apos;user not valid. informing client axios&apos;, meta)
+		logger.error(`error caught: ${err}`, meta)
+		const outcome = new OperationOutcome(&apos;error&apos;, 401, req.originalUrl, &apos;JWT invalid or inaccessible&apos;, err)
+		return outcome.makeResponse(res)
+	}
+})
+
+
+module.exports = authRouter
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

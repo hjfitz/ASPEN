@@ -1,7 +1,9 @@
 const log = require('../../logger')
+const {knex} = require('../../db')
 const {client} = require('../../db')
+const FHIRBase = require('./FHIRBase')
 
-class Observation {
+class Observation extends FHIRBase {
 	/**
 	 * FHIR wrapper for Observation data
 	 * @param {string} name Name of observation (blood pressure/respiratory rate etc)
@@ -10,6 +12,7 @@ class Observation {
 	 * @param {boolean} updated Then the resource was last updated
 	 */
 	constructor(name, value, id, updated = new Date()) {
+		super({name, value, id, updated})
 		this.name = name
 		this.value = value
 		this.id = `${id}`
@@ -59,6 +62,16 @@ class Observation {
 		}
 	}
 
+	insert() {
+		return knex('observation')
+			.returning(['observation_id', 'name'])
+			.insert({
+				last_updated: this.updated,
+				name: this.name,
+				value: this.value,
+			})
+	}
+
 	/**
 	 * Format the observation data to fhir data
 	 * @returns {object} fhir formatted observation data
@@ -69,7 +82,7 @@ class Observation {
 		const valueQuantity = Object.assign({value, system: 'http://unitsofmeasure.org'}, unitCode)
 		log.debug(`querying database for ${name} = ${id}`, {file: 'fhir/classes/Observation.js', func: 'Observation#fhir()'})
 		// DIRTY FIX ME PLEAAAASE
-		const {rows: [row]} = await client.query(`SELECT * FROM diagnostic_report WHERE ${name} = ${id}`)
+		const [row] = await knex('diagnostic_report').where({[name]: id})
 		return {
 			resourceType: 'Observation',
 			id,

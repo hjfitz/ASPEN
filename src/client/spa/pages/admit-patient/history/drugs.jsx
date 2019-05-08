@@ -7,16 +7,31 @@ class Drugs extends Questionnaire {
 	constructor() {
 		super()
 		this.state = {numDrugs: 1}
+		this.inc = this.inc.bind(this)
+		this.dec = this.dec.bind(this)
 	}
 
-	inc() {
-		this.setState({numDrugs: this.state.numDrugs + 1})
+	/**
+	 * create a function to increase an item in state
+	 * @param {string} type key in state to update
+	 * @returns {Function}
+	 */
+	inc(type) {
+		return () => this.setState({[type]: this.state[type] + 1})
 	}
 
-	dec() {
-		this.setState({numDrugs: this.state.numDrugs - 1})
+	/**
+	 * create a function to decrease an item in state
+	 * @param {string} type key in state to update
+	 * @returns {Function}
+	 */
+	dec(type) {
+		return () => this.setState({[type]: this.state[type] - 1})
 	}
 
+	/**
+	 * @returns {preact.VNode}
+	 */
 	render() {
 		return (
 			<div className="row">
@@ -36,7 +51,7 @@ class Drugs extends Questionnaire {
 						</label>
 					</p>
 				</form>
-				{this.state.showQuestionnaire ? <DrugsQuestionnaire inc={this.inc.bind(this)} dec={this.dec.bind(this)} numDrugs={this.state.numDrugs} /> : ''}
+				{this.state.showQuestionnaire ? <DrugsQuestionnaire inc={this.inc} dec={this.dec} numDrugs={this.state.numDrugs} /> : ''}
 			</div>
 		)
 	}

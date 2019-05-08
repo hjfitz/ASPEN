@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../../../">
+  <title data-ice="title">src/client/spa/partial/view-patient/vital-signs.jsx | fyp</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Final year project @portsoc"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="fyp"><meta property="twitter:description" content="Final year project @portsoc"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/hjfitz/fyp"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa">client/spa</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/WarningScore.js~WarningScore.html">WarningScore</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-doModal">doModal</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getJwtPayload">getJwtPayload</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getName">getName</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-noop">noop</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-showLogin">showLogin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-toTitle">toTitle</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-fhirBase">fhirBase</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-pages">client/spa/pages</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/create-ward.jsx~CreateWard.html">CreateWard</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/permissions.jsx~Permissions.html">Permissions</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/search-patients.jsx~SearchPatient.html">SearchPatient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/view-patient.jsx~Patient.html">Patient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/view-ward.jsx~Ward.html">Ward</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/ward-list.jsx~WardList.html">WardList</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Add">Add</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Welcome">Welcome</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-permissionsBase">permissionsBase</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-pages-admit-patient">client/spa/pages/admit-patient</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/History.jsx~CreateHistory.html">CreateHistory</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/index.jsx~AdmitPatient.html">AdmitPatient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Contact">Contact</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-PatientDemographicInfo">PatientDemographicInfo</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-pages-admit-patient-history">client/spa/pages/admit-patient/history</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/Questionnaire.jsx~Questionnaire.html">Questionnaire</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/alcohol.jsx~Alcohol.html">Alcohol</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/drugs.jsx~Drugs.html">Drugs</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/health-history.jsx~HealthHistory.html">HealthHistory</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/medication.jsx~Medication.html">Medication</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/tobacco.jsx~Tobacco.html">Tobacco</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Diet">Diet</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Exercise">Exercise</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-OtherQuestions">OtherQuestions</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SignOff">SignOff</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DecButton">DecButton</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-IncButton">IncButton</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-partial-admit-patient">client/spa/partial/admit-patient</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/admit-patient/signature-box.jsx~Signature.html">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-partial-layout">client/spa/partial/layout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/layout/fab.jsx~Fab.html">Fab</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/layout/login.jsx~Login.html">Login</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/layout/redirect.jsx~Redirect.html">Redirect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Breadcrumbs">Breadcrumbs</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-partial-shared">client/spa/partial/shared</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Input">Input</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Loader">Loader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Modal">Modal</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-partial-view-patient">client/spa/partial/view-patient</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/view-patient/vital-signs.jsx~Vitals.html">Vitals</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/view-patient/vitals-charts.jsx~NewsChart.html">NewsChart</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HistoryReport">HistoryReport</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#server">server</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-router">router</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#server-fhir">server/fhir</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-patientRouter">patientRouter</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#server-fhir-classes">server/fhir/classes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Contact.js~Contact.html">Contact</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/DiagnosticReport.js~DiagnosticReport.html">DiagnosticReport</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Encounter.js~Encounter.html">Encounter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/FHIRBase.js~FHIRBase.html">FHIRBase</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Location.js~Location.html">Location</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Observation.js~Observation.html">Observation</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/OperationOutcome.js~OperationOutcome.html">OperationOutcome</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Patient.js~Patient.html">Patient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Practitioner.js~Practitioner.html">Practitioner</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/client/spa/partial/view-patient/vital-signs.jsx</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import {h, Component} from &apos;preact&apos;
+import M from &apos;materialize-css&apos;
+import format from &apos;date-fns/format&apos;
+
+import WarningScore from &apos;../../WarningScore&apos;
+import {doModal} from &apos;../../util&apos;
+
+import &apos;../../styles/vital-signs.scss&apos;
+
+// swap an EWS for a class to colour table cells (in createTable())
+const ewsToClass = [
+	&apos;&apos;,
+	&apos; yellow&apos;,
+	&apos; orange&apos;,
+	&apos; red&apos;,
+]
+
+function createTable(history) {
+	const historyWithEWS = history.map((observation) =&gt; {
+		const ews = new WarningScore(observation)
+		// format observation history (from FHIR API) in to something that can be used within the DOM
+		// score for a hover &lt;abbr&gt;
+		// className to visualise the EWS
+		// value to display
+		return {
+			date: format(observation.date, &apos;hh:mma, Do MMM YYYY&apos;),
+			respiratoryRate: {
+				score: ews.scoreResp(),
+				classname: ewsToClass[ews.scoreResp()],
+				value: observation.respiratory_rate,
+			},
+			oxySat: {
+				score: ews.scoreOxy(),
+				classname: ewsToClass[ews.scoreOxy()],
+				value: observation.oxygen_saturation,
+			},
+			heartRate: {
+				score: ews.scoreHeart(),
+				classname: ewsToClass[ews.scoreHeart()],
+				value: observation.heart_rate,
+			},
+			bodyTemp: {
+				score: ews.scoreTemp(),
+				classname: ewsToClass[ews.scoreTemp()],
+				value: observation.body_temperature,
+			},
+			bloodPressure: {
+				score: ews.scoreBP(),
+				classname: ewsToClass[ews.scoreBP()],
+				value: observation.systolic_bp,
+			},
+			levelOfConsciousness: {
+				score: ews.scoreCons(),
+				classname: ewsToClass[ews.scoreCons()],
+				value: observation.level_of_consciousness,
+			},
+			supplOxygen: {
+				score: ews.scoreSuppOxy(),
+				classname: ewsToClass[ews.scoreSuppOxy()],
+				value: observation.supplemental_oxygen,
+			},
+		}
+	})
+	const tableDOM = historyWithEWS.map(row =&gt; (
+		&lt;tr&gt;
+			&lt;td&gt;{row.date}&lt;/td&gt;
+			&lt;td className={row.respiratoryRate.classname}&gt;
+				&lt;abbr title={row.respiratoryRate.score}&gt;{row.respiratoryRate.value}&lt;/abbr&gt;
+			&lt;/td&gt;
+			&lt;td className={row.oxySat.classname}&gt;
+				&lt;abbr title={row.oxySat.score}&gt;{row.oxySat.value}&lt;/abbr&gt;
+			&lt;/td&gt;
+			&lt;td className={row.heartRate.classname}&gt;
+				&lt;abbr title={row.heartRate.score}&gt;{row.heartRate.value}&lt;/abbr&gt;
+			&lt;/td&gt;
+			&lt;td className={row.bodyTemp.classname}&gt;
+				&lt;abbr title={row.bodyTemp.score}&gt;{row.bodyTemp.value}&lt;/abbr&gt;
+			&lt;/td&gt;
+			&lt;td className={row.bloodPressure.classname}&gt;
+				&lt;abbr title={row.bloodPressure.score}&gt;{row.bloodPressure.value}&lt;/abbr&gt;
+			&lt;/td&gt;
+			&lt;td className={row.levelOfConsciousness.classname}&gt;
+				&lt;abbr title={row.levelOfConsciousness.score}&gt;{row.levelOfConsciousness.value}&lt;/abbr&gt;
+			&lt;/td&gt;
+			&lt;td className={row.supplOxygen.classname}&gt;
+				&lt;abbr title={row.supplOxygen.score}&gt;{row.supplOxygen.value}&lt;/abbr&gt;
+			&lt;/td&gt;
+		&lt;/tr&gt;
+	))
+	return tableDOM
+}
+
+class Vitals extends Component {
+	/**
+	 * Initialise materialize components on page load
+	 */
+	componentDidMount() {
+		console.log(&apos;[VITAL SIGNS] mounting&apos;)
+		const tabs = document.querySelectorAll(&apos;.tabs.tabs-fixed-width.vital-record-view-tabs&apos;)
+		const select = document.querySelectorAll(&apos;select&apos;)
+		if (!this.formInstance) this.formInstance = M.FormSelect.init(select)
+		if (!this.tabInstance) this.tabInstance = M.Tabs.init(tabs)
+	}
+
+	/**
+	 * the main router sets state, which propogates an update here
+	 * this causes a re-render which kills select instances
+	 * re-build the select
+	 */
+	componentDidUpdate() {
+		console.log(&apos;[VITAL SIGNS] updating&apos;)
+		const select = document.querySelectorAll(&apos;select&apos;)
+		if (!this.formInstance) this.formInstance = M.FormSelect.init(select)
+		else M.FormSelect.init(select)
+	}
+
+	/**
+	 * on unmount, kill all materialize instances so as to not break the app
+	 */
+	componentWillUnmount() {
+		console.log(&apos;[VITAL SIGNS] unmounting&apos;)
+		try {
+			if (this.formInstance) this.formInstance.map(el =&gt; el.destroy())
+			if (this.tabInstance) this.tabInstance.map(el =&gt; el.destroy())
+		} catch (err) {
+			console.log(&apos;[VITAL SIGNS] Error with unmount cleanup: &apos;, err)
+		}
+	}
+
+	/**
+	 * given the user has pressed &apos;admit&apos;
+	 * 1. validate all items on the page
+	 * 2a. if not valid, inform the user with coloured boxes and a modal
+	 * 2b. if valid: call props.submitform with the associated vital signs, formatted correctly
+	 */
+	async submitForm() {
+		const requiredInputs = [
+			&apos;respiratory_rate&apos;,
+			&apos;oxygen_saturation&apos;,
+			&apos;heart_rate&apos;,
+			&apos;body_temperature&apos;,
+			&apos;systolic_bp&apos;,
+			&apos;level_of_consciousness&apos;,
+		]
+
+		const invalid = requiredInputs
+			.map(el =&gt; document.getElementById(el))
+			.filter((inp) =&gt; {
+				if (!inp.value) return true
+				if (Number.isNaN(inp.value) &amp;&amp; inp.id !== &apos;level_of_consciousness&apos;) return true
+				return false
+			})
+			.map(inp =&gt; inp.dataset.invalidName)
+		if (invalid.length) {
+			doModal(
+				&apos;Error with form!&apos;,
+				`You&apos;ve missed out, or entered some of the fields incorrectly:&lt;/p&gt;
+				&lt;ul class=&quot;browser-default&quot;&gt;&lt;li&gt;${invalid.join(&apos;&lt;/li&gt;&lt;li&gt;&apos;)}&lt;/ul&gt;`,
+			)
+			return
+		}
+
+		// everything must be correct, send it back to the main component
+		const form = new FormData()
+		const inputs = requiredInputs.map(el =&gt; document.getElementById(el))
+
+		inputs.forEach(field =&gt; form.append(field.id, field.value))
+
+		const oxygen = document.getElementById(&apos;supplemental_oxygen&apos;)
+		const usesOxygen = oxygen.checked ? &apos;yes&apos; : &apos;no&apos;
+		form.append(&apos;supplemental_oxygen&apos;, usesOxygen)
+
+		await this.props.submit(form)
+		inputs.splice(inputs.length - 1) // remove level of consciousness from cleanup
+		inputs.forEach(input =&gt; input.value = &apos;&apos;)
+		M.updateTextFields()
+	}
+
+	/**
+	 * Render input form for vitals and output of prior vitals
+	 * @param {object} props component props
+	 * @param {DiagnosticReport[]} props.history patient obs history
+	 * @returns {VNode} patient info
+	 */
+	render(props) {
+		return (
+			&lt;div className=&quot;card&quot;&gt;
+				&lt;div className=&quot;card-tabs&quot;&gt;
+					&lt;ul className=&quot;tabs tabs-fixed-width vital-record-view-tabs&quot;&gt;
+						&lt;li className=&quot;tab&quot;&gt;&lt;a className=&quot;active&quot; href=&quot;#record&quot;&gt;Record Vital Signs&lt;/a&gt;&lt;/li&gt;
+						&lt;li className=&quot;tab&quot;&gt;&lt;a href=&quot;#history&quot;&gt;Previous Vital Signs&lt;/a&gt;&lt;/li&gt;
+					&lt;/ul&gt;
+				&lt;/div&gt;
+				&lt;div className=&quot;card-content&quot;&gt;
+					&lt;div id=&quot;record&quot;&gt;
+						&lt;div className=&quot;row&quot;&gt;
+							&lt;form action=&quot;&quot; className=&quot;col s12&quot;&gt;
+								&lt;div className=&quot;row&quot;&gt;
+									&lt;div className=&quot;input-field col s6&quot;&gt;
+										&lt;input id=&quot;respiratory_rate&quot; type=&quot;number&quot; className=&quot;validate&quot; data-invalid-name=&quot;Respiratory Rate&quot; /&gt;
+										&lt;label htmlFor=&quot;respiratory_rate&quot;&gt;Respiratory Rate&lt;/label&gt;
+									&lt;/div&gt;
+									&lt;div className=&quot;input-field col s6&quot;&gt;
+										&lt;input id=&quot;oxygen_saturation&quot; type=&quot;number&quot; className=&quot;validate&quot; data-invalid-name=&quot;Oxygen Saturation&quot; /&gt;
+										&lt;label htmlFor=&quot;oxygen_saturation&quot;&gt;Oxygen Saturation&lt;/label&gt;
+									&lt;/div&gt;
+								&lt;/div&gt;
+
+								&lt;div className=&quot;row&quot;&gt;
+									&lt;div className=&quot;input-field col s6&quot;&gt;
+										&lt;input id=&quot;heart_rate&quot; type=&quot;number&quot; className=&quot;validate&quot; data-invalid-name=&quot;Heart Rate&quot; /&gt;
+										&lt;label htmlFor=&quot;heart_rate&quot;&gt;Heart Rate&lt;/label&gt;
+									&lt;/div&gt;
+									&lt;div className=&quot;input-field col s6&quot;&gt;
+										&lt;input id=&quot;body_temperature&quot; type=&quot;number&quot; className=&quot;validate&quot; data-invalid-name=&quot;Body Temperature&quot; /&gt;
+										&lt;label htmlFor=&quot;body_temperature&quot;&gt;Body Temperature&lt;/label&gt;
+									&lt;/div&gt;
+								&lt;/div&gt;
+
+								&lt;div className=&quot;row&quot;&gt;
+									&lt;div className=&quot;input-field col s6&quot;&gt;
+										&lt;input id=&quot;systolic_bp&quot; type=&quot;number&quot; className=&quot;validate&quot; data-invalid-name=&quot;Blood Pressure&quot; /&gt;
+										&lt;label htmlFor=&quot;systolic_bp&quot;&gt;Systolic Blood Pressure&lt;/label&gt;
+									&lt;/div&gt;
+									&lt;div className=&quot;input-field col s6&quot;&gt;
+										&lt;select id=&quot;level_of_consciousness&quot; data-invalid-name=&quot;Level of Consciousness&quot;&gt;
+											&lt;option value=&quot;&quot; disabled selected&gt;Select level&lt;/option&gt;
+											&lt;option value=&quot;A&quot;&gt;Aware&lt;/option&gt;
+											&lt;option value=&quot;D&quot;&gt;Drowzy&lt;/option&gt;
+											&lt;option value=&quot;U&quot;&gt;Unconscious&lt;/option&gt;
+										&lt;/select&gt;
+										&lt;label&gt;Level of Consciousness&lt;/label&gt;
+									&lt;/div&gt;
+
+								&lt;/div&gt;
+
+								&lt;div className=&quot;row&quot;&gt;
+									&lt;div className=&quot;col s6&quot;&gt;
+										&lt;p&gt;
+											&lt;label&gt;
+												&lt;input name=&quot;supplemental_oxygen&quot; id=&quot;supplemental_oxygen&quot; type=&quot;checkbox&quot; value=&quot;on&quot; /&gt;
+												&lt;span&gt;Supplemental Oxygen&lt;/span&gt;
+											&lt;/label&gt;
+										&lt;/p&gt;
+									&lt;/div&gt;
+									&lt;div className=&quot;col s6&quot;&gt;
+										&lt;a className=&quot;waves-effect waves-light btn&quot; onClick={this.submitForm.bind(this)}&gt;Submit&lt;/a&gt;
+									&lt;/div&gt;
+
+								&lt;/div&gt;
+
+							&lt;/form&gt;
+						&lt;/div&gt;
+
+					&lt;/div&gt;
+					&lt;div id=&quot;history&quot;&gt;
+						&lt;table className=&quot;responsive-table striped highlght&quot;&gt;
+							&lt;thead&gt;
+								&lt;tr&gt;
+									&lt;th&gt;Date&lt;/th&gt;
+									&lt;th&gt;Respiratory rate&lt;/th&gt;
+									&lt;th&gt;Oxygen Saturation&lt;/th&gt;
+									&lt;th&gt;Heart Rate&lt;/th&gt;
+									&lt;th&gt;Body Temperature&lt;/th&gt;
+									&lt;th&gt;Blood Pressure&lt;/th&gt;
+									&lt;th&gt;Level of Consciousness&lt;/th&gt;
+									&lt;th&gt;Supplemental Oxygen&lt;/th&gt;
+								&lt;/tr&gt;
+							&lt;/thead&gt;
+							&lt;tbody&gt;
+								{createTable(props.history)}
+							&lt;/tbody&gt;
+						&lt;/table&gt;
+					&lt;/div&gt;
+				&lt;/div&gt;
+			&lt;/div&gt;
+		)
+	}
+}
+
+export default Vitals
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

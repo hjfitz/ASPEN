@@ -1,7 +1,8 @@
 const logger = require('../../logger')
 const {knex} = require('../../db')
+const FHIRBase = require('./FHIRBase')
 
-class Location {
+class Location extends FHIRBase {
 	/**
 	 * Location wrapper for fhir data and database queries
 	 * @param {Object} params - Params to create the location and thus fhir/postrges query
@@ -12,6 +13,7 @@ class Location {
 	 * @param {string} params.type - The type of location (wing/ward/room)
 	 */
 	constructor(params) {
+		super(params)
 		this.id = params.id
 		this.status = params.status || 'active'
 		this.name = params.name
@@ -33,6 +35,18 @@ class Location {
 		}
 	}
 
+	insert() {
+		const values = [this.status, this.name, this.description, this.type.display]
+		if (values.includes(undefined)) return false
+		return knex('location').insert({
+			status: this.status,
+			name: this.name,
+			description: this.description,
+			last_updated: new Date(),
+			type: this.type.display,
+		}).returning('location_id')
+	}
+
 	/**
 	 * Ensure object is created with proper params
 	 * @returns {boolean} - Whether the object is valid or not
@@ -41,6 +55,10 @@ class Location {
 		return ['id', 'status', 'name', 'description', 'type'].filter(prop => Boolean(this[prop])).length
 	}
 
+	/**
+	 * fetch data from database and populate location object
+	 * @returns {void}
+	 */
 	async populate() {
 		const [resp] = await knex('location').select().where({location_id: this.id})
 		this.lastUpdated = resp.last_updated
@@ -49,11 +67,15 @@ class Location {
 		this.description = resp.description
 	}
 
+	delete() {
+		return knex('location').where({location_id: this.id}).del()
+	}
+
 	/**
 	 * Format database data in to expected fhir formatting
 	 * @returns {object} object data formatted to fhir standards
 	 */
-	getFhir() {
+	fhir() {
 		if (!this.valid) return {}
 		return {
 			resourceType: 'Location',

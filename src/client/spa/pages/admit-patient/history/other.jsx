@@ -1,5 +1,8 @@
 import {h} from 'preact'
 
+/**
+ * @returns {preact.VNode}
+ */
 const OtherQuestions = () => (
 	<div className="row">
 		<h4>Other Questions</h4>

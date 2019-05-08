@@ -1,18 +1,19 @@
 import {h, Component} from 'preact'
-import qs from 'qs'
-import {route} from 'preact-router'
+import isMobile from 'ismobilejs'
 import M from 'materialize-css'
 
+// local page imports
 import PatientDemographicInfo from './Patient'
 import PatientHistoryInfo from './History'
 import ContactInfo from './Contact'
 
+// shared lib imports
 import {Loader} from '../../Partial'
 import {fhirBase, doModal, getJwtPayload} from '../../util'
 
 import '../../styles/create-patient.scss'
 
-function createHistory(patient_id) {
+async function createHistory(patient_id) {
 	const elems = document.querySelectorAll('.patient-history-input')
 	const form = [...elems].reduce((acc, elem) => {
 		// dataset should be of form '$KEY-attr, eg health-childhood-illnesses
@@ -64,10 +65,18 @@ function createHistory(patient_id) {
 	form.sign.image = rawImg
 	form.patient_id = patient_id
 	form.sign.practitioner_id = getJwtPayload(localStorage.token).userid
-	return fhirBase.post('/History', form, {
-		headers: {'content-type': 'application/json'},
-	})
+	try {
+		await fhirBase.post('/History', form)
+	} catch (err) {
+		if ('response' in err) {
+			doModal('Error', err.response.data.issue[0].details.text)
+			return
+		}
+		doModal('Error', `There is an error with patient creation: ${err}`)
+	}
 }
+
+const capitalize = word => 	word.charAt(0).toUpperCase() + word.slice(1)
 
 class AdmitPatient extends Component {
 	/**
@@ -85,6 +94,7 @@ class AdmitPatient extends Component {
 		this.setImg = this.setImg.bind(this)
 		this.setVideo = this.setVideo.bind(this)
 		this.setCanvas = this.setCanvas.bind(this)
+		this.resizeImage = this.resizeImage.bind(this)
 	}
 
 	/**
@@ -92,15 +102,15 @@ class AdmitPatient extends Component {
 	 */
 	async componentDidMount() {
 		const resp = await fhirBase.get('/Location?type=Ward')
-		if (resp.data) {
-			this.setState({
-				loaded: true,
-				wards: resp.data.map(ward => ({val: ward.id, text: ward.name})),
-			}, async () => {
-				// the form is showing and webcam is, so populate with webcam
-				const select = document.querySelectorAll('#location_id, #patient-gender, .patient-details-select')
-				M.FormSelect.init(select)
-				try {
+		// no data? do nothing
+		if (!resp.data) return
+
+		// force re-render with FHIR data
+		const wards = resp.data.map(ward => ({val: ward.id, text: ward.name}))
+		this.setState({loaded: true, wards}, async () => {
+			// the form is showing and webcam is, so populate with webcam
+			try {
+				if (!isMobile.any) {
 					const stream = await navigator.mediaDevices.getUserMedia({video: true})
 					this.video.srcObject = stream
 					this.video.onloadedmetadata = this.video.play
@@ -111,14 +121,16 @@ class AdmitPatient extends Component {
 						this.canvas.height = dimensions.height
 						this.canvas.width = dimensions.width
 					})
-				} catch (err) {
-					M.toast({html: 'There was an error initialising the Webcam'})
-					console.error(`Webcam error: ${err}`)
 				}
-				const date = document.querySelectorAll('.datepicker')
-				M.Datepicker.init(date, {autoClose: true})
-			})
-		}
+			} catch (err) {
+				M.toast({html: 'Could not find a webcam'})
+			}
+			// initialise materialize elements
+			const date = document.querySelectorAll('.datepicker')
+			const select = document.querySelectorAll('#location_id, #patient-gender, .patient-details-select')
+			M.FormSelect.init(select)
+			M.Datepicker.init(date, {autoClose: true})
+		})
 	}
 
 	/**
@@ -126,12 +138,10 @@ class AdmitPatient extends Component {
 	 * Saves this to B64, sets state and pauses the stream
 	 */
 	getImg() {
-		console.log('[CREATE] Saving image')
-		const dimensions = this.video.getBoundingClientRect()
-		this.canvas.getContext('2d').drawImage(this.video, 0, 0, dimensions.width, dimensions.height)
-		const img = this.canvas.toDataURL('image/png')
-		this.img = img
-		doModal('Success', 'Image saved')
+		const {height, width} = this.video.getBoundingClientRect()
+		this.canvas.getContext('2d').drawImage(this.video, 0, 0, width, height)
+		const img = this.canvas.toDataURL('image/jpeg')
+		this.resizeImage(img)
 		this.video.pause()
 	}
 
@@ -143,7 +153,9 @@ class AdmitPatient extends Component {
 		try {
 			const {files: [file]} = ev.target
 			const reader = new FileReader()
-			reader.addEventListener('load', () => this.img = reader.result, false)
+			reader.addEventListener('load', () => {
+				this.resizeImage(reader.result)
+			}, false)
 			reader.readAsDataURL(file)
 		} catch (err) {
 			doModal('Error', `There was an error setting the image: ${err}`)
@@ -159,29 +171,33 @@ class AdmitPatient extends Component {
 		this.canvas = ref
 	}
 
+	resizeImage(dataUrl) {
+		const img = new Image()
+		img.src = dataUrl
+		img.onload = async () => {
+			const {width, height} = img
+			const canvas = document.createElement('canvas')
+			const ctx = canvas.getContext('2d')
+			const scalingFactor = width / 400
+			const newWidth = width / scalingFactor
+			const newHeight = height / scalingFactor
+			canvas.height = newHeight
+			canvas.width = newWidth
+			ctx.drawImage(img, 0, 0, newWidth, newHeight)
+			this.img = canvas.toDataURL('image/jpeg', 0.8)
+			// this.img = await fetch(newDataUrl).then(r => r.blob())
+			doModal('Successfully saved image', 'Image has been saved and resized')
+		}
+	}
+
 	/**
 	 * yanks all data from form and posts to API
 	 * creates a patient and then an encounter
 	 */
 	async admit() {
-		const form = new FormData()
-		if (this.img) {
-			console.log('[CREATE] Appending image')
-			const img = await fetch(this.img).then(r => r.blob())
-			form.append('patient-photo', img)
-		}
-		const labels = [
-			'patient-prefix',
-			'patient-given',
-			'patient-family',
-			'patient-gender',
-			'location_id',
-			'contact-prefix',
-			'contact-given',
-			'contact-family',
-			'contact-fullname',
-			'contact-phone',
-		]
+		const patientLabels = ['patient-prefix', 'patient-given', 'patient-family', 'patient-gender']
+		const contactLabels = ['contact-prefix', 'contact-given', 'contact-family', 'contact-phone']
+		const labels = ['location_id', ...patientLabels, ...contactLabels]
 		const invalid = []
 		const obj = labels.reduce((acc, label) => {
 			const elem = document.getElementById(label)
@@ -199,26 +215,62 @@ class AdmitPatient extends Component {
 		}, {})
 		if (invalid.length) {
 			const err = invalid
-				.map(la => la.replace(/-/g, ' '))
-				.map(la => la.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '))
+				.map(la => la.replace(/-/g, ' ').split(' ').map(capitalize))
 				.map(la => `<li>${la}</li>`)
 				.join('\n')
 			doModal('Error with form!', `Please complete the following fields: <ul>${err}</ul>`)
 			return
 		}
-		obj['patient-fullname'] = obj['patient-given'] + obj['patient-family']
 
-		Object.keys(obj).forEach(label => form.append(label, obj[label]))
 		try {
-			const resp = await fhirBase.post('/Patient', form)
+			const resp = await fhirBase.post('/Patient', {
+				identifier: [{
+					use: 'usual',
+					system: 'urn:ietf:rfc:3986',
+					value: 'database id',
+					assigner: 'SoN',
+				}],
+				resourceType: 'Patient',
+				active: true,
+				name: [{
+					use: 'usual',
+					text: `${obj['patient-given']} ${obj['patient-family']}`,
+					family: obj['patient-family'],
+					given: obj['patient-given'],
+					prefix: obj['patient-prefix'],
+				}],
+				gender: obj['patient-gender'],
+				photo: this.img,
+				contact: [{
+					name: {
+						use: 'usual',
+						text: `${obj['contact-given']} ${obj['contact-family']}`,
+						family: obj['contact-family'],
+						given: obj['contact-given'],
+						prefix: obj['contact-prefix'],
+					},
+					telecom: [{
+						system: 'phone',
+						value: obj['contact-phone'],
+						use: 'home',
+					}],
+				}],
+			})
 			const {issue: [outcome]} = resp.data
 			if (outcome.code === 200) {
-				const encForm = new FormData()
-				encForm.append('class', 'admission')
-				encForm.append('status', 'finished')
-				encForm.append('patient_id', outcome.diagnostics.patient_id)
-				encForm.append('location_id', obj.location_id)
-				const encResp = await fhirBase.post('/Encounter', encForm)
+				// create encounter form
+				const encResp = await fhirBase.post('/Encounter', {
+					resourceType: 'Encounter',
+					meta: {
+						lastUpdated: new Date(),
+					},
+					status: 'finished',
+					class: {
+						data: 'admission',
+					},
+					subject: outcome.diagnostics.patient_id,
+					location: [obj.location_id],
+				})
 				const histResp = await createHistory(outcome.diagnostics.patient_id)
 				console.log(histResp)
 				doModal('Success', encResp.data.issue[0].details.text)
@@ -227,6 +279,10 @@ class AdmitPatient extends Component {
 			}
 		} catch (err) {
 			console.warn('[create patient]', err)
+			if ('response' in err) {
+				doModal('Error', err.response.data.issue[0].details.text)
+				return
+			}
 			doModal('Error', `There is an error with patient creation: ${err}`)
 		}
 	}

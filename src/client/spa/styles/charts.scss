@@ -1,0 +1,12 @@
+.news-chart-modal {
+	max-height: 80%!important;
+	width: 85%!important;
+	
+	.row {
+		display: flex;
+		flex-direction: column;
+	}
+	.col {
+		height: calc(100% - 48px);
+	}
+}

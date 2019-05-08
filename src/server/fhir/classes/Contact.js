@@ -12,6 +12,7 @@ class Contact {
 	 * @param {string} params.family contact's family name (if applicable)
 	 */
 	constructor(params) {
+		logger.silly(`attempting to make contact: ${JSON.stringify(params)}`, {file: 'fhir/Contact.js', func: 'constructor'})
 		const {contact_id, prefix, fullname, given, phone, family} = params
 		this.contact_id = contact_id
 		this.prefix = prefix
@@ -22,8 +23,6 @@ class Contact {
 		this.required = ['prefix', 'fullname', 'given', 'phone']
 		this.values = [...this.required, 'family']
 	}
-
-	// fhir() {}
 
 	/**
 	 * Populates the contact params based on the database response
@@ -45,25 +44,22 @@ class Contact {
 		if (!isValid) return false
 		// create object
 		this.last_updated = new Date()
-		const obj = this.values
-			.reduce((acc, cur) => {
-				acc[cur] = this[cur]
-				return acc
-			}, {})
+		const obj = this.values.reduce((acc, cur) => {
+			acc[cur] = this[cur]
+			return acc
+		}, {})
+		logger.silly(`attempting to create patient with ${JSON.stringify(obj)}`, {file: 'Contact.js', func: 'insert()'})
 		// make query
 		try {
 			const [resp] = await knex('contact').insert(obj).returning(['contact_id', ...this.values])
 			logger.debug('created contact', {file: 'Contact.js', func: 'insert()'})
 			return resp
 		} catch (err) {
+			console.log('err')
 			logger.error(err, {file: 'Contact.js', func: 'insert()'})
 			return false
 		}
 	}
-
-	// delete() {}
-
-	// update() {}
 }
 
 module.exports = Contact

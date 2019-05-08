@@ -4,6 +4,9 @@ import M from 'materialize-css'
 import Questionnaire from './Questionnaire'
 
 class Tobacco extends Questionnaire {
+	/**
+	 * Whenever the form updates, re-init materialize components
+	 */
 	componentDidUpdate() {
 		// todo: change this to ref
 		const pickers = document.querySelectorAll('.datepicker')
@@ -12,6 +15,9 @@ class Tobacco extends Questionnaire {
 		M.FormSelect.init(select)
 	}
 
+	/**
+	 * @returns {preact.VNode}
+	 */
 	render() {
 		return (
 			<div className="row">
@@ -63,7 +69,7 @@ const TobaccoQuestionnaire = () => (
 			</p>
 		</form>
 		<div className="input-field col s12 tooltipped" data-position="top" data-tooltip="Include Cigarettes, Pipe and Cigars">
-			<h6>If you're currently using tobacco, which are you using?</h6>
+			<h6>If you&#39;re currently using tobacco, which are you using?</h6>
 			<textarea id="tobacco-used" className="materialize-textarea  patient-history-input" data-form-key="tobacco-type-used" />
 		</div>
 		<form className="col s12 patient-history-input" data-form-key="tobacco-nicotine-replace-therapy" data-materialize-type="radio-group" action="">

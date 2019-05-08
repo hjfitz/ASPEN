@@ -1,4 +1,5 @@
-import {doModal} from './util'
+// node modules used as this class is tested
+// import {doModal} from './util'
 
 class NEWSError extends Error {
 	/**
@@ -47,9 +48,9 @@ export default class WarningScore {
 		this.suppOxygen = report.supplemental_oxygen
 		this.missingFields = this.requiredFields.filter(field => !(field in report))
 		if (this.missingFields.length === this.requiredFields.length) return
-		if (this.missingFields.length) {
-			doModal('Error with EWS Calculation', `Fields were missing during submission!</p><ul><li class="browser-default">${this.missingFields.join('</li><li>')}`)
-		}
+		// if (this.missingFields.length) {
+		// 	// doModal('Error with EWS Calculation', `Fields were missing during submission!</p><ul><li class="browser-default">${this.missingFields.join('</li><li>')}`)
+		// }
 	}
 
 	/**
@@ -76,10 +77,10 @@ export default class WarningScore {
 	 * @returns {number} patient NEWS
 	 */
 	score() {
-		const vals = Object.values(this.calculate())
-		return Math.ceil(
-			vals.reduce((acc, cur) => acc + cur) / vals.length,
-		)
+		const scores = this.calculate()
+		const vals = Object.values(scores)
+		const highest = vals.sort().reverse()
+		return highest[0]
 	}
 
 	/**

@@ -1,8 +1,9 @@
 const log = require('../../logger')
 const Observation = require('./Observation')
-const {client} = require('../../db')
+const {knex} = require('../../db')
+const FHIRBase = require('./FHIRBase')
 
-class DiagnosticReport {
+class DiagnosticReport extends FHIRBase {
 	/**
 	 * Created by getting data from the database: This resource consists of a number of Observations
 	 * @param {object} row database row to format Diagnostic report
@@ -11,10 +12,9 @@ class DiagnosticReport {
 	 * @param {number} row.patient_id The patient for which this report pertains
 	 */
 	constructor(row) {
+		super(row)
 		// merge keys with our own
-		Object.keys(row).forEach((key) => {
-			this[key] = row[key]
-		})
+		Object.keys(row).forEach(key => this[key] = row[key])
 	}
 
 	/**
@@ -58,13 +58,11 @@ class DiagnosticReport {
 			'systolic_bp',
 			'heart_rate',
 			'level_of_consciousness',
-		].map(attr => client.query({
-			text: 'SELECT * FROM observation WHERE observation_id = $1',
-			values: [this[attr]]})))
+		].map(attr => knex('observation').select().where({observation_id: this[attr]})))
 
 		log.debug('Attempting to link back to report', {file: 'fhir/DiagnosticReport.js', func: 'DiagnosticReport#fhirLinked()'})
 		const values = await Promise.all(observations
-			.map(val => val.rows[0])
+			.map(val => val[0])
 			.map(data => new Observation(data.name, data.value, data.observation_id, data.last_updated))
 			.map(obs => obs.fhir()))
 		return {

@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
@@ -5,9 +6,19 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>ASPEN</title>
 	<meta name="theme-color" content="#26a69a">
+	<link rel="manifest" href="/manifest.json">
 </head>
 <body>
 	<div preact-root></div>
 	<script src="/js/client.bundle.js"></script>
+	<script>
+			if ('serviceWorker' in navigator) {
+				navigator.serviceWorker.register('/sw.js', {scope: '/'}).then((reg) => {
+					console.log('Worker registered:', reg.scope)
+				  }).catch((error) => {
+					console.log('Registration failed:', error);
+				})
+			}
+		</script>
 </body>
 </html>

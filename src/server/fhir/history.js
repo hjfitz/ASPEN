@@ -2,6 +2,14 @@
 const historyRouter = require('express').Router()
 const OperationOutcome = require('./classes/OperationOutcome')
 const {knex} = require('../db')
+const logger = require('../logger')
+
+const file = 'fhir/history.js'
+
+/**
+ * !! File does not follow FHIR specifications
+ * No patient history concept exists yet, so try to keep this file impartial and plain json
+ */
 
 
 historyRouter.get('/:id', async (req, res) => {
@@ -67,18 +75,20 @@ historyRouter.post('/', async (req, res) => {
 			practitioner_designation: req.body.sign.designation,
 			signature_blob: req.body.sign.image,
 		}
-		// console.log(req.body)
+
+		if (!req.body.sign.designation) {
+			const outcome = new OperationOutcome('error', 400, req.url, 'Missing practitioner designation!', {})
+			return outcome.makeResponse(res)
+		}
+
 		const [history_id] = await knex('patient_history').insert(historyBody).returning('history_id')
-		// console.log({row})
 		if (req.body.medication.prescription.length) {
 			for await (const prescription of req.body.medication.prescription) {
-				console.log({prescription})
 				const body = {
 					medication_name: prescription.name,
 					medication_dose: prescription.dose,
 					medication_frequency: prescription.freq,
 				}
-				console.log(body)
 				// add data to table
 				const [medication_usage_id] = await knex('medication_usage').insert(body).returning('medication_usage_id')
 				// create mtm relation
@@ -90,7 +100,6 @@ historyRouter.post('/', async (req, res) => {
 		}
 		if (req.body.medication.otc.length) {
 			for await (const otc of req.body.medication.otc) {
-				console.log({otc})
 				const body = {
 					medication_name: otc.name,
 					medication_dose: otc.dose,
@@ -107,7 +116,6 @@ historyRouter.post('/', async (req, res) => {
 		}
 		if (req.body.drug['use-frequency'] && req.body.drug['use-frequency'].length) {
 			for await (const drug of req.body.drug['use-frequency']) {
-				console.log({drug})
 				const body = {
 					medication_name: drug.name,
 					medication_dose: drug.dose,
@@ -122,15 +130,12 @@ historyRouter.post('/', async (req, res) => {
 				})
 			}
 		}
-		// async do all promises
-		// create mtm relations
-
 		// const results = Object.keys(queries).reduce((acc, cur) => {})
 		// const resp = await knex('patient_history').insert(req.body)
-		const outcome = new OperationOutcome('success', 200, req.url, 'Successfully added history', {})
+		const outcome = new OperationOutcome('success', 200, req.url, 'Successfully added history', {history_id})
 		return outcome.makeResponse(res)
 	} catch (err) {
-		console.log(err)
+		logger.error('error adding patient history', {file, func: 'POST /fhir/History'})
 		const outcome = new OperationOutcome('error', 500, req.url, err)
 		return outcome.makeResponse(res)
 	}
