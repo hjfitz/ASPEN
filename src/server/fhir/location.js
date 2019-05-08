@@ -4,9 +4,16 @@ const Location = require('./classes/Location')
 const OperationOutcome = require('./classes/OperationOutcome')
 const logger = require('../logger')
 const {createOutcome} = require('./util')
+const {decodeJWTPayload} = require('../auth/token')
 const {knex} = require('../db')
 
 locRouter.post('/', async (req, res) => {
+	const decodedToken = decodeJWTPayload(req.headers.token)
+	if (!decodedToken.permissions.includes('add:wards')) {
+		logger.debug('user does not have permissions to create a ward')
+		const outcome = new OperationOutcome('error', 403, req.originalUrl, 'No permissions', {})
+		return outcome.makeResponse(res)
+	}
 	// metadata for easy logging
 	const meta = {file: 'fhir/location.js', func: 'POST /'}
 

@@ -256,6 +256,7 @@ class AdmitPatient extends Component {
 					}],
 				}],
 			})
+			console.log(resp)
 			const {issue: [outcome]} = resp.data
 			if (outcome.code === 200) {
 				// create encounter form
@@ -273,7 +274,7 @@ class AdmitPatient extends Component {
 				})
 				const histResp = await createHistory(outcome.diagnostics.patient_id)
 				console.log(histResp)
-				doModal('Success', encResp.data.issue[0].details.text)
+				doModal('Success', `Patient, history and contact added</p><p>You may view the patient <a href="/patient/${resp.data.issue[0].diagnostics.patient_id}">by clicking here</a>`)
 			} else {
 				doModal('Error', outcome.data.issue[0].details.text)
 			}

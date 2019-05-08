@@ -4,6 +4,7 @@ const diagnosticRouter = require('express').Router()
 const {knex} = require('../db')
 const {createOutcome} = require('./util')
 const log = require('../logger')
+const {decodeJWTPayload} = require('../auth/token')
 const DiagnosticReport = require('./classes/DiagnosticReport')
 const Observation = require('./classes/Observation')
 const OperationOutcome = require('./classes/OperationOutcome')
@@ -65,6 +66,11 @@ diagnosticRouter.delete('/:id', async (req, res) => {
 })
 
 diagnosticRouter.post('/', async (req, res) => {
+	const decodedToken = decodeJWTPayload(req.headers.token)
+	if (!decodedToken.permissions.includes('add:vitals')) {
+		const outcome = new OperationOutcome('error', 403, req.originalUrl, 'You do not have permission to do this')
+		return outcome.makeResponse(res)
+	}
 	// make sure that all observations have a value and name
 	const hasAllObservations = req.body.result.filter(observation => ('value' in observation.valueQuantity) && ('text' in observation.code))
 	// no name or value? return 406

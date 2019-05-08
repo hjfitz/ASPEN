@@ -83,6 +83,7 @@ class CreateWard extends Component {
 			const {id} = resp.data.issue[0].diagnostics
 			console.log(resp.data)
 			inputs.forEach(input => input.value = '')
+			doModal('Success', `Ward created. You may your new ward <a href="/wards/${resp.data.issue[0].diagnostics.id[0]}">here</a>`)
 		} catch (err) {
 			doModal('Error!', `There was an error whilst creating the ward: ${err}`)
 		}
