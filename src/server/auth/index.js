@@ -141,11 +141,14 @@ authRouter.get('/login/url', (req, res) => {
 	res.send(url)
 })
 
+// recieve login data from user
 authRouter.post('/login', async (req, res) => {
 	const {username, password} = req.body
 	try {
 		const [row] = await knex('practitioner').select().where({username, account_type: 'normal'})
 		if (!row) return res.status(400).send('Unable to login: username does not exist!')
+
+		// compare the password with the hash stored in db. no match? reject
 		const passMatch = await bcrypt.compare(password, row.passhash)
 		if (!passMatch) return res.status(400).send('Passwords do not match')
 
@@ -154,17 +157,18 @@ authRouter.post('/login', async (req, res) => {
 		const tokenPayload = {...createPayload(practitioner_id, name, permissions), username}
 		const token = jwt.sign(tokenPayload, sessionSecret)
 
-		return res.send({
-			token,
-			message: `Welcome back, ${row.name}`,
-		})
+		// message is shown in popup
+		return res.json({token, message: `Welcome back, ${row.name}`})
 	} catch (err) {
+		// handle errors with a 500 so the server does not die
 		return res.status(500).send(`Error logging in: ${err}`)
 	}
 })
 
 authRouter.post('/login/create', async (req, res) => {
+	// to create a user, name, username and password is required
 	const required = ['name', 'username', 'password']
+	// pull from request body
 	const {name, username, password} = req.body
 
 	// check we have all required entries
@@ -180,12 +184,13 @@ authRouter.post('/login/create', async (req, res) => {
 	if (!valid) return res.status(400).send(`Issue with password: ${message}`)
 
 	try {
+		// calculate a password hash and put in db
 		const passhash = await bcrypt.hash(password, saltRounds)
 		await knex('practitioner').insert({
 			name,
 			username,
 			passhash,
-			permissions: '[]',
+			permissions: '[]', // knex with JSON rows still means that json must be stringified
 			account_type: 'normal',
 			added: new Date(),
 		})
@@ -198,14 +203,16 @@ authRouter.post('/login/create', async (req, res) => {
 // token checking middleware for fhir API
 authRouter.use('/fhir', (req, res, next) => {
 	const meta = {file: 'auth.js', func: 'auth middleware'}
+	// extract token from headers
 	const {token} = req.headers
 	logger.debug(`has token: ${!!token}`, meta)
 	logger.silly(`token: ${token}`, meta)
 	// no token? login
 	if (!token) return res.redirect('/login')
 	try {
+		// verify token with session secret
 		const valid = jwt.verify(token, sessionSecret)
-		logger.debug(`validated user token. allowing them through, ${JSON.stringify(valid)}`, meta)
+		logger.silly(`validated user token. allowing them through, ${JSON.stringify(valid)}`, meta)
 		return next()
 	} catch (err) {
 		// error verifying token? redirect to login

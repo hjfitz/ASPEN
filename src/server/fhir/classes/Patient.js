@@ -9,8 +9,9 @@ const mime = require('mime-types')
 const logger = require('../../logger')
 const {knex} = require('../../db')
 const Contact = require('./Contact')
+const FHIRBase = require('./FHIRBase')
 
-class Patient {
+class Patient extends FHIRBase {
 	/**
 	 * Fhir wrapper for patient information
 	 * @param {object} params patient params
@@ -25,6 +26,7 @@ class Patient {
 	 * @param {string} params.family patient family name (surname)
 	 */
 	constructor(params) {
+		super(params)
 		this.meta = {file: 'fhir/classes/Patient.js'}
 		logger.silly(`attempting to make patient: ${JSON.stringify(params)}`, {...this.meta, func: 'constructor'})
 		const {active, id, fullname, given, prefix, gender, last_updated, photo, family} = params
@@ -157,6 +159,30 @@ class Patient {
 			return false
 		}
 		return true
+	}
+
+	/**
+	 * Attempts to delete a patient based on this.id
+	 * fetch patient photo URL so that this can be removed from the disk
+	 * delete the patient from the database, then the image
+	 * order is important, because if database delete fails, no more image for patient
+	 * @returns {boolean} Deleted or nah
+	 */
+	async delete() {
+		try {
+			// get patient photo url from db
+			const [row] = await knex('patient').select().where('patient_id', this.id)
+			const url = path.join(process.cwd(), (row.photo_url || ''))
+			// remove DB entry and then the associated image
+			await knex('patient').delete('patient', this.id)
+			logger.debug(`attempting to delete patient photo with url: ${url}`, this.meta)
+			if (row.photo_url && fs.existsSync(url)) fs.unlinkSync(url)
+			return {deleted: true, msg: 'Successfully deleted patient'}
+		} catch (err) {
+			logger.error('Unable to delete patient', {...this.meta, func: 'delete()'})
+			logger.error(err, {...this.meta, func: 'delete()'})
+			return {deleted: false, msg: err}
+		}
 	}
 
 	/**

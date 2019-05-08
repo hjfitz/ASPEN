@@ -1,4 +1,6 @@
-class OperationOutcome {
+const FHIRBase = require('./FHIRBase')
+
+class OperationOutcome extends FHIRBase {
 	/**
 	 * Object form of https://www.hl7.org/fhir/operationoutcome.html
 	 * @param {string} sev Severity of the issue (fatal/error/warning/information)
@@ -8,6 +10,7 @@ class OperationOutcome {
 	 * @param {string} diagnostics Diagnostics information
 	 */
 	constructor(sev, code, path, infoText, diagnostics = {}) {
+		super({sev, code, infoText, diagnostics, path})
 		this.sev = sev
 		this.code = code
 		this.infoText = infoText

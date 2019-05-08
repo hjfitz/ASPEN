@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../../../">
+  <title data-ice="title">src/client/spa/pages/admit-patient/index.jsx | fyp</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Final year project @portsoc"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="fyp"><meta property="twitter:description" content="Final year project @portsoc"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/hjfitz/fyp"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa">client/spa</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/WarningScore.js~WarningScore.html">WarningScore</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-doModal">doModal</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getJwtPayload">getJwtPayload</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getName">getName</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-noop">noop</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-showLogin">showLogin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-toTitle">toTitle</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-fhirBase">fhirBase</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-pages">client/spa/pages</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/create-ward.jsx~CreateWard.html">CreateWard</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/permissions.jsx~Permissions.html">Permissions</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/search-patients.jsx~SearchPatient.html">SearchPatient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/view-patient.jsx~Patient.html">Patient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/view-ward.jsx~Ward.html">Ward</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/ward-list.jsx~WardList.html">WardList</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Add">Add</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Welcome">Welcome</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-permissionsBase">permissionsBase</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-pages-admit-patient">client/spa/pages/admit-patient</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/History.jsx~CreateHistory.html">CreateHistory</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/index.jsx~AdmitPatient.html">AdmitPatient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Contact">Contact</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-PatientDemographicInfo">PatientDemographicInfo</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-pages-admit-patient-history">client/spa/pages/admit-patient/history</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/Questionnaire.jsx~Questionnaire.html">Questionnaire</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/alcohol.jsx~Alcohol.html">Alcohol</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/drugs.jsx~Drugs.html">Drugs</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/health-history.jsx~HealthHistory.html">HealthHistory</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/medication.jsx~Medication.html">Medication</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/tobacco.jsx~Tobacco.html">Tobacco</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Diet">Diet</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Exercise">Exercise</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-OtherQuestions">OtherQuestions</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SignOff">SignOff</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DecButton">DecButton</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-IncButton">IncButton</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-partial-admit-patient">client/spa/partial/admit-patient</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/admit-patient/signature-box.jsx~Signature.html">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-partial-layout">client/spa/partial/layout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/layout/fab.jsx~Fab.html">Fab</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/layout/login.jsx~Login.html">Login</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/layout/redirect.jsx~Redirect.html">Redirect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Breadcrumbs">Breadcrumbs</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-partial-shared">client/spa/partial/shared</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Input">Input</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Loader">Loader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Modal">Modal</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-partial-view-patient">client/spa/partial/view-patient</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/view-patient/vital-signs.jsx~Vitals.html">Vitals</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/view-patient/vitals-charts.jsx~NewsChart.html">NewsChart</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HistoryReport">HistoryReport</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#server">server</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-router">router</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#server-fhir">server/fhir</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-patientRouter">patientRouter</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#server-fhir-classes">server/fhir/classes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Contact.js~Contact.html">Contact</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/DiagnosticReport.js~DiagnosticReport.html">DiagnosticReport</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Encounter.js~Encounter.html">Encounter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/FHIRBase.js~FHIRBase.html">FHIRBase</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Location.js~Location.html">Location</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Observation.js~Observation.html">Observation</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/OperationOutcome.js~OperationOutcome.html">OperationOutcome</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Patient.js~Patient.html">Patient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Practitioner.js~Practitioner.html">Practitioner</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/client/spa/pages/admit-patient/index.jsx</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import {h, Component} from &apos;preact&apos;
+import qs from &apos;qs&apos;
+import {route} from &apos;preact-router&apos;
+import M from &apos;materialize-css&apos;
+
+import PatientDemographicInfo from &apos;./Patient&apos;
+import PatientHistoryInfo from &apos;./History&apos;
+import ContactInfo from &apos;./Contact&apos;
+
+import {Loader} from &apos;../../Partial&apos;
+import {fhirBase, doModal, getJwtPayload} from &apos;../../util&apos;
+
+import &apos;../../styles/create-patient.scss&apos;
+
+function createHistory(patient_id) {
+	const elems = document.querySelectorAll(&apos;.patient-history-input&apos;)
+	const form = [...elems].reduce((acc, elem) =&gt; {
+		// dataset should be of form &apos;$KEY-attr, eg health-childhood-illnesses
+		const [key, ...rest] = elem.dataset.formKey.split(&apos;-&apos;)
+		const attr = rest.join(&apos;-&apos;)
+		// ensure accumulator has form {health: {}, drugs: {}}
+		if (!(key in acc)) acc[key] = {}
+		// get handle on current place in data structure
+		const cur = acc[key]
+		// fetch data from element
+		switch (elem.dataset.materializeType) {
+		// use materialize method to get selected values
+		case &apos;select&apos;: {
+			const inst = M.FormSelect.getInstance(elem)
+			cur[attr] = inst.getSelectedValues()
+			return acc
+		}
+		// materialize requires a lot of markup for a radio button (form&gt;p&gt;label&gt;input)
+		// find the checked radio button and get the val (true/false - set in elem.value prop)
+		case &apos;radio-group&apos;: {
+			const checked = elem.querySelector(&apos;:checked&apos;)
+			cur[attr] = checked.value.replace(&apos;yes&apos;, &apos;true&apos;).replace(&apos;no&apos;, &apos;false&apos;)
+			return acc
+		}
+		// saved for when there&apos;s the option to add/remove
+		case &apos;input-group&apos;: {
+			const inputs = elem.querySelectorAll(&apos;input&apos;)
+			// get all non-null values from inputs in the group
+			cur[attr] = [...inputs].map(el =&gt; el.value.trim()).filter(Boolean)
+			return acc
+		}
+		case &apos;multiple-input-group&apos;: {
+			const inputs = elem.querySelectorAll(&apos;.input-group&apos;)
+			cur[attr] = [...inputs].map(input =&gt; ({
+				name: input.querySelector(&apos;.name&apos;).value,
+				dose: input.querySelector(&apos;.dose&apos;).value,
+				freq: input.querySelector(&apos;.frequency&apos;).value,
+			}))
+			return acc
+		}
+		default: {
+			cur[attr] = elem.value ? elem.value.trim() : null
+			return acc
+		}
+		}
+	}, {})
+	const sigCanv = document.getElementById(&apos;sign-off-canvas&apos;)
+	const rawImg = sigCanv.toDataURL(&apos;image/png&apos;)
+	form.sign.image = rawImg
+	form.patient_id = patient_id
+	form.sign.practitioner_id = getJwtPayload(localStorage.token).userid
+	return fhirBase.post(&apos;/History&apos;, form, {
+		headers: {&apos;content-type&apos;: &apos;application/json&apos;},
+	})
+}
+
+class AdmitPatient extends Component {
+	/**
+	 * Create Patient component
+	 * @param {object} props component props
+	 */
+	constructor(props) {
+		super(props)
+		this.state = {
+			wards: [],
+			loaded: false,
+		}
+
+		this.getImg = this.getImg.bind(this)
+		this.setImg = this.setImg.bind(this)
+		this.setVideo = this.setVideo.bind(this)
+		this.setCanvas = this.setCanvas.bind(this)
+	}
+
+	/**
+	 * Gets all locations from the API and populates state
+	 */
+	async componentDidMount() {
+		const resp = await fhirBase.get(&apos;/Location?type=Ward&apos;)
+		if (resp.data) {
+			this.setState({
+				loaded: true,
+				wards: resp.data.map(ward =&gt; ({val: ward.id, text: ward.name})),
+			}, async () =&gt; {
+				// the form is showing and webcam is, so populate with webcam
+				const select = document.querySelectorAll(&apos;#location_id, #patient-gender, .patient-details-select&apos;)
+				M.FormSelect.init(select)
+				try {
+					const stream = await navigator.mediaDevices.getUserMedia({video: true})
+					this.video.srcObject = stream
+					this.video.onloadedmetadata = this.video.play
+					// when the video plays, the height and width of the container changes
+					// set the canvas here
+					this.video.addEventListener(&apos;playing&apos;, () =&gt; {
+						const dimensions = this.video.getBoundingClientRect()
+						this.canvas.height = dimensions.height
+						this.canvas.width = dimensions.width
+					})
+				} catch (err) {
+					M.toast({html: &apos;There was an error initialising the Webcam&apos;})
+					console.error(`Webcam error: ${err}`)
+				}
+				const date = document.querySelectorAll(&apos;.datepicker&apos;)
+				M.Datepicker.init(date, {autoClose: true})
+			})
+		}
+	}
+
+	/**
+	 * Takes webcam piped to video and sticks on canvas
+	 * Saves this to B64, sets state and pauses the stream
+	 */
+	getImg() {
+		console.log(&apos;[CREATE] Saving image&apos;)
+		const dimensions = this.video.getBoundingClientRect()
+		this.canvas.getContext(&apos;2d&apos;).drawImage(this.video, 0, 0, dimensions.width, dimensions.height)
+		const img = this.canvas.toDataURL(&apos;image/png&apos;)
+		this.img = img
+		doModal(&apos;Success&apos;, &apos;Image saved&apos;)
+		this.video.pause()
+	}
+
+	/**
+	 * serialise the uploaded image and save it
+	 * @param {EventTarget} ev Event from input onChange event
+	 */
+	setImg(ev) {
+		try {
+			const {files: [file]} = ev.target
+			const reader = new FileReader()
+			reader.addEventListener(&apos;load&apos;, () =&gt; this.img = reader.result, false)
+			reader.readAsDataURL(file)
+		} catch (err) {
+			doModal(&apos;Error&apos;, `There was an error setting the image: ${err}`)
+		}
+	}
+
+
+	setVideo(ref) {
+		this.video = ref
+	}
+
+	setCanvas(ref) {
+		this.canvas = ref
+	}
+
+	/**
+	 * yanks all data from form and posts to API
+	 * creates a patient and then an encounter
+	 */
+	async admit() {
+		const form = new FormData()
+		if (this.img) {
+			console.log(&apos;[CREATE] Appending image&apos;)
+			const img = await fetch(this.img).then(r =&gt; r.blob())
+			form.append(&apos;patient-photo&apos;, img)
+		}
+		const labels = [
+			&apos;patient-prefix&apos;,
+			&apos;patient-given&apos;,
+			&apos;patient-family&apos;,
+			&apos;patient-gender&apos;,
+			&apos;location_id&apos;,
+			&apos;contact-prefix&apos;,
+			&apos;contact-given&apos;,
+			&apos;contact-family&apos;,
+			&apos;contact-fullname&apos;,
+			&apos;contact-phone&apos;,
+		]
+		const invalid = []
+		const obj = labels.reduce((acc, label) =&gt; {
+			const elem = document.getElementById(label)
+			const {value} = elem
+			if (value) {
+				acc[label] = value
+				elem.classList.add(&apos;valid&apos;)
+				elem.classList.remove(&apos;invalid&apos;)
+			} else {
+				invalid.push(label)
+				elem.classList.add(&apos;invalid&apos;)
+				elem.classList.remove(&apos;valid&apos;)
+			}
+			return acc
+		}, {})
+		if (invalid.length) {
+			const err = invalid
+				.map(la =&gt; la.replace(/-/g, &apos; &apos;))
+				.map(la =&gt; la.split(&apos; &apos;).map(word =&gt; word.charAt(0).toUpperCase() + word.slice(1)).join(&apos; &apos;))
+				.map(la =&gt; `&lt;li&gt;${la}&lt;/li&gt;`)
+				.join(&apos;\n&apos;)
+			doModal(&apos;Error with form!&apos;, `Please complete the following fields: &lt;ul&gt;${err}&lt;/ul&gt;`)
+			return
+		}
+		obj[&apos;patient-fullname&apos;] = obj[&apos;patient-given&apos;] + obj[&apos;patient-family&apos;]
+
+		Object.keys(obj).forEach(label =&gt; form.append(label, obj[label]))
+		try {
+			const resp = await fhirBase.post(&apos;/Patient&apos;, form)
+			const {issue: [outcome]} = resp.data
+			if (outcome.code === 200) {
+				const encForm = new FormData()
+				encForm.append(&apos;class&apos;, &apos;admission&apos;)
+				encForm.append(&apos;status&apos;, &apos;finished&apos;)
+				encForm.append(&apos;patient_id&apos;, outcome.diagnostics.patient_id)
+				encForm.append(&apos;location_id&apos;, obj.location_id)
+				const encResp = await fhirBase.post(&apos;/Encounter&apos;, encForm)
+				const histResp = await createHistory(outcome.diagnostics.patient_id)
+				console.log(histResp)
+				doModal(&apos;Success&apos;, encResp.data.issue[0].details.text)
+			} else {
+				doModal(&apos;Error&apos;, outcome.data.issue[0].details.text)
+			}
+		} catch (err) {
+			console.warn(&apos;[create patient]&apos;, err)
+			doModal(&apos;Error&apos;, `There is an error with patient creation: ${err}`)
+		}
+	}
+
+
+	/**
+	 * renders component
+	 * if no wards, render a loading icon
+	 * @returns {VNode}
+	 */
+	render() {
+		if (!this.state.loaded) return &lt;Loader /&gt;
+		return (
+			&lt;div className=&quot;row&quot; id=&quot;patient-form&quot;&gt;
+				&lt;h2&gt;Admit a New Patient&lt;/h2&gt;
+				&lt;form&gt;
+					&lt;PatientDemographicInfo
+						wards={this.state.wards}
+						getImg={this.getImg}
+						setImg={this.setImg}
+						setVideo={this.setVideo}
+						setCanvas={this.setCanvas}
+						playVideo={() =&gt; this.video.play()}
+					/&gt;
+					&lt;PatientHistoryInfo /&gt;
+					&lt;ContactInfo /&gt;
+					&lt;a className=&quot;waves-effect waves-light btn col s12&quot; onClick={this.admit.bind(this)}&gt;
+						&lt;i className=&quot;material-icons left&quot;&gt;perm_identity&lt;/i&gt;Admit
+					&lt;/a&gt;
+				&lt;/form&gt;
+			&lt;/div&gt;
+		)
+	}
+}
+
+
+export default AdmitPatient
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

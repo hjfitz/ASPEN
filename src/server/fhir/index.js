@@ -19,9 +19,17 @@ router.use(async (req, res, next) => {
 	res.setHeader('content-type', 'application/fhir+json')
 	const {_format} = req.query
 	const {accept, 'content-type': type} = req.headers
-	const correctFormat = (_format && _format === 'application/fhir+json')
+
+	// ensure that the user is specifying to use fhir json
+	const correctFormat = (_format && _format !== 'application/fhir+json')
+
+	// ensure that the user can parse fhir json
 	const correctHeaders = accept.split(' ').includes('application/fhir+json')
+
+	// ensure that the user is not sending a form as these are unsupported
 	const correctContent = (type !== 'application/x-www-form-urlencoded')
+
+	// quick error checking
 	if (correctFormat) {
 		logger.warn(`_format incorrect! ${_format}`, {...meta, func: 'validation mw'})
 		return createOutcome(req, res, 406, `Your _format, ${_format} is not accepted on this server`)
@@ -42,7 +50,7 @@ router.use(async (req, res, next) => {
 router.use(fileUpload({limits: {fileSize: 50 * 1024 * 1024}}))
 router.use(bodyParser.urlencoded({extended: false}))
 
-
+// all FHIR routes. note: all sit on /fhir
 router.use('/Observation', observationRouter)
 router.use('/Diagnostics', diagnosticRouter)
 router.use('/Encounter', encounterRouter)

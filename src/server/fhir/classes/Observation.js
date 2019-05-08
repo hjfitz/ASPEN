@@ -1,7 +1,9 @@
 const log = require('../../logger')
 const {knex} = require('../../db')
+const {client} = require('../../db')
+const FHIRBase = require('./FHIRBase')
 
-class Observation {
+class Observation extends FHIRBase {
 	/**
 	 * FHIR wrapper for Observation data
 	 * @param {string} name Name of observation (blood pressure/respiratory rate etc)
@@ -10,6 +12,7 @@ class Observation {
 	 * @param {boolean} updated Then the resource was last updated
 	 */
 	constructor(name, value, id, updated = new Date()) {
+		super({name, value, id, updated})
 		this.name = name
 		this.value = value
 		this.id = `${id}`

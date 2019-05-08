@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">src/client/spa/WarningScore.js | fyp</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Final year project @portsoc"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="fyp"><meta property="twitter:description" content="Final year project @portsoc"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/hjfitz/fyp"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa">client/spa</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/WarningScore.js~WarningScore.html">WarningScore</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-doModal">doModal</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getJwtPayload">getJwtPayload</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getName">getName</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-noop">noop</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-showLogin">showLogin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-toTitle">toTitle</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-fhirBase">fhirBase</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-pages">client/spa/pages</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/create-ward.jsx~CreateWard.html">CreateWard</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/permissions.jsx~Permissions.html">Permissions</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/search-patients.jsx~SearchPatient.html">SearchPatient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/view-patient.jsx~Patient.html">Patient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/view-ward.jsx~Ward.html">Ward</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/ward-list.jsx~WardList.html">WardList</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Add">Add</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Welcome">Welcome</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-permissionsBase">permissionsBase</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-pages-admit-patient">client/spa/pages/admit-patient</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/History.jsx~CreateHistory.html">CreateHistory</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/index.jsx~AdmitPatient.html">AdmitPatient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Contact">Contact</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-PatientDemographicInfo">PatientDemographicInfo</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-pages-admit-patient-history">client/spa/pages/admit-patient/history</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/Questionnaire.jsx~Questionnaire.html">Questionnaire</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/alcohol.jsx~Alcohol.html">Alcohol</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/drugs.jsx~Drugs.html">Drugs</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/health-history.jsx~HealthHistory.html">HealthHistory</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/medication.jsx~Medication.html">Medication</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/pages/admit-patient/history/tobacco.jsx~Tobacco.html">Tobacco</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Diet">Diet</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Exercise">Exercise</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-OtherQuestions">OtherQuestions</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SignOff">SignOff</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DecButton">DecButton</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-IncButton">IncButton</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-partial-admit-patient">client/spa/partial/admit-patient</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/admit-patient/signature-box.jsx~Signature.html">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-partial-layout">client/spa/partial/layout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/layout/fab.jsx~Fab.html">Fab</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/layout/login.jsx~Login.html">Login</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/layout/redirect.jsx~Redirect.html">Redirect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Breadcrumbs">Breadcrumbs</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-partial-shared">client/spa/partial/shared</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Input">Input</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Loader">Loader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Modal">Modal</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#client-spa-partial-view-patient">client/spa/partial/view-patient</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/view-patient/vital-signs.jsx~Vitals.html">Vitals</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/client/spa/partial/view-patient/vitals-charts.jsx~NewsChart.html">NewsChart</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HistoryReport">HistoryReport</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#server">server</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-router">router</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#server-fhir">server/fhir</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-patientRouter">patientRouter</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#server-fhir-classes">server/fhir/classes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Contact.js~Contact.html">Contact</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/DiagnosticReport.js~DiagnosticReport.html">DiagnosticReport</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Encounter.js~Encounter.html">Encounter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/FHIRBase.js~FHIRBase.html">FHIRBase</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Location.js~Location.html">Location</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Observation.js~Observation.html">Observation</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/OperationOutcome.js~OperationOutcome.html">OperationOutcome</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Patient.js~Patient.html">Patient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/server/fhir/classes/Practitioner.js~Practitioner.html">Practitioner</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/client/spa/WarningScore.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import {doModal} from &apos;./util&apos;
+
+class NEWSError extends Error {
+	/**
+	 * Error wrapper for NEWS object
+	 * @param {string} message Error message
+	 * @param {string[]} missing missing vital signs
+	 */
+	constructor(message, missing) {
+		super(message)
+		this.name = &apos;NEWSError&apos;
+		this.missing = missing
+	}
+}
+
+/**
+ * ! TODO thorough testing
+ */
+export default class WarningScore {
+	/**
+	 * Warning score wrapper for patient info
+	 * @param {object} report formatted diagnostic report
+	 * @param {number} report.respiratory_rate
+	 * @param {number} report.oxygen_saturation
+	 * @param {number} report.heart_rate
+	 * @param {number} report.body_temperature
+	 * @param {number} report.systolic_bp
+	 * @param {string} report.level_of_consciousness
+	 * @param {string} report.supplemental_oxygen (on/off)
+	 */
+	constructor(report = {}) {
+		// can&apos;t generate a proper EWS without these
+		this.requiredFields = [
+			&apos;respiratory_rate&apos;,
+			&apos;oxygen_saturation&apos;,
+			&apos;heart_rate&apos;,
+			&apos;body_temperature&apos;,
+			&apos;systolic_bp&apos;,
+			&apos;level_of_consciousness&apos;,
+		]
+		this.respRate = report.respiratory_rate
+		this.oxySat = report.oxygen_saturation
+		this.heartRate = report.heart_rate
+		this.bodyTemp = report.body_temperature
+		this.systolicBP = report.systolic_bp
+		this.conscLevel = report.level_of_consciousness
+		this.suppOxygen = report.supplemental_oxygen
+		this.missingFields = this.requiredFields.filter(field =&gt; !(field in report))
+		if (this.missingFields.length === this.requiredFields.length) return
+		if (this.missingFields.length) {
+			doModal(&apos;Error with EWS Calculation&apos;, `Fields were missing during submission!&lt;/p&gt;&lt;ul&gt;&lt;li class=&quot;browser-default&quot;&gt;${this.missingFields.join(&apos;&lt;/li&gt;&lt;li&gt;&apos;)}`)
+		}
+	}
+
+	/**
+	 * returns object with invididually scored elements (for use in chart)
+	 * @return {object} each part of a patient warning score individually scored
+	 */
+	calculate() {
+		if (this.missingFields.length) {
+			return {score: 0}
+		}
+		return {
+			resp: this.scoreResp(),
+			oxySat: this.scoreOxy(),
+			heartRate: this.scoreHeart(),
+			bodyTemp: this.scoreTemp(),
+			systolicBP: this.scoreBP(),
+			conscLevel: this.scoreCons(),
+			suppOxygen: this.scoreSuppOxy(),
+		}
+	}
+
+	/**
+	 * returns the NEWS for the given set of vital signs
+	 * @returns {number} patient NEWS
+	 */
+	score() {
+		const scores = this.calculate()
+		console.table(scores)
+		const vals = Object.values(scores)
+		const highest = vals.sort().reverse()
+		return highest[0]
+	}
+
+	/**
+	 * Create an EWS for respiratory rate
+	 * @returns {number}
+	 */
+	scoreResp() {
+		const rate = parseFloat(this.respRate, 10)
+		if (rate &gt;= 12 &amp;&amp; rate &lt;= 20) return 0
+		if (rate &gt;= 9 &amp;&amp; rate &lt;= 11) return 1
+		if (rate &gt;= 21 &amp;&amp; rate &lt;= 24) return 2
+		if (rate &lt;= 8 || rate &gt;= 25) return 3
+		throw new NEWSError(`Unable to calculate NEWS: respiratory rate incorrect (${rate})`)
+	}
+
+	/**
+	 * Create EWS for patient oxygen saturation
+	 * @returns {number}
+	 */
+	scoreOxy() {
+		const sat = parseFloat(this.oxySat, 10)
+		if (sat &gt;= 96) return 0
+		if (sat &gt;= 94) return 1
+		if (sat &gt;= 92) return 2
+		if (sat &lt;= 91) return 3
+		throw new NEWSError(`Unable to calculate NEWS: oxygen saturation incorrect (${sat})`)
+	}
+
+	/**
+	 * Create EWS for patient heart rate
+	 * @returns {number}
+	 */
+	scoreHeart() {
+		const rate = parseFloat(this.heartRate, 10)
+		if (rate &lt;= 40 || rate &gt;= 131) return 3
+		if (rate &gt;= 111 &amp;&amp; rate &lt;= 130) return 2
+		if ((rate &gt;= 41 &amp;&amp; rate &lt;= 50) || (rate &gt;= 91 &amp;&amp; rate &lt;= 110)) return 1
+		if (rate &gt;= 51 &amp;&amp; rate &lt;= 90) return 0
+		throw new NEWSError(`Unable to calculate NEWS: heart rate incorrect (${rate})`)
+	}
+
+	/**
+	 * Create EWS for patient body temperature
+	 * @returns {number}
+	 */
+	scoreTemp() {
+		const temp = parseFloat(this.bodyTemp, 10)
+		if (temp &lt;= 35) return 3
+		if (temp &gt;= 39.1) return 2
+		if ((temp &gt;= 35.1 &amp;&amp; temp &lt;= 36) || (temp &gt;= 38.1 &amp;&amp; temp &lt;= 39)) return 1
+		if (temp &gt;= 36.1 &amp;&amp; temp &lt;= 38) return 0
+		throw new NEWSError(`Unable to calculate NEWS: body temperature incorrect (${temp})`)
+	}
+
+	/**
+	 * Create EWS for patient blood pressure
+	 * @returns {number}
+	 */
+	scoreBP() {
+		const bp = parseFloat(this.systolicBP, 10)
+		if (bp &lt;= 90 || bp &gt;= 220) return 3
+		if (bp &gt;= 91 &amp;&amp; bp &lt;= 100) return 2
+		if (bp &gt;= 101 &amp;&amp; bp &lt;= 110) return 1
+		if (bp &gt;= 111 &amp;&amp; bp &lt;= 219) return 0
+		throw new NEWSError(`Unable to calculate NEWS: BP incorrect (${bp})`)
+	}
+
+	/**
+	 * Create EWS for patient consciousness level
+	 * @returns {number}
+	 */
+	scoreCons() {
+		if (this.conscLevel === &apos;A&apos;) return 0
+		return 3
+	}
+
+	/**
+	 * Create EWS for patient on supplemental oxygen
+	 * @returns {number}
+	 */
+	scoreSuppOxy() {
+		if (this.suppOxygen === &apos;on&apos;) return 2
+		return 0
+	}
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

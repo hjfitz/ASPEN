@@ -10,22 +10,24 @@ const patientRouter = express.Router()
 
 const log = (level, message, func) => logger.log(level, message, {file: 'logger.js', func})
 
-// debug
+// used for debugging. removed in production
 patientRouter.get('/all', async (req, res) => {
 	log('info', 'attempting to retrieve all patient data', 'GET /all')
 	const rows = await knex('patient').select()
 	res.json(rows)
 })
 
-// read
+// read a specific patient
 patientRouter.get('/:id', async (req, res) => {
 	const {id} = req.params
+	// create a new patient and send.
 	const patient = new Patient({id})
 	const populated = await patient.populate()
 	if (populated) {
 		const fhir = await patient.fhir()
 		return res.json(fhir)
 	}
+	// patient not populated? let the user know
 	const outcome = new OperationOutcome('error', 406, req.originalUrl, 'could not find patient')
 	return outcome.makeResponse(res)
 })

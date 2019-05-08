@@ -21,14 +21,27 @@ class HealthHistory extends Component {
 		M.FormSelect.init(select)
 	}
 
+	/**
+	 * create a function to increase an item in state
+	 * @param {string} type key in state to update
+	 * @returns {Function}
+	 */
 	inc(type) {
 		return () => this.setState({[type]: this.state[type] + 1})
 	}
 
+	/**
+	 * create a function to decrease an item in state
+	 * @param {string} type key in state to update
+	 * @returns {Function}
+	 */
 	dec(type) {
 		return () => this.setState({[type]: this.state[type] - 1})
 	}
 
+	/**
+	 * @returns {preact.VNode}
+	 */
 	render() {
 		return (
 			<div className="row" ref={m => this.mainContainer = m}>

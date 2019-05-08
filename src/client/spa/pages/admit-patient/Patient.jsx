@@ -32,6 +32,11 @@ const MobileImageUpload = props => (
 // not on mobile? webcam next to form. else, input at bottom of form
 const colClass = () => (isMobile.any ? 'col s12' : 'col m6 s12')
 
+/**
+ * basic form for patient demographic submission
+ * @param {preact.ComponentProps} props comopnent props
+ * @returns {preact.VNode}
+ */
 const PatientDemographicInfo = props => (
 	<div>
 		<h3>Patient Details</h3>

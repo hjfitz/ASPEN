@@ -3,7 +3,11 @@ import {Link} from 'preact-router'
 
 import '../../styles/breadcrumb.scss'
 
-
+/**
+ * Given an of places and an index, create a URL to that place
+ * @param {number} index where we are set in the location array
+ * @param {string[]} places array of places from url (/create/patient -> ['create', 'patient'])
+ */
 function getCurrentUrl(index, places) {
 	let url = '/'
 	for (let i = 0; i < (index + 1); i += 1) {

@@ -4,6 +4,9 @@ import M from 'materialize-css'
 import Questionnaire from './Questionnaire'
 
 class Tobacco extends Questionnaire {
+	/**
+	 * Whenever the form updates, re-init materialize components
+	 */
 	componentDidUpdate() {
 		// todo: change this to ref
 		const pickers = document.querySelectorAll('.datepicker')
@@ -12,6 +15,9 @@ class Tobacco extends Questionnaire {
 		M.FormSelect.init(select)
 	}
 
+	/**
+	 * @returns {preact.VNode}
+	 */
 	render() {
 		return (
 			<div className="row">

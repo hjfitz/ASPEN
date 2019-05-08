@@ -7,6 +7,14 @@ const OperationOutcome = require('./classes/OperationOutcome')
 
 const file = 'fhir/encounter.js'
 
+/**
+ * Handle all encoutners:
+ * 	required as FHIR offers no logical way to store patients
+ */
+
+/**
+  * Accept a new ancounter
+  */
 encounterRouter.post('/', async (req, res) => {
 	const decodedToken = decodeJWTPayload(req.headers.token)
 	console.log(req.body)
@@ -17,6 +25,8 @@ encounterRouter.post('/', async (req, res) => {
 		outcome.makeResponse(res)
 		return
 	}
+	// attempt to insert the data.
+	// inserted will be false if req.body does not have the required fields
 	const inserted = await enc.insert()
 	const outcome = inserted
 		? new OperationOutcome('success', 200, req.originalUrl, 'Successfully added encounter')
@@ -24,27 +34,39 @@ encounterRouter.post('/', async (req, res) => {
 	outcome.makeResponse(res)
 })
 
-encounterRouter.get('/all', async (req, res) => {
-	const rows = await knex('encounter').select()
-	res.json(rows)
-})
 
+/**
+ * find a new encounter
+ * this required the practitioner to have view:allpatients to view all
+ * else will fall back to practitionerpatients in table
+ */
 encounterRouter.get('/', async (req, res) => {
 	const decodedToken = decodeJWTPayload(req.headers.token)
+
+	// remove _include as we can use knex to search.where(req.query)
 	const include = req.query._include
 	delete req.query._include
+
+	// queryparams may have _include=patient;encounter
+	// split these in to an object so the fhir() method on encounter can populate
 	const [, ...tail] = include.split(':')
 	const toInclude = tail.join(':').split(';').reduce((acc, cur) => {
 		acc[cur] = true
 		return acc
 	}, {})
 	logger.info('fetching all encounters', {file, func: 'GET /'})
+
+	// pull all encounters based on the querystring
 	const rows = await knex('encounter').select().where(req.query)
-	// if no permission to view all, select all from union table and filter our
+
+	// if no permission to view all:
+	// select all from union table and filter out based on practitonerpatients
 	if (!decodedToken.permissions.includes('view:allpatients')) {
 		logger.debug(`filtering out patients for user${decodedToken.email}`, {file, func: 'GET /'})
 		const unionTable = await knex('practitionerpatients').select().where({practitioner_id: decodedToken.userid})
 		const patientIDs = unionTable.map(group => group.patient_id)
+
+		// use promise.all to 'concurrently' access the database
 		const mapped = await Promise.all(rows
 			.filter(row => patientIDs.includes(row.patient_id))
 			.map(row => new Encounter(row).fhir(toInclude)))
@@ -56,6 +78,7 @@ encounterRouter.get('/', async (req, res) => {
 	res.json(mapped)
 })
 
+// get an encounter based on the encounter ID (GET /fhir/Encounter/1)
 encounterRouter.get('/:encounter_id', async (req, res) => {
 	const decodedToken = decodeJWTPayload(req.headers.token)
 
@@ -63,6 +86,7 @@ encounterRouter.get('/:encounter_id', async (req, res) => {
 	const enc = new Encounter({encounter_id})
 	logger.debug(`populating encounter${req.params.encounter_id} for ${decodedToken.email}`, {file, func: 'GET /:encounter_id'})
 	const populated = await enc.populate()
+	// check if the encounter was found
 	if (!populated) {
 		logger.debug('encounter not found!', {file, func: 'GET /:encounter_id'})
 		const outcome = new OperationOutcome('error', 404, req.originalUrl, 'Unable to find encounter')

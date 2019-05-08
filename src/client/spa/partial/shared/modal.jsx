@@ -1,5 +1,8 @@
 import {h} from 'preact'
 
+/**
+ * @returns {preact.VNode}
+ */
 const Modal = () => (
 	<div className="col s12">
 		<div id="modal1" className="modal information">

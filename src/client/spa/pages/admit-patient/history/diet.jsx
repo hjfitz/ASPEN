@@ -1,5 +1,8 @@
 import {h} from 'preact'
 
+/**
+ * @returns {preact.VNode}
+ */
 const Diet = () => (
 	<div className="row">
 		<h4>Diet</h4>
