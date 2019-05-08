@@ -39,11 +39,9 @@ class Permissions extends Component {
 		this.permissions = [
 			{ident: 'view:allpatients', desc: 'View all patients without any need for assignment'},
 			{ident: 'edit:permissions', desc: 'Edit permissions of any practitioner'},
-			{ident: 'delete:patients', desc: 'Delete any patient'},
 			{ident: 'add:patients', desc: 'Admit a patient'},
 			{ident: 'add:wards', desc: 'Create a new ward'},
 			{ident: 'add:vitals', desc: 'Add vital signs readings'},
-			{ident: 'add:user', desc: 'Add a new user (for non-google login'},
 			{ident: 'edit:link', desc: 'Change the link between practitioners and patients'},
 		]
 		this.renderPermissions = this.renderPermissions.bind(this)
