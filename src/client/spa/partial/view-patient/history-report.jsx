@@ -51,8 +51,8 @@ const HistoryReport = (props) => {
 	}
 
 	console.log(props)
-	const prescriptionDrugs = props.drugs.prescriptions[0].filter(drug => drug.medication_name)
-	const otcDrugs = props.drugs.otc[0].filter(drug => drug.medication_name)
+	const prescriptionDrugs = (props.drugs.prescriptions[0] || []).filter(drug => drug.medication_name)
+	const otcDrugs = (props.drugs.otc[0] || []).filter(drug => drug.medication_name)
 	const recreationalDrugs = (props.drugs.recreational[0] || []).filter(drug => drug.medication_name)
 	// console.log({otcDrugs, recreationalDrugs, prescriptionDrugs})
 	console.log(otcDrugs)
@@ -130,7 +130,12 @@ const HistoryReport = (props) => {
 								<p><b>Currently using Tobacco:</b>{props.currently_uses_tobacco}</p>
 								<pre>Types of Tobacco used: {props.tobacco_type}</pre>
 								<p><b>Nicotine replacement therapy in use: </b>{props.currently_uses_tobacco_repalcement}</p>
-								<p><b>Nicotine replacement therapy types: </b>{props.tobacco_replacement_type === '' ? 'Not specified' : props.tobacco_replacement_type}</p>
+								<p><b>Nicotine replacement therapy types: </b>{
+									props.tobacco_replacement_type === ''
+										? 'Not specified'
+										: props.tobacco_replacement_type
+								}
+								</p>
 							</div>
 						)
 						: ''}
@@ -141,7 +146,12 @@ const HistoryReport = (props) => {
 					{props.uses_recreational_drugs ? (
 						<div>
 							{recreationalDrugs.length ? <DrugTable drugs={recreationalDrugs} /> : ''}
-							<p><b>Ever injecthealth_habits_patient_ever_injected_drugsed recreational drugs with a needle: </b>{props.used_recreational_with_needle ? 'yes' : 'no'}</p>
+							<p><b>Ever injecthealth_habits_patient_ever_injected_drugsed recreational drugs with a needle: </b>{
+								props.used_recreational_with_needle
+									? 'yes'
+									: 'no'
+							}
+							</p>
 						</div>
 					) : ''}
 				</section>
@@ -166,6 +176,9 @@ const HistoryReport = (props) => {
 					<p><b>Signature:</b></p>
 					<img src={props.signature_blob} alt="Signature" />
 				</section>
+			</div>
+			<div className="modal-footer">
+				<a href="#!" className="modal-close waves-effect waves-green btn-flat">Close</a>
 			</div>
 		</div>
 	)

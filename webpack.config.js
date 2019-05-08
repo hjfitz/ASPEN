@@ -21,12 +21,12 @@ const bundle = {
 				test: /\.jsx?$/,
 				use: {
 					loader: 'babel-loader',
-					options: {
-						presets: ['@babel/preset-env'],
-						plugins: [
-							['@babel/plugin-transform-react-jsx', {pragma: 'h'}],
-						],
-					},
+					// options: {
+					// 	presets: ['@babel/preset-env'],
+					// 	plugins: [
+					// 		['@babel/plugin-transform-react-jsx', {pragma: 'h'}],
+					// 	],
+					// },
 				},
 			},
 			{
@@ -51,4 +51,4 @@ const bundle = {
 	],
 }
 
-module.exports = bundle
+module.exports = [bundle]

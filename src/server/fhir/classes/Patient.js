@@ -27,6 +27,8 @@ class Patient extends FHIRBase {
 	 */
 	constructor(params) {
 		super(params)
+		this.meta = {file: 'fhir/classes/Patient.js'}
+		logger.silly(`attempting to make patient: ${JSON.stringify(params)}`, {...this.meta, func: 'constructor'})
 		const {active, id, fullname, given, prefix, gender, last_updated, photo, family} = params
 		this.active = active
 		this.loaded = false
@@ -38,7 +40,6 @@ class Patient extends FHIRBase {
 		this.last_updated = last_updated
 		this.photo = photo
 		this.family = family
-		this.meta = {file: 'fhir/classes/Patient.js'}
 		this.required = ['active', 'fullname', 'given', 'prefix', 'gender', 'contact_id']
 		this.values = [...this.required, 'family', 'last_updated']
 	}
@@ -81,22 +82,56 @@ class Patient extends FHIRBase {
 		// create object
 		this.last_updated = new Date()
 		this.active = true
+
+		// create an object consisting of values (from this.values) to put in DB
 		const obj = this.values.reduce((acc, cur) => {
 			acc[cur] = this[cur]
 			return acc
 		}, {})
-		if (this.photo && this.photo.mv) {
+
+		// attempt to write B64 photo
+		if (this.photo) {
 			logger.info('handling image', {...this.meta, func: 'insert()'})
-			const ext = mime.extension(this.photo.mimetype)
+			console.log(this.photo)
+			const mimetype = this.photo.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/)[1]
+			const ext = mime.extension(mimetype)
 			const photo_url = path.join('/patient', `${this.given}-${shortid.generate()}.${ext}`)
 			const newPath = path.join(process.cwd(), photo_url)
+			const base64Data = this.photo.replace(/^data:image\/jpeg;base64,/, '')
+
 			logger.debug(`moved image to ${newPath}`, {...this.meta, func: 'insert()'})
-			this.photo.mv(newPath)
+			fs.writeFileSync(newPath, base64Data, 'base64')
 			obj.photo_url = photo_url
 		}
 		// make query
 		const [resp] = await knex('patient').insert(obj).returning(['patient_id', ...this.values])
 		return resp
+	}
+
+	/**
+	 * Attempts to delete a patient based on this.id
+	 * fetch patient photo URL so that this can be removed from the disk
+	 * delete the patient from the database, then the image
+	 * order is important, because if database delete fails, no more image for patient
+	 * @returns {boolean} Deleted or nah
+	 */
+	async delete() {
+		try {
+			// get patient photo url from db
+			const [row] = await knex('patient').select().where('patient_id', this.id)
+			const url = path.join(process.cwd(), (row.photo_url || ''))
+			// remove DB entry and then the associated image
+			await knex('patient_history').where({patient_id: this.id}).del()
+			await knex('practitionerpatients').where('patient_id', this.id).del()
+			await knex('patient').where('patient_id', this.id).del()
+			logger.debug(`attempting to delete patient photo with url: ${url}`, this.meta)
+			if (row.photo_url && fs.existsSync(url)) fs.unlinkSync(url)
+			return {deleted: true, msg: 'Successfully deleted patient'}
+		} catch (err) {
+			logger.error('Unable to delete patient', {...this.meta, func: 'delete()'})
+			logger.error(err, {...this.meta, func: 'delete()'})
+			return {deleted: false, msg: err}
+		}
 	}
 
 	/**

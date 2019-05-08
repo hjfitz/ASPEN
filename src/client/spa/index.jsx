@@ -72,23 +72,26 @@ class App extends Component {
 	 */
 	render() {
 		return (
-			<div className="container">
+			<div>
+
 				<Breadcrumb location={this.state.location} />
-				<Router onChange={this.onChange}>
-					<Home path="/" />
-					<WardList path="/wards" />
-					<ViewWard path="/wards/:ward_id" />
-					<Permissions path="/permissions" />
-					<Add path="/add" />
-					<CreateWard path="/add/ward" />
-					<AdmitPatient path="/add/patient" />
-					<SearchPatient path="/search/patient" />
-					<Redirect path="/patient" to="/search/patient" />
-					<ViewPatient path="/patient/:patient_id" />
-				</Router>
-				<Fab />
-				<Modal />
-				{this.login}
+				<div className="container">
+					<Router onChange={this.onChange}>
+						<Home path="/" />
+						<WardList path="/wards" />
+						<ViewWard path="/wards/:ward_id" />
+						<Permissions path="/permissions" />
+						<Add path="/add" />
+						<CreateWard path="/add/ward" />
+						<AdmitPatient path="/add/patient" />
+						<SearchPatient path="/search/patient" />
+						<Redirect path="/patient" to="/search/patient" />
+						<ViewPatient path="/patient/:patient_id" />
+					</Router>
+					<Fab />
+					<Modal />
+					{this.login}
+				</div>
 			</div>
 		)
 	}

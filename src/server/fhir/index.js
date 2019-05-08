@@ -4,7 +4,6 @@ const bodyParser = require('body-parser')
 
 const logger = require('../logger')
 const patientRouter = require('./patient')
-const {connect} = require('../db')
 const diagnosticRouter = require('./diagnostic-report')
 const observationRouter = require('./observation')
 const locationRouter = require('./location')
@@ -44,11 +43,6 @@ router.use(async (req, res, next) => {
 		return createOutcome(req, res, 406, 'application/x-www-form-urlencoded is not accepted here', {}, 'error')
 	}
 	logger.silly('good request', {...meta, func: 'validation mw'})
-	try {
-		await connect()
-	} catch (err) {
-		logger.error(`error connecting to db: ${err}`, {...meta, func: 'validation mw'})
-	}
 	return next()
 })
 

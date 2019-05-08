@@ -1,12 +1,20 @@
 import {h} from 'preact'
 import format from 'date-fns/format'
-import {getName} from '../../../util'
-import {SignatureBox} from '../../../Partial'
+import {getName, getJwtPayload} from '../../../util'
+import SignatureBox from './signature-box'
 
 /**
  * @returns {string} format the date correctly
  */
 const getDate = () => format(Date.now(), ' MMM DD, YYYY')
+
+function getDesignation() {
+	const payload = getJwtPayload(localStorage.token)
+	if (!('email' in payload)) return 'guest'
+	if (payload.email.indexOf('@myport.ac.uk') > -1) return 'student'
+	if (payload.email.indexOf('@port.ac.uk') > -1) return 'teacher'
+	return 'unknown'
+}
 
 /**
  * @returns {preact.VNode}
@@ -23,8 +31,8 @@ const SignOff = () => (
 						<label className="active" htmlFor="practitioner-name">Name</label>
 					</div>
 					<div className="input-field col s12">
-						<input id="practitioner-designation" type="text" className="validate patient-history-input" data-form-key="sign-designation" />
-						<label htmlFor="practitioner-designation">Designation</label>
+						<input id="practitioner-designation" type="text" className="validate patient-history-input" value={getDesignation()} data-form-key="sign-designation" />
+						<label className="active" htmlFor="practitioner-designation">Designation</label>
 					</div>
 					<div className="input-field col s12">
 						<input id="practitioner-date" type="text" className="validate datepicker patient-history-input" value={getDate()} data-form-key="sign-date" />

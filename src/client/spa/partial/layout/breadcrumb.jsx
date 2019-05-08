@@ -40,7 +40,11 @@ const Breadcrumbs = (props) => {
 		<div className="navbar-fixed">
 			<nav className="white z-depth-0">
 				<div className="row">
-					<div className="col s12">{crumbs}</div>
+					<div className="col s12">
+						<div className="container">
+							{crumbs}
+						</div>
+					</div>
 				</div>
 			</nav>
 		</div>

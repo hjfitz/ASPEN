@@ -62,17 +62,26 @@ class CreateWard extends Component {
 		const inputs = [this.name, this.desc] // inputs to check
 		const valid = CreateWard.validateForms(inputs)
 		if (!valid) return // not valid. let the classNames do the talking
-
-		// populate a form and send it to the server
-		const locForm = new FormData()
-		locForm.append('type', 'ward')
-		inputs.forEach(control => locForm.set(control.id, control.value))
-
 		// attempt to post
 		try {
-			const resp = await fhirBase.post('/Location', locForm)
+			const resp = await fhirBase.post('/Location', {
+				resourceType: 'Location',
+				id: 196,
+				meta: {
+					versionID: 1,
+					lastUpdated: '2019-04-23T17:33:43.626Z',
+				},
+				status: 'active',
+				name: this.name.value,
+				description: this.desc.value,
+				coding: [{
+					system: 'https://www.hl7.org/fhir/codesystem-location-physical-type.html',
+					code: 'wa',
+					display: 'Ward',
+				}],
+			})
 			const {id} = resp.data.issue[0].diagnostics
-			doModal('Success', `Successfully created "${this.name.value}" with ID ${id}`)
+			console.log(resp.data)
 			inputs.forEach(input => input.value = '')
 		} catch (err) {
 			doModal('Error!', `There was an error whilst creating the ward: ${err}`)

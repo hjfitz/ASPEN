@@ -1,4 +1,5 @@
 const log = require('../../logger')
+const {knex} = require('../../db')
 const {client} = require('../../db')
 const FHIRBase = require('./FHIRBase')
 
@@ -61,6 +62,16 @@ class Observation extends FHIRBase {
 		}
 	}
 
+	insert() {
+		return knex('observation')
+			.returning(['observation_id', 'name'])
+			.insert({
+				last_updated: this.updated,
+				name: this.name,
+				value: this.value,
+			})
+	}
+
 	/**
 	 * Format the observation data to fhir data
 	 * @returns {object} fhir formatted observation data
@@ -71,7 +82,7 @@ class Observation extends FHIRBase {
 		const valueQuantity = Object.assign({value, system: 'http://unitsofmeasure.org'}, unitCode)
 		log.debug(`querying database for ${name} = ${id}`, {file: 'fhir/classes/Observation.js', func: 'Observation#fhir()'})
 		// DIRTY FIX ME PLEAAAASE
-		const {rows: [row]} = await client.query(`SELECT * FROM diagnostic_report WHERE ${name} = ${id}`)
+		const [row] = await knex('diagnostic_report').where({[name]: id})
 		return {
 			resourceType: 'Observation',
 			id,

@@ -107,7 +107,8 @@ class Patient extends Component {
 	 * @param {FormData} diagnosticReport fields in <vitals />
 	 */
 	async submitVitals(diagnosticReport) {
-		diagnosticReport.append('patient_id', this.props.patient_id)
+		// diagnosticReport.append('patient_id', this.props.patient_id)
+		diagnosticReport.subject = `Patient/${this.props.patient_id}`
 		try {
 			const {data} = await fhirBase.post('/Diagnostics', diagnosticReport)
 			M.toast({html: data.details.text})
@@ -209,13 +210,13 @@ class Patient extends Component {
 									</div>
 								</div>
 								<div className="row">
-									<div className="col s6">
+									<div className="col s12 m6">
 										<h6>Patient Information</h6>
 										<p><b>NEWS: </b>{this.state.news}</p>
 										<p><b>Gender: </b>{patient.gender}</p>
 										<p><b>Ward: </b>{patient.location}</p>
 									</div>
-									<div className="col s6">
+									<div className="col s12 m6">
 
 										<h6>Contact Information</h6>
 										<p><b>Name: </b>{contact.displayName}</p>
@@ -239,7 +240,10 @@ class Patient extends Component {
 					patientName={patient.displayName}
 					reportLoaded={this.state.reportLoaded}
 				/>
-				<VitalCharts refCb={ref => this.newsChart = ref} history={this.state.patientReports.reverse()} />
+				<VitalCharts
+					refCb={ref => this.newsChart = ref}
+					history={this.state.patientReports.reverse()}
+				/>
 			</div>
 		)
 	}

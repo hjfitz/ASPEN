@@ -31,7 +31,8 @@ class SearchPatient extends Component {
 	async search() {
 		const content = document.getElementById('search').value
 		const {data} = await fhirBase.get(`/Patient?_query=${content}`)
-		this.setState({patients: data})
+		const patients = data.length ? data : []
+		this.setState({patients})
 	}
 
 	/**
@@ -69,7 +70,13 @@ class SearchPatient extends Component {
 				<header className="col s12">
 					<h1>Search</h1>
 				</header>
-				<Input cbRef={searchBox => this.searchBox = searchBox} className="s12" id="search" label="Search" onKeyUp={this.search} />
+				<Input
+					cbRef={searchBox => this.searchBox = searchBox}
+					className="s12"
+					id="search"
+					label="Search"
+					onKeyUp={this.search}
+				/>
 				<div className="col s12">
 					{this.renderPatients()}
 				</div>

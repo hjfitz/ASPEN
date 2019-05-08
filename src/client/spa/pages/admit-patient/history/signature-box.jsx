@@ -106,7 +106,7 @@ class Signature extends Component {
 
 			const {width} = this.content.getBoundingClientRect()
 			const {height} = this.canvas.getBoundingClientRect()
-			this.canvas.height = height
+			this.canvas.height = height < 100 ? 100 : height
 			this.canvas.width = (width - horzPad)
 			this.setWidth = true
 		}
@@ -161,7 +161,9 @@ class Signature extends Component {
 							try {
 								this.canvas = c
 								this.ctx = c.getContext('2d')
-							} catch (e) {}
+							} catch (e) {
+								console.warn('[signature-box] could not find canvas')
+							}
 						}}
 						id="sign-off-canvas"
 						style={{width: '100%', border: '1px solid grey'}}

@@ -4,16 +4,19 @@ module.exports = {
 	"env": {
 		"browser": true,
 		"node": true,
+		"mocha": true,
 	},
 	"rules": {
 		"indent": ["error", "tab"],
 		"semi": ["error", "never"],
 		"camelcase": 0,
+		"max-len": ["error", { "code": 160 }],
 
+		"no-underscore-dangle": 0,
 		"no-param-reassign": 0,
 		"no-return-assign": 0,
+		"no-console": 0,
 		"no-tabs": 0,
-		"no-underscore-dangle": 0,
 
 		"object-curly-spacing": ["error", "never"],
 		"object-curly-newline": 0,
@@ -33,7 +36,7 @@ module.exports = {
 		"jsx-a11y/media-has-caption": 0,
 		"jsx-a11y/anchor-is-valid": 0,
 		"jsx-a11y/label-has-for": 0,
-			
+
 	},
 	"settings": {
 		"react": {

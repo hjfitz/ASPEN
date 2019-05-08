@@ -39,74 +39,31 @@ module.exports = {
 	produces: ['application/fhir+json'],
 	paths: {
 		'/Patient': {
+			get: {
+				tags: ['Patient'],
+				consumes: 'application/json',
+				description: 'Create a new patient in the FHIR server',
+				produces: ['application/fhir+json'],
+				responses: {
+					200: {
+						description: 'All patients are found',
+						schema: {
+							$ref: '#/definitions/PatientBundle',
+						},
+					},
+				},
+			},
 			post: {
 				tags: ['Patient'],
+				consumes: 'application/json',
 				description: 'Create a new patient in the FHIR server',
-				parameters: [
-					{
-						name: 'patient-prefix',
-						in: 'body',
-						description: 'Prefix for our patient (Mr, Mrs, Dr)',
-						required: true,
+				parameters: [{
+					in: 'body',
+					name: 'body',
+					schema: {
+						$ref: '#/definitions/PatientResponse',
 					},
-					{
-						name: 'patient-given',
-						in: 'body',
-						description: 'Patients given/first name',
-						required: true,
-					},
-					{
-						name: 'patient-fullname',
-						in: 'body',
-						description: 'Fullname for the patient',
-						required: true,
-					},
-					{
-						name: 'patient-gender',
-						in: 'body',
-						description: "Patient's gender",
-						required: true,
-					},
-					{
-						name: 'patient-family',
-						in: 'body',
-						description: "Patient's family name",
-					},
-					{
-						name: 'profile',
-						in: 'form',
-						description: 'patient photograph',
-					},
-					{
-						name: 'contact-prefix',
-						in: 'body',
-						description: 'Prefix for our contact (Mr, Mrs, Dr)',
-						required: true,
-					},
-					{
-						name: 'contact-given',
-						in: 'body',
-						description: "Contact's given/first name",
-						required: true,
-					},
-					{
-						name: 'contact-fullname',
-						in: 'body',
-						description: 'Fullname for the contact',
-						required: true,
-					},
-					{
-						name: 'contact-phone',
-						in: 'body',
-						description: "Contact's phone number",
-						required: true,
-					},
-					{
-						name: 'contact-family',
-						in: 'body',
-						description: "Contact's family name",
-					},
-				],
+				}],
 				produces: ['application/fhir+json'],
 				responses: {
 					200: {
@@ -199,51 +156,42 @@ module.exports = {
 			},
 		},
 		'/Diagnostics/': {
+			get: {
+				tags: ['DiagnosticReport'],
+				summary: 'Query for reports',
+				parameters: [
+					{
+						in: 'path',
+						name: 'patient',
+						description: 'Patient ID to get reports for',
+					},
+					{
+						in: 'path',
+						name: 'result',
+						description: 'whether to link results (true/false)',
+					},
+					{
+						in: 'path',
+						name: '_count',
+						description: 'amount of results to return',
+					},
+					{
+						in: 'path',
+						name: 'page',
+						description: 'page of results to return',
+					},
+				],
+			},
 			post: {
 				tags: ['DiagnosticReport'],
 				summary: 'Create a diagnostic report',
-				parameters: [
-					{
-						name: 'respiratory_rate',
-						in: 'body',
-						description: 'Patient respiratory rate (/min)',
+				parameters: [{
+					in: 'body',
+					name: 'body',
+					schema: {
+						$ref: '#/definitions/DiagnosticReportLinked',
 					},
-					{
-						name: 'oxygen_saturation',
-						in: 'body',
-						description: 'Patient oxygen saturation (%)',
-					},
-					{
-						name: 'supplemental_oxygen',
-						in: 'body',
-						description: 'Whether the patient has supplemental oxygen (true/false)',
-					},
-					{
-						name: 'body_temperature',
-						in: 'body',
-						description: 'Patient body temperature (C)',
-					},
-					{
-						name: 'systolic_bp',
-						in: 'body',
-						description: 'patient blood pressure (mmHg)',
-					},
-					{
-						name: 'heart_rate',
-						in: 'body',
-						description: 'patient heart rate (/min)',
-					},
-					{
-						name: 'level_of_consciousness',
-						in: 'body',
-						description: 'AVPU level of consciousness',
-					},
-					{
-						name: 'patient_id',
-						in: 'body',
-						description: 'Patient ID (database)',
-					},
-				],
+				}],
 				responses: {
 					200: {
 						description: 'A persons vital recordings have been updated',
@@ -268,7 +216,9 @@ module.exports = {
 				responses: {
 					200: {
 						description: 'A persons vital signs',
-						schema: '#/definitions/DiagnosticReport',
+						schema: {
+							$ref: '#/definitions/DiagnosticReportLinked',
+						},
 					},
 				},
 			},
@@ -285,60 +235,74 @@ module.exports = {
 				},
 			},
 		},
-		'/Diagnostics/{diagnostic_id}/linked': {
-			parameters: [{
-				name: 'diagnostic_id',
-				in: 'path',
-				required: true,
-				description: 'ID diagnostics to view ',
-				type: 'string',
-			}],
-			get: {
-				tags: ['DiagnosticReport', 'Vitals'],
-				summary: 'View a diagnostic report by ID',
-				responses: {
-					200: {
-						description: 'A persons vital signs',
-						schema: '#/definitions/DiagnosticReportLinked',
-					},
-				},
-			},
-		},
 		'/Encounter': {
 			post: {
 				tags: ['Encounter'],
 				summary: 'Create an encounter',
-				parameters: [
-					{
-						name: 'class',
-						in: 'body',
-						required: true,
-						description: 'The type of encounter (generally "admission")',
+				parameters: [{
+					in: 'body',
+					name: 'body',
+					schema: {
+						$ref: '#/definitions/EncounterResponse',
 					},
-					{
-						name: 'status',
-						in: 'body',
-						required: true,
-						description: 'The status of the visit (generally "finished")',
-					},
-					{
-						name: 'patient_id',
-						in: 'body',
-						required: true,
-						description: 'The patient to which this encounter pertains',
-					},
-					{
-						name: 'location_id',
-						in: 'body',
-						required: true,
-						description: 'Where the encounter took place',
-					},
-				],
+				}],
+				// parameters: [
+				// 	{
+				// 		name: 'class',
+				// 		in: 'body',
+				// 		required: true,
+				// 		description: 'The type of encounter (generally "admission")',
+				// 	},
+				// 	{
+				// 		name: 'status',
+				// 		in: 'body',
+				// 		required: true,
+				// 		description: 'The status of the visit (generally "finished")',
+				// 	},
+				// 	{
+				// 		name: 'patient_id',
+				// 		in: 'body',
+				// 		required: true,
+				// 		description: 'The patient to which this encounter pertains',
+				// 	},
+				// 	{
+				// 		name: 'location_id',
+				// 		in: 'body',
+				// 		required: true,
+				// 		description: 'Where the encounter took place',
+				// 	},
+				// ],
 				responses: {
 					200: {
 						description: 'An encounter has been created',
 						schema: {
 							$ref: '#/definitions/OperationOutcome',
+						},
+					},
+				},
+			},
+			get: {
+				tags: ['Encounter'],
+				summary: 'Get an encounter',
+				parameters: [
+					// class, include
+					{
+						in: 'path',
+						name: 'class',
+						description: 'Type of encounter (generally admission)',
+					},
+					{
+						in: 'path',
+						name: '_include',
+						description: 'information to include, separated by semicolon. generally patient;location',
+					},
+				],
+				responses: {
+					200: {
+						description: 'An enounter has been fetched',
+						type: 'array',
+						items: {
+							$ref: '#/definitions/EncounterResponse',
 						},
 					},
 				},
@@ -367,28 +331,35 @@ module.exports = {
 			put: {
 				tags: ['Encounter'],
 				summary: 'Update an encounter by ID',
-				parameters: [
-					{
-						name: 'class',
-						in: 'body',
-						description: 'The type of encounter (generally "admission")',
+				parameters: [{
+					in: 'body',
+					name: 'body',
+					schema: {
+						$ref: '#/definitions/EncounterResponse',
 					},
-					{
-						name: 'status',
-						in: 'body',
-						description: 'The status of the visit (generally "finished")',
-					},
-					{
-						name: 'patient_id',
-						in: 'body',
-						description: 'The patient to which this encounter pertains',
-					},
-					{
-						name: 'location_id',
-						in: 'body',
-						description: 'Where the encounter took place',
-					},
-				],
+				}],
+				// parameters: [
+				// 	{
+				// 		name: 'class',
+				// 		in: 'body',
+				// 		description: 'The type of encounter (generally "admission")',
+				// 	},
+				// 	{
+				// 		name: 'status',
+				// 		in: 'body',
+				// 		description: 'The status of the visit (generally "finished")',
+				// 	},
+				// 	{
+				// 		name: 'patient_id',
+				// 		in: 'body',
+				// 		description: 'The patient to which this encounter pertains',
+				// 	},
+				// 	{
+				// 		name: 'location_id',
+				// 		in: 'body',
+				// 		description: 'Where the encounter took place',
+				// 	},
+				// ],
 				responses: {
 					200: {
 						description: 'A persons vital signs has been deleted',
@@ -415,32 +386,35 @@ module.exports = {
 			post: {
 				tags: ['Location'],
 				description: 'create a new location',
-				parameters: [
-					{
-						name: 'name',
-						in: 'body',
-						required: true,
-						description: 'Name of the new location',
+				parameters: [{
+					in: 'body',
+					name: 'body',
+					schema: {
+						$ref: '#/definitions/LocationResponse',
 					},
-					{
-						name: 'description',
-						in: 'body',
-						required: true,
-						description: 'Description of the new location',
-					},
-					{
-						name: 'type',
-						in: 'body',
-						required: true,
-						description: 'The type of new location (wing/ward)',
-					},
-				],
+				}],
 				responses: {
 					200: {
 						description: 'A location was successfully added',
 						schema: {
 							$ref: '#/definitions/OperationOutcome',
 						},
+					},
+				},
+			},
+			get: {
+				tags: ['Location'],
+				description: 'find a location',
+				responses: {
+					200: {
+						description: 'A location was successfully added',
+						// schema: {
+						type: 'array',
+						items: {
+
+							$ref: '#/definitions/LocationResponse',
+						},
+						// },
 					},
 				},
 			},
@@ -494,6 +468,75 @@ module.exports = {
 					200: {
 						description: 'Observation has been found',
 						schema: {$ref: '#/definitions/Observation'},
+					},
+				},
+			},
+		},
+		'/Practitioner': {
+			get: {
+				tags: ['Practitioner'],
+				summary: 'Get all practitioner',
+				responses: {
+					200: {
+						description: 'Practitioner has been found',
+						schema: {$ref: '#/definitions/PractitionerBundle'},
+					},
+				},
+			},
+		},
+		'/Practitioner/{id}': {
+			parameters: [{
+				name: 'id',
+				in: 'path',
+				required: true,
+				description: 'ID of a given practitioner',
+				type: 'integer',
+			}],
+			get: {
+				tags: ['Practitioner'],
+				summary: 'Get an practitioner by ID',
+				responses: {
+					200: {
+						description: 'Practitioner has been found',
+						schema: {$ref: '#/definitions/Practitioner'},
+					},
+				},
+			},
+		},
+		'/History': {
+			post: {
+				tags: ['History'],
+				summary: 'Add a patient history',
+				parameters: [{
+					in: 'body',
+					name: 'body',
+					schema: {
+						$ref: '#/definitions/HistoryRequest',
+					},
+				}],
+				responses: {
+					200: {
+						description: 'History has been saved',
+						schema: {$ref: '#/definitions/OperationOutcome'},
+					},
+				},
+			},
+		},
+		'/History/{id}': {
+			parameters: [{
+				name: 'id',
+				in: 'path',
+				required: true,
+				description: 'ID of a given history',
+				type: 'integer',
+			}],
+			get: {
+				tags: ['History'],
+				summary: 'Get a history by ID',
+				responses: {
+					200: {
+						description: 'History has been found',
+						schema: {$ref: '#/definitions/HistoryRequest'},
 					},
 				},
 			},

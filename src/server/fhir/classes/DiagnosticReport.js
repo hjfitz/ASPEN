@@ -1,6 +1,6 @@
 const log = require('../../logger')
 const Observation = require('./Observation')
-const {client} = require('../../db')
+const {knex} = require('../../db')
 const FHIRBase = require('./FHIRBase')
 
 class DiagnosticReport extends FHIRBase {
@@ -58,13 +58,11 @@ class DiagnosticReport extends FHIRBase {
 			'systolic_bp',
 			'heart_rate',
 			'level_of_consciousness',
-		].map(attr => client.query({
-			text: 'SELECT * FROM observation WHERE observation_id = $1',
-			values: [this[attr]]})))
+		].map(attr => knex('observation').select().where({observation_id: this[attr]})))
 
 		log.debug('Attempting to link back to report', {file: 'fhir/DiagnosticReport.js', func: 'DiagnosticReport#fhirLinked()'})
 		const values = await Promise.all(observations
-			.map(val => val.rows[0])
+			.map(val => val[0])
 			.map(data => new Observation(data.name, data.value, data.observation_id, data.last_updated))
 			.map(obs => obs.fhir()))
 		return {

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {h} from 'preact'
 import {Link} from 'preact-router'
 
@@ -54,7 +55,7 @@ const Welcome = () => {
 			</div>
 			<div className="col s12">
 				<div className="row">
-					<div className="col s6 l4">
+					<div className="col s12 m6 l4">
 						<div className="hoverable card little home-card">
 							<Link href="/wards">
 								<div className="card-content">
@@ -64,17 +65,17 @@ const Welcome = () => {
 							</Link>
 						</div>
 					</div>
-					<div className="col s6 l4">
+					<div className="col s12 m6 l4">
 						<div className="hoverable card little home-card">
 							<Link href="/search/patient">
 								<div className="card-content">
-									<span className="card-title">Search for a Patient's Vital signs</span>
+									<span className="card-title">Search for a Patient&#39;s Vital signs</span>
 									<p>Search by details for a given patient.</p>
 								</div>
 							</Link>
 						</div>
 					</div>
-					<div className="col s6 l4">
+					<div className="col s12 m6 l4">
 						<div className="hoverable card little home-card">
 							<Link href="/add/patient">
 								<div className="card-content">
@@ -84,7 +85,7 @@ const Welcome = () => {
 							</Link>
 						</div>
 					</div>
-					<div className="col s6 l4">
+					<div className="col s12 m6 l4">
 						<div className="hoverable card little home-card">
 							<Link href="/add/ward">
 								<div className="card-content">
