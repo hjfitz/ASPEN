@@ -4,7 +4,6 @@ const compression = require('compression') // compresses responses
 const helmet = require('helmet') // sets secure headers
 const path = require('path')
 const parser = require('body-parser')
-const auth = require('./src/server/auth')
 const {stream} = require('./src/server/logger')
 const fhirApi = require('./src/server')
 

@@ -151,10 +151,7 @@ authRouter.post('/login', async (req, res) => {
 
 		const {practitioner_id, name, permissions} = row
 
-		const tokenPayload = {
-			...createPayload(practitioner_id, name, permissions),
-			username,
-		}
+		const tokenPayload = {...createPayload(practitioner_id, name, permissions), username}
 		const token = jwt.sign(tokenPayload, sessionSecret)
 
 		return res.send({

@@ -9,7 +9,6 @@ const Observation = require('./classes/Observation')
 const OperationOutcome = require('./classes/OperationOutcome')
 
 
-// yet documented in swagger
 diagnosticRouter.get('/', async (req, res) => {
 	const {
 		patient: patient_id,	// patient ID

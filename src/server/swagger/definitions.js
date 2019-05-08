@@ -1,4 +1,12 @@
 module.exports = {
+	Name: {
+		properties: {
+			use: {type: 'string'},
+			text: {type: 'string'},
+			family: {type: 'string'},
+			given: {type: 'string'},
+		},
+	},
 	DiagnosticReportLinked: {
 		properties: {
 			resourceType: {type: 'string'},
@@ -48,6 +56,145 @@ module.exports = {
 			},
 		},
 	},
+	HistoryHealth: {
+		properties: {
+			'childhood-illnesses': {
+				type: 'array',
+				items: {
+					type: 'string',
+				},
+			},
+			immunisations: {
+				type: 'array',
+				items: {
+					type: 'string',
+				},
+			},
+			'medical-issues': {
+				type: 'array',
+				items: {
+					type: 'string',
+				},
+			},
+			operations: {
+				type: 'array',
+				items: {
+					type: 'string',
+				},
+			},
+			hospitalisations: {
+				type: 'array',
+				items: {
+					type: 'string',
+				},
+			},
+		},
+	},
+	HistoryRequest: {
+		properties: {
+			health: {$ref: '#/definitions/HistoryHealth'},
+			// medications: {$ref: '#/definitions/HistoryMedications'}
+			medication: {
+				properties: {
+					prescription: {
+						type: 'array',
+						items: {
+							type: 'objects',
+							properties: {
+								name: {type: 'string'},
+								dose: {type: 'string'},
+								freq: {type: 'string'},
+							},
+						},
+					},
+				},
+			},
+			otc: {
+				properties: {
+					prescription: {
+						type: 'array',
+						items: {
+							type: 'objects',
+							properties: {
+								name: {type: 'string'},
+								dose: {type: 'string'},
+								freq: {type: 'string'},
+							},
+						},
+					},
+				},
+			},
+			exercise: {
+				properties: {
+					frequency: {type: 'string'},
+				},
+			},
+			diet: {
+				properties: {
+					dieting: {type: 'boolean'},
+					'difficulties-eating': {type: 'boolean'},
+					'meals-eaten': {type: 'integer'},
+				},
+			},
+			alcohol: {
+				properties: {
+					'does-drink': {type: 'boolean'},
+					type: {type: 'string'},
+					alcoholFreq: {type: 'string'},
+					concern: {type: 'boolean'},
+					'consider-stopping': {type: 'boolean'},
+				},
+			},
+			tobacco: {
+				properties: {
+					'used-prior': {type: 'boolean'},
+					'last-use': {type: 'string'},
+					'type-used': {type: 'string'},
+					'current-use': {type: 'boolean'},
+					'nicotine-replace-therapy': {type: 'boolean'},
+					'nicotine-replacement-types': {type: 'string'},
+				},
+			},
+			drug: {
+				properties: {
+					'currently-use': {type: 'boolean'},
+					injected: {type: 'boolean'},
+					'drug-use-frequency': {
+						properties: {
+							prescription: {
+								type: 'array',
+								items: {
+									type: 'objects',
+									properties: {
+										name: {type: 'string'},
+										dose: {type: 'string'},
+										freq: {type: 'string'},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			other: {
+				properties: {
+					'mental-health-wellbeing': {type: 'string'},
+					'social-history': {type: 'string'},
+					'family-history': {type: 'string'},
+					'relevant-history': {type: 'string'},
+				},
+			},
+			patient_id: {type: 'integer'},
+			sign: {
+				properties: {
+					practitioner_id: {type: 'integer'},
+					date: {type: 'string'},
+					designation: {type: 'string'},
+					image: {type: 'string'},
+				},
+			},
+		},
+	},
 	ObservationList: {
 		type: 'array',
 		$ref: '#/definitions/Observation',
@@ -73,6 +220,17 @@ module.exports = {
 			unitCode: {type: 'string'},
 		},
 	},
+	PatientBundle: {
+		properties: {
+			resourceType: {type: 'string'},
+			meta: {$ref: '#/definitions/Meta'},
+			type: {type: 'string'},
+			entry: {
+				type: 'array',
+				$ref: '#/definitions/PatientResponse',
+			},
+		},
+	},
 	PatientResponse: {
 		properties: {
 			identifier: {
@@ -95,7 +253,7 @@ module.exports = {
 			},
 			contact: {
 				type: 'array',
-				$ref: '#/ContactResponse',
+				$ref: '#/definitions/ContactResponse',
 			},
 		},
 	},
@@ -130,14 +288,6 @@ module.exports = {
 			assigner: {type: 'string'},
 		},
 	},
-	Name: {
-		properties: {
-			use: {type: 'string'},
-			text: {type: 'string'},
-			family: {type: 'string'},
-			given: {type: 'string'},
-		},
-	},
 	Photo: {
 		properties: {
 			contentType: {type: 'string'},
@@ -148,7 +298,6 @@ module.exports = {
 	ContactResponse: {
 		properties: {
 			name: {
-				type: 'string',
 				$ref: '#/definitions/ContactName',
 			},
 		},
@@ -159,10 +308,15 @@ module.exports = {
 			text: {type: 'string'},
 			family: {type: 'string'},
 			given: {type: 'string'},
-			prefix: {type: 'array'},
+			prefix: {
+				type: 'array',
+				items: {type: 'string'},
+			},
 			telecom: {
 				type: 'array',
-				$ref: '#/definitions/ContactTelecom',
+				items: {
+					$ref: '#/definitions/ContactTelecom',
+				},
 			},
 		},
 	},
@@ -192,6 +346,35 @@ module.exports = {
 		properties: {
 			severity: {type: 'string'},
 			code: {type: 'integer'},
+		},
+	},
+	Practitioner: {
+		properties: {
+			resourceType: {type: 'string'},
+			active: {type: 'string'},
+			id: {type: 'integer'},
+			lastUpdated: {type: 'string'},
+			name: {
+				type: 'array',
+				$ref: '#/definitions/Name',
+			},
+			telecom: {
+				type: 'array',
+				items: {
+					$ref: '#/definitions/ContactTelecom',
+				},
+			},
+		},
+	},
+	PractitionerBundle: {
+		properties: {
+			resourceType: {type: 'string'},
+			meta: {$ref: '#/definitions/Meta'},
+			type: {type: 'string'},
+			entry: {
+				type: 'array',
+				$ref: '#/definitions/Practitioner',
+			},
 		},
 	},
 }

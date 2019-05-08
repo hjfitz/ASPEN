@@ -1,5 +1,5 @@
 // node modules used as this class is tested
-const {doModal} = require('./util')
+// import {doModal} from './util'
 
 class NEWSError extends Error {
 	/**
@@ -17,7 +17,7 @@ class NEWSError extends Error {
 /**
  * ! TODO thorough testing
  */
-module.exports = class WarningScore {
+export default class WarningScore {
 	/**
 	 * Warning score wrapper for patient info
 	 * @param {object} report formatted diagnostic report
@@ -48,12 +48,9 @@ module.exports = class WarningScore {
 		this.suppOxygen = report.supplemental_oxygen
 		this.missingFields = this.requiredFields.filter(field => !(field in report))
 		if (this.missingFields.length === this.requiredFields.length) return
-		if (this.missingFields.length) {
-			doModal(
-				'Error with EWS Calculation',
-				`Fields were missing during submission!</p><ul><li class="browser-default">${this.missingFields.join('</li><li>')}`,
-			)
-		}
+		// if (this.missingFields.length) {
+		// 	// doModal('Error with EWS Calculation', `Fields were missing during submission!</p><ul><li class="browser-default">${this.missingFields.join('</li><li>')}`)
+		// }
 	}
 
 	/**
@@ -81,7 +78,6 @@ module.exports = class WarningScore {
 	 */
 	score() {
 		const scores = this.calculate()
-		console.table(scores)
 		const vals = Object.values(scores)
 		const highest = vals.sort().reverse()
 		return highest[0]
